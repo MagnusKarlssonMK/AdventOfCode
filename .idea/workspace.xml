@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ee9c8673-51d9-46b8-bc53-d75585744d6a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/AdventOfCoding.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day1/aoc1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day1/aoc1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day2/aoc2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day2/aoc2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day3/aoc3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day3/aoc3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day4/aoc4.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day4/aoc4.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day5/aoc5.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day5/aoc5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day6/aoc6.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day6/aoc6.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day7/aoc7.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Day7/aoc7.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day 1/aoc1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day 1/aoc1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day10/aoc10.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day10/aoc10.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day11/aoc11.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day11/aoc11.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day12/aoc12.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day12/aoc12.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day13/aoc13.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day13/aoc13.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14a.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14b.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day15/aoc15.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day15/aoc15.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16a.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16b.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day17/aoc17.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day17/aoc17.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day18/aoc18.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day18/aoc18.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day19/aoc19.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day19/aoc19.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day2/aoc2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day2/aoc2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20a.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20b.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day21/aoc21.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day21/aoc21.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day22/aoc22.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day22/aoc22.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day23/aoc23.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day23/aoc23.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day24/aoc24.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day24/aoc24.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day25/aoc25.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day25/aoc25.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day3/aoc3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day3/aoc3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day4/aoc4.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day4/aoc4.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5a.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5b.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day6/aoc6.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day6/aoc6.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7p1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7p2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day8/aoc8.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day8/aoc8.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day9/aoc9.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2023/Day9/aoc9.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2bGRUewxynawbB6ZkgOzwXcxDos" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.aoc1.executor": "Run",
+    "Python.aoc10.executor": "Run",
+    "Python.aoc11.executor": "Run",
+    "Python.aoc12.executor": "Run",
+    "Python.aoc13.executor": "Run",
+    "Python.aoc14a.executor": "Run",
+    "Python.aoc15.executor": "Run",
+    "Python.aoc16a.executor": "Run",
+    "Python.aoc18.executor": "Run",
+    "Python.aoc19.executor": "Run",
+    "Python.aoc2.executor": "Run",
+    "Python.aoc20a.executor": "Run",
+    "Python.aoc20b.executor": "Run",
+    "Python.aoc21.executor": "Run",
+    "Python.aoc22.executor": "Run",
+    "Python.aoc23.executor": "Run",
+    "Python.aoc24.executor": "Run",
+    "Python.aoc25.executor": "Run",
+    "Python.aoc3.executor": "Run",
+    "Python.aoc4.executor": "Run",
+    "Python.aoc5.executor": "Run",
+    "Python.aoc6.executor": "Run",
+    "Python.aoc7.executor": "Run",
+    "Python.aoc7p2.executor": "Run",
+    "Python.aoc8.executor": "Run",
+    "Python.aoc9.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day7" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day6" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day5" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day4" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day3" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13135.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ee9c8673-51d9-46b8-bc53-d75585744d6a" name="Changes" comment="" />
+      <created>1705839446169</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1705839446169</updated>
+    </task>
+    <servers />
+  </component>
+</project>
