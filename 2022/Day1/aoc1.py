@@ -20,8 +20,7 @@ def main() -> int:
 
     print("Part1: ", elf_list[0].totalcalories)
 
-    b = sum([elf_list[num].totalcalories for num in range(3)])
-    print("Part2: ", b)
+    print("Part2: ", sum([elf_list[num].totalcalories for num in range(3)]))
     return 0
 
 
