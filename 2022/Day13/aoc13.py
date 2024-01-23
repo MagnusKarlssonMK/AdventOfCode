@@ -28,8 +28,8 @@ class ElfList:
         while i < (len(strlist) - 1):
             if strlist[i] == '[':
                 cbi = i + get_cbi(strlist[i:])
-                self.list.append(ElfList(strlist[i:cbi+1]))
-                i += cbi + 1
+                self.list.append(ElfList(strlist[i:1+cbi]))
+                i += cbi-1
             elif strlist[i].isdigit():
                 nbr = re.findall(r"\d+", strlist[i:])[0]
                 self.list.append(int(nbr))
@@ -37,7 +37,7 @@ class ElfList:
             else:
                 i += 1
 
-    def __lt__(self, other) -> int:
+    def issmallerthan(self, other) -> int:
         if len(self.list) == 0:
             return 1
         if len(other.list) == 0:
@@ -51,16 +51,16 @@ class ElfList:
                         return -1
                 else:
                     newlist = ElfList('['+str(self.list[i])+']')
-                    test = newlist < other.list[i]
+                    test = newlist.issmallerthan(other.list[i])
                     if test != 0:
                         return test
             elif isinstance(other.list[i], int):
                 newlist = ElfList('['+str(other.list[i])+']')
-                test = self.list[i] < newlist
+                test = self.list[i].issmallerthan(newlist)
                 if test != 0:
                     return test
             else:
-                test = self.list[i] < other.list[i]
+                test = self.list[i].issmallerthan(other.list[i])
                 if test != 0:
                     return test
         if len(self.list) < len(other.list):
@@ -68,6 +68,9 @@ class ElfList:
         if len(self.list) > len(other.list):
             return -1
         return 0
+
+    def __lt__(self, other) -> bool:
+        return self.issmallerthan(other) == 1
 
     def __repr__(self):
         return str(self.list)
@@ -96,7 +99,8 @@ def main() -> int:
     allpacketlist.append(divider_two)
     allpacketlist.append(divider_six)
     allpacketssorted = sorted(allpacketlist)
-    print(allpacketssorted)
+
+    print("Part2: ", (allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1))
     return 0
 
 
