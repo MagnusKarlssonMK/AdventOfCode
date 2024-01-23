@@ -29,7 +29,7 @@ class ElfList:
             if strlist[i] == '[':
                 cbi = i + get_cbi(strlist[i:])
                 self.list.append(ElfList(strlist[i:1+cbi]))
-                i += cbi-1
+                i = cbi
             elif strlist[i].isdigit():
                 nbr = re.findall(r"\d+", strlist[i:])[0]
                 self.list.append(int(nbr))
