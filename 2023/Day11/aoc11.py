@@ -27,10 +27,7 @@ class Grid:
                     self.grid.append(['X'] * len(line))
         # Replace every empty column with 'X'
         for col in range(0, len(self.grid[0])):
-            empty = True
-            if any(row[col] == "#" for row in self.grid):
-                empty = False
-            if empty:
+            if not any(row[col] == "#" for row in self.grid):
                 for row in self.grid:
                     row[col] = 'X'
 
