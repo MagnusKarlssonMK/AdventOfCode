@@ -141,7 +141,7 @@ class Lighthead:
 mirrorgrid = []
 lightgrid = []
 
-with open("aoc16.txt", "r") as file:
+with open("../Inputfiles/aoc16.txt", "r") as file:
     for line in file.readlines():
         mirrorgrid.append(line.strip("\n"))
         lightgrid.append([0] * len(mirrorgrid[-1]))
