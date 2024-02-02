@@ -6,7 +6,7 @@ import math
 def main() -> int:
     graph = nx.Graph()
 
-    with open("aoc25.txt", "r") as file:
+    with open("../Inputfiles/aoc25.txt", "r") as file:
         for line in file:
             left, right = (part.strip() for part in line.split(":"))
             right_parts = right.split()
