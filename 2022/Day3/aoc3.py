@@ -6,7 +6,7 @@ def main() -> int:
                  (range(ord('A'), ord('Z') + 1), 27))
     totalprio_p1 = 0
     totalprio_p2 = 0
-    with open('aoc3.txt', 'r') as file:
+    with open('../Inputfiles/aoc3.txt', 'r') as file:
         linebuffer = []
         for line in file.readlines():
             if len(line) > 1:
