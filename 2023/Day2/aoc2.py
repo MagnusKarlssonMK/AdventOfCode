@@ -50,7 +50,6 @@ def main() -> int:
         for line in file.readlines():
             try:
                 newgame = Game(line.strip("\n"))
-                print(newgame)
                 if newgame.ishandvalid():
                     totalsum_part1 += newgame.gameid
                 totalpower_part2 += newgame.gethandpower()
