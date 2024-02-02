@@ -117,7 +117,7 @@ class Grid:
 def main() -> int:
     mygrid = Grid()
 
-    with open("aoc22.txt", "r") as file:
+    with open("../Inputfiles/aoc22.txt", "r") as file:
         for line in file.readlines():
             mygrid.addbrick(line.strip("\n"))
 
