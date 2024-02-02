@@ -58,7 +58,7 @@ class Rule:
 workflows: dict[str: list[Rule]] = {}
 result_p1 = 0
 
-with open("aoc19.txt", "r") as file:
+with open("../Inputfiles/aoc19.txt", "r") as file:
     while len(line := file.readline()) > 1:
         label, rules = line.strip("\n").strip("}").split("{")
         rulelist = rules.split(",")
