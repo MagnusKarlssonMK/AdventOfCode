@@ -95,7 +95,7 @@ class Filesystem:
 def main() -> int:
     myfs = Filesystem()
     cmdlines = []
-    with open('aoc7.txt', 'r') as file:
+    with open('../Inputfiles/aoc7.txt', 'r') as file:
         rawinput = file.read().strip('\n')
     for cmdlist in rawinput.strip("$ ").split("\n$ "):
         cmdlines.append(cmdlist.splitlines())
