@@ -49,7 +49,7 @@ class Monkey:
 def main() -> int:
     monkeys_p1: list[Monkey] = []
     monkeys_p2: list[Monkey] = []
-    with open('aoc11.txt', 'r') as file:
+    with open('../Inputfiles/aoc11.txt', 'r') as file:
         for monk in file.read().strip('\n').split('\n\n'):
             monkeys_p1.append(Monkey(monk, True))
             monkeys_p2.append(Monkey(monk, False))
