@@ -48,7 +48,7 @@ class Pattern:
 
 
 def main() -> int:
-    with open("aoc13.txt", "r") as file:
+    with open("../Inputfiles/aoc13.txt", "r") as file:
         patterns = file.read().strip("\n").split("\n\n")
 
     totalscore_p1 = 0
