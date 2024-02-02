@@ -4,84 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee9c8673-51d9-46b8-bc53-d75585744d6a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/AdventOfCoding.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day1/aoc1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day1/aoc1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day2/aoc2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day2/aoc2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day3/aoc3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day3/aoc3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day4/aoc4.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day4/aoc4.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day5/aoc5.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day5/aoc5.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day6/aoc6.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day6/aoc6.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day7/aoc7.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Day7/aoc7.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day 1/aoc1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day 1/aoc1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day10/aoc10.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day10/aoc10.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day11/aoc11.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day11/aoc11.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day12/aoc12.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day12/aoc12.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day13/aoc13.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day13/aoc13.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day14/aoc14b.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day15/aoc15.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day15/aoc15.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day16/aoc16b.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day17/aoc17.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day17/aoc17.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day18/aoc18.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day18/aoc18.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day19/aoc19.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day19/aoc19.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day2/aoc2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day2/aoc2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day20/aoc20b.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day21/aoc21.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day21/aoc21.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day22/aoc22.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day22/aoc22.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day23/aoc23.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day23/aoc23.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day24/aoc24.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day24/aoc24.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day25/aoc25.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day25/aoc25.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day3/aoc3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day3/aoc3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day4/aoc4.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day4/aoc4.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5a.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day5/aoc5b.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day6/aoc6.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day6/aoc6.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7p1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day7/aoc7p2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day8/aoc8.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day8/aoc8.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day9/aoc9.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/Day9/aoc9.txt" afterDir="false" />
+    <list default="true" id="ee9c8673-51d9-46b8-bc53-d75585744d6a" name="Changes" comment="Small addition">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,11 +21,19 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2bGRUewxynawbB6ZkgOzwXcxDos" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -114,9 +47,14 @@
     "Python.aoc11.executor": "Run",
     "Python.aoc12.executor": "Run",
     "Python.aoc13.executor": "Run",
+    "Python.aoc14.executor": "Run",
     "Python.aoc14a.executor": "Run",
+    "Python.aoc14b.executor": "Run",
     "Python.aoc15.executor": "Run",
+    "Python.aoc16.executor": "Run",
     "Python.aoc16a.executor": "Run",
+    "Python.aoc16b.executor": "Run",
+    "Python.aoc17.executor": "Run",
     "Python.aoc18.executor": "Run",
     "Python.aoc19.executor": "Run",
     "Python.aoc2.executor": "Run",
@@ -132,29 +70,32 @@
     "Python.aoc5.executor": "Run",
     "Python.aoc6.executor": "Run",
     "Python.aoc7.executor": "Run",
+    "Python.aoc7p1.executor": "Run",
     "Python.aoc7p2.executor": "Run",
     "Python.aoc8.executor": "Run",
     "Python.aoc9.executor": "Run",
+    "Python.scratchpad.executor": "Run",
+    "Python.stolen.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "editor.preferences.appearance"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day7" />
-      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day6" />
-      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day5" />
-      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day4" />
-      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day3" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2021\Inputfiles" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Inputfiles" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2023\Inputfiles" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day9" />
+      <recent name="C:\Users\magnu\PycharmProjects\AdventOfCoding\2022\Day8" />
     </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-50da183f06c8-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13135.95" />
+        <option value="bundled-python-sdk-5a2391486177-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -167,6 +108,372 @@
       <option name="presentableId" value="Default" />
       <updated>1705839446169</updated>
     </task>
+    <task id="LOCAL−00010" summary="Fixed index issue.">
+      <option name="closed" value="true" />
+      <created>1705997444713</created>
+      <option name="number" value="LOCAL−00010" />
+      <option name="presentableId" value="LOCAL−00010" />
+      <updated>1705997444713</updated>
+    </task>
+    <task id="LOCAL−00011" summary="Work in progress.">
+      <option name="closed" value="true" />
+      <created>1706222827618</created>
+      <option name="number" value="LOCAL−00011" />
+      <option name="presentableId" value="LOCAL−00011" />
+      <updated>1706222827618</updated>
+    </task>
+    <task id="LOCAL−00012" summary="Minor cleanup.">
+      <option name="closed" value="true" />
+      <created>1706223510620</created>
+      <option name="number" value="LOCAL−00012" />
+      <option name="presentableId" value="LOCAL−00012" />
+      <updated>1706223510620</updated>
+    </task>
+    <task id="LOCAL−00013" summary="First version.">
+      <option name="closed" value="true" />
+      <created>1706793395650</created>
+      <option name="number" value="LOCAL−00013" />
+      <option name="presentableId" value="LOCAL−00013" />
+      <updated>1706793395650</updated>
+    </task>
+    <task id="LOCAL−00014" summary="First version.">
+      <option name="closed" value="true" />
+      <created>1706795760495</created>
+      <option name="number" value="LOCAL−00014" />
+      <option name="presentableId" value="LOCAL−00014" />
+      <updated>1706795760495</updated>
+    </task>
+    <task id="LOCAL−00015" summary="First version.">
+      <option name="closed" value="true" />
+      <created>1706801858286</created>
+      <option name="number" value="LOCAL−00015" />
+      <option name="presentableId" value="LOCAL−00015" />
+      <updated>1706801858286</updated>
+    </task>
+    <task id="LOCAL−00016" summary="First version.">
+      <option name="closed" value="true" />
+      <created>1706801879602</created>
+      <option name="number" value="LOCAL−00016" />
+      <option name="presentableId" value="LOCAL−00016" />
+      <updated>1706801879602</updated>
+    </task>
+    <task id="LOCAL−00017" summary="First version.">
+      <option name="closed" value="true" />
+      <created>1706870360491</created>
+      <option name="number" value="LOCAL−00017" />
+      <option name="presentableId" value="LOCAL−00017" />
+      <updated>1706870360491</updated>
+    </task>
+    <task id="LOCAL−00018" summary="Removed debug print.">
+      <option name="closed" value="true" />
+      <created>1706872828988</created>
+      <option name="number" value="LOCAL−00018" />
+      <option name="presentableId" value="LOCAL−00018" />
+      <updated>1706872828988</updated>
+    </task>
+    <task id="LOCAL−00019" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874062138</created>
+      <option name="number" value="LOCAL−00019" />
+      <option name="presentableId" value="LOCAL−00019" />
+      <updated>1706874062138</updated>
+    </task>
+    <task id="LOCAL−00020" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874448699</created>
+      <option name="number" value="LOCAL−00020" />
+      <option name="presentableId" value="LOCAL−00020" />
+      <updated>1706874448699</updated>
+    </task>
+    <task id="LOCAL−00021" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874561321</created>
+      <option name="number" value="LOCAL−00021" />
+      <option name="presentableId" value="LOCAL−00021" />
+      <updated>1706874561321</updated>
+    </task>
+    <task id="LOCAL−00022" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874683226</created>
+      <option name="number" value="LOCAL−00022" />
+      <option name="presentableId" value="LOCAL−00022" />
+      <updated>1706874683226</updated>
+    </task>
+    <task id="LOCAL−00023" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874771118</created>
+      <option name="number" value="LOCAL−00023" />
+      <option name="presentableId" value="LOCAL−00023" />
+      <updated>1706874771118</updated>
+    </task>
+    <task id="LOCAL−00024" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874873094</created>
+      <option name="number" value="LOCAL−00024" />
+      <option name="presentableId" value="LOCAL−00024" />
+      <updated>1706874873094</updated>
+    </task>
+    <task id="LOCAL−00025" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706874946370</created>
+      <option name="number" value="LOCAL−00025" />
+      <option name="presentableId" value="LOCAL−00025" />
+      <updated>1706874946370</updated>
+    </task>
+    <task id="LOCAL−00026" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706875056221</created>
+      <option name="number" value="LOCAL−00026" />
+      <option name="presentableId" value="LOCAL−00026" />
+      <updated>1706875056221</updated>
+    </task>
+    <task id="LOCAL−00027" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706875624204</created>
+      <option name="number" value="LOCAL−00027" />
+      <option name="presentableId" value="LOCAL−00027" />
+      <updated>1706875624204</updated>
+    </task>
+    <task id="LOCAL−00028" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706881932544</created>
+      <option name="number" value="LOCAL−00028" />
+      <option name="presentableId" value="LOCAL−00028" />
+      <updated>1706881932544</updated>
+    </task>
+    <task id="LOCAL−00029" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882032681</created>
+      <option name="number" value="LOCAL−00029" />
+      <option name="presentableId" value="LOCAL−00029" />
+      <updated>1706882032681</updated>
+    </task>
+    <task id="LOCAL−00030" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882226435</created>
+      <option name="number" value="LOCAL−00030" />
+      <option name="presentableId" value="LOCAL−00030" />
+      <updated>1706882226435</updated>
+    </task>
+    <task id="LOCAL−00031" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882287575</created>
+      <option name="number" value="LOCAL−00031" />
+      <option name="presentableId" value="LOCAL−00031" />
+      <updated>1706882287575</updated>
+    </task>
+    <task id="LOCAL−00032" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882589624</created>
+      <option name="number" value="LOCAL−00032" />
+      <option name="presentableId" value="LOCAL−00032" />
+      <updated>1706882589624</updated>
+    </task>
+    <task id="LOCAL−00033" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882865955</created>
+      <option name="number" value="LOCAL−00033" />
+      <option name="presentableId" value="LOCAL−00033" />
+      <updated>1706882865955</updated>
+    </task>
+    <task id="LOCAL−00034" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706882969755</created>
+      <option name="number" value="LOCAL−00034" />
+      <option name="presentableId" value="LOCAL−00034" />
+      <updated>1706882969755</updated>
+    </task>
+    <task id="LOCAL−00035" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706883112054</created>
+      <option name="number" value="LOCAL−00035" />
+      <option name="presentableId" value="LOCAL−00035" />
+      <updated>1706883112054</updated>
+    </task>
+    <task id="LOCAL−00036" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706883219608</created>
+      <option name="number" value="LOCAL−00036" />
+      <option name="presentableId" value="LOCAL−00036" />
+      <updated>1706883219608</updated>
+    </task>
+    <task id="LOCAL−00037" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706883836384</created>
+      <option name="number" value="LOCAL−00037" />
+      <option name="presentableId" value="LOCAL−00037" />
+      <updated>1706883836384</updated>
+    </task>
+    <task id="LOCAL−00038" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706883978753</created>
+      <option name="number" value="LOCAL−00038" />
+      <option name="presentableId" value="LOCAL−00038" />
+      <updated>1706883978753</updated>
+    </task>
+    <task id="LOCAL−00039" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884139736</created>
+      <option name="number" value="LOCAL−00039" />
+      <option name="presentableId" value="LOCAL−00039" />
+      <updated>1706884139736</updated>
+    </task>
+    <task id="LOCAL−00040" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884267308</created>
+      <option name="number" value="LOCAL−00040" />
+      <option name="presentableId" value="LOCAL−00040" />
+      <updated>1706884267308</updated>
+    </task>
+    <task id="LOCAL−00041" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884478995</created>
+      <option name="number" value="LOCAL−00041" />
+      <option name="presentableId" value="LOCAL−00041" />
+      <updated>1706884478995</updated>
+    </task>
+    <task id="LOCAL−00042" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884532891</created>
+      <option name="number" value="LOCAL−00042" />
+      <option name="presentableId" value="LOCAL−00042" />
+      <updated>1706884532891</updated>
+    </task>
+    <task id="LOCAL−00043" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884579861</created>
+      <option name="number" value="LOCAL−00043" />
+      <option name="presentableId" value="LOCAL−00043" />
+      <updated>1706884579861</updated>
+    </task>
+    <task id="LOCAL−00044" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884684904</created>
+      <option name="number" value="LOCAL−00044" />
+      <option name="presentableId" value="LOCAL−00044" />
+      <updated>1706884684904</updated>
+    </task>
+    <task id="LOCAL−00045" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884752623</created>
+      <option name="number" value="LOCAL−00045" />
+      <option name="presentableId" value="LOCAL−00045" />
+      <updated>1706884752623</updated>
+    </task>
+    <task id="LOCAL−00046" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706884814421</created>
+      <option name="number" value="LOCAL−00046" />
+      <option name="presentableId" value="LOCAL−00046" />
+      <updated>1706884814421</updated>
+    </task>
+    <task id="LOCAL−00047" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706885038675</created>
+      <option name="number" value="LOCAL−00047" />
+      <option name="presentableId" value="LOCAL−00047" />
+      <updated>1706885038675</updated>
+    </task>
+    <task id="LOCAL−00048" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706885134469</created>
+      <option name="number" value="LOCAL−00048" />
+      <option name="presentableId" value="LOCAL−00048" />
+      <updated>1706885134469</updated>
+    </task>
+    <task id="LOCAL−00049" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706885765570</created>
+      <option name="number" value="LOCAL−00049" />
+      <option name="presentableId" value="LOCAL−00049" />
+      <updated>1706885765570</updated>
+    </task>
+    <task id="LOCAL−00050" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706885941598</created>
+      <option name="number" value="LOCAL−00050" />
+      <option name="presentableId" value="LOCAL−00050" />
+      <updated>1706885941598</updated>
+    </task>
+    <task id="LOCAL−00051" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886168298</created>
+      <option name="number" value="LOCAL−00051" />
+      <option name="presentableId" value="LOCAL−00051" />
+      <updated>1706886168298</updated>
+    </task>
+    <task id="LOCAL−00052" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886425381</created>
+      <option name="number" value="LOCAL−00052" />
+      <option name="presentableId" value="LOCAL−00052" />
+      <updated>1706886425381</updated>
+    </task>
+    <task id="LOCAL−00053" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886627125</created>
+      <option name="number" value="LOCAL−00053" />
+      <option name="presentableId" value="LOCAL−00053" />
+      <updated>1706886627125</updated>
+    </task>
+    <task id="LOCAL−00054" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886793835</created>
+      <option name="number" value="LOCAL−00054" />
+      <option name="presentableId" value="LOCAL−00054" />
+      <updated>1706886793835</updated>
+    </task>
+    <task id="LOCAL−00055" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886895218</created>
+      <option name="number" value="LOCAL−00055" />
+      <option name="presentableId" value="LOCAL−00055" />
+      <updated>1706886895218</updated>
+    </task>
+    <task id="LOCAL−00056" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706886961300</created>
+      <option name="number" value="LOCAL−00056" />
+      <option name="presentableId" value="LOCAL−00056" />
+      <updated>1706886961300</updated>
+    </task>
+    <task id="LOCAL−00057" summary="Changed input file directory.">
+      <option name="closed" value="true" />
+      <created>1706887377609</created>
+      <option name="number" value="LOCAL−00057" />
+      <option name="presentableId" value="LOCAL−00057" />
+      <updated>1706887377609</updated>
+    </task>
+    <task id="LOCAL−00058" summary="Small addition">
+      <option name="closed" value="true" />
+      <created>1706887503534</created>
+      <option name="number" value="LOCAL−00058" />
+      <option name="presentableId" value="LOCAL−00058" />
+      <updated>1706887503534</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit." />
+    <MESSAGE value="Fixed index issue." />
+    <MESSAGE value="Work in progress." />
+    <MESSAGE value="Minor cleanup." />
+    <MESSAGE value="First version." />
+    <MESSAGE value="Removed debug print." />
+    <MESSAGE value="Changed input file directory." />
+    <MESSAGE value="Small addition" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small addition" />
   </component>
 </project>
