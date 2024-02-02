@@ -2,7 +2,7 @@ import sys
 
 
 def main() -> int:
-    with open('aoc6.txt') as file:
+    with open('../Inputfiles/aoc6.txt') as file:
         line = file.readline().strip('\n')
 
     # A
