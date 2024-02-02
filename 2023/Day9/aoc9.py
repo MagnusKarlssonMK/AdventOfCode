@@ -12,7 +12,7 @@ def findnextnumber(inputlist: list[int]) -> int:
 def main() -> int:
     result_p1 = 0
     result_p2 = 0
-    with open('aoc9.txt', 'r') as file:
+    with open('../Inputfiles/aoc9.txt', 'r') as file:
         for line in file.readlines():
             numbers = list(map(int, line.strip('\n').split()))
             result_p1 += findnextnumber(numbers)
