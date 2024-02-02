@@ -50,7 +50,7 @@ def main() -> int:
     mygrid = Grid()
     startpoint: RowCol = -1, -1
 
-    with open("aoc10.txt", "r") as file:
+    with open("../Inputfiles/aoc10.txt", "r") as file:
         [mygrid.addrow(line.strip("\n")) for line in file.readlines() if len(line) > 1]
 
     for rowidx, row in enumerate(mygrid.grid):
