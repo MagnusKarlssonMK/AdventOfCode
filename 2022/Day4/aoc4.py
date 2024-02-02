@@ -3,7 +3,7 @@ import re
 
 
 def main() -> int:
-    with open('aoc4.txt', 'r') as file:
+    with open('../Inputfiles/aoc4.txt', 'r') as file:
         lines = [list(map(int, re.split('[,-]', line))) for line in file.read().split("\n") if len(line) > 1]
 
     result_p1 = sum([1 for a, b, c, d in lines if a <= c <= d <= b or c <= a <= b <= d])
