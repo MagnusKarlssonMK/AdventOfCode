@@ -2,8 +2,8 @@ import sys
 from itertools import combinations
 import sympy as sp
 
-with open('aoc24.txt', 'r') as f:
-    puzzle_input = f.read()
+# with open('aoc24.txt', 'r') as f:
+#     puzzle_input = f.read()
 
 
 def part1(p_input, test_input=False):
@@ -59,6 +59,8 @@ def part2(p_input):
 
 
 def main() -> int:
+    with open('../Inputfiles/aoc24.txt', 'r') as f:
+        puzzle_input = f.read()
     print('Part 1:', part1(puzzle_input))
     print('Part 2:', part2(puzzle_input))
     return 0
