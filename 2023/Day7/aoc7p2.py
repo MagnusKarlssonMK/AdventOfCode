@@ -45,7 +45,7 @@ class Hand:
 def main() -> int:
     handlist: list[Hand] = []
 
-    with open("aoc7.txt", "r") as file:
+    with open("../Inputfiles/aoc7.txt", "r") as file:
         for line in file.readlines():
             left, right = line.strip("\n").split()
             handlist.append(Hand(left, int(right)))
