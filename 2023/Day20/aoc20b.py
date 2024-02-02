@@ -49,7 +49,7 @@ class Conjunction(Module):
 modulelist: dict[str: Module] = {}
 conjugatebuffer = []
 
-with open("aoc20.txt", "r") as file:
+with open("../Inputfiles/aoc20.txt", "r") as file:
     for line in file.readlines():
         if len(line) > 1:
             name, out = line.strip("\n").split(" -> ")
