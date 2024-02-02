@@ -26,7 +26,7 @@ def main() -> int:
     calibrationsum_part1 = 0
     calibrationsum_part2 = 0
 
-    with open("aoc1.txt", "r") as file:
+    with open("../Inputfiles/aoc1.txt", "r") as file:
         for line in file.readlines():
             newcal = Calibrationstring(line.strip("\n"))
             calibrationsum_part1 += newcal.getcalibrationvalue("A")

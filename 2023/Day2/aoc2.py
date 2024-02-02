@@ -46,7 +46,7 @@ def main() -> int:
     totalsum_part1 = 0
     totalpower_part2 = 0
 
-    with open("aoc2.txt", "r") as file:
+    with open("../Inputfiles/aoc2.txt", "r") as file:
         for line in file.readlines():
             try:
                 newgame = Game(line.strip("\n"))

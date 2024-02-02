@@ -29,7 +29,7 @@ def main() -> int:
     totalnbrofcards = 0
     copylist = [0] * 10
 
-    with open("aoc4.txt", "r") as file:
+    with open("../Inputfiles/aoc4.txt", "r") as file:
         for line in file.readlines():
             try:
                 newcard = Scratchcard(line.strip("\n"))

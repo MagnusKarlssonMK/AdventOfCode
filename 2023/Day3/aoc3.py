@@ -9,7 +9,7 @@ grid = []
 
 
 def main() -> int:
-    with open('aoc3.txt', 'r') as file:
+    with open('../Inputfiles/aoc3.txt', 'r') as file:
         [grid.append(line.strip("\n")) for line in file.readlines()]
 
     symbollist = []

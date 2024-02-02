@@ -17,7 +17,7 @@ class Race:
 
 
 def main() -> int:
-    with open("aoc6.txt", "r") as file:
+    with open("../Inputfiles/aoc6.txt", "r") as file:
         timelist = list(map(int, re.findall(r"\d+", file.readline())))
         distancelist = list(map(int, re.findall(r"\d+", file.readline())))
 

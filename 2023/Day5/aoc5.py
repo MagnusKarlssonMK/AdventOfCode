@@ -48,7 +48,7 @@ def main() -> int:
     maplist: list[Map] = []
     seedrangelist: list[range] = []
 
-    with open("aoc5.txt", "r") as file:
+    with open("../Inputfiles/aoc5.txt", "r") as file:
         for line in file.readlines():
             if len(seedlist) == 0 and line.__contains__("seeds: "):
                 [seedlist.append(int(seed)) for seed in line.strip("seeds: ").strip("\n").split()]
