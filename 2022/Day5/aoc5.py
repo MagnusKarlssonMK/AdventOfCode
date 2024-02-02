@@ -4,7 +4,7 @@ import copy
 
 
 def main() -> int:
-    with open('aoc5.txt', 'r') as file:
+    with open('../Inputfiles/aoc5.txt', 'r') as file:
         cratelines, procedureslines = file.read().strip('\n').split('\n\n')
     procedures = [list(map(int, re.findall(r'\d+', row))) for row in procedureslines.splitlines()]
     cratelines = cratelines.splitlines()
