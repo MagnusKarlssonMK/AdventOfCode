@@ -6,7 +6,7 @@ import math
 def main() -> int:
     nodes: dict[str: dict[str]] = {}
 
-    with open('aoc8.txt', 'r') as file:
+    with open('../Inputfiles/aoc8.txt', 'r') as file:
         seq = file.readline().strip('\n')
         for line in file.readlines():
             if len(line) > 1:
