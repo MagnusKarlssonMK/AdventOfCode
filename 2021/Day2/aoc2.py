@@ -42,7 +42,7 @@ class AimedSubmarine(Submarine):
 def main() -> int:
     mysub = Submarine(0, 0)
     myaimedsub = AimedSubmarine(0, 0)
-    with open('aoc2.txt', 'r') as file:
+    with open('../Inputfiles/aoc2.txt', 'r') as file:
         lines = file.read().strip('\n').split('\n')
     for line in lines:
         direction, value = line.split()

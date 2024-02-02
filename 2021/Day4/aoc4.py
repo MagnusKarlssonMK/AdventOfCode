@@ -31,7 +31,7 @@ class BingoBoard:
 
 
 def main() -> int:
-    with open('aoc4.txt', 'r') as file:
+    with open('../Inputfiles/aoc4.txt', 'r') as file:
         lines = file.read().strip('\n').split('\n\n')
     numbers = list(map(int, lines[0].strip('\n').split(',')))
     boards: list[BingoBoard] = []

@@ -2,7 +2,7 @@ import sys
 
 
 def main() -> int:
-    with open('aoc1.txt', 'r') as file:
+    with open('../Inputfiles/aoc1.txt', 'r') as file:
         numbers = list(map(int, file.read().strip('\n').split('\n')))
     inc_count_p1 = 0
     for n in range(1, len(numbers)):

@@ -40,7 +40,7 @@ class Diagnostics:
 
 
 def main() -> int:
-    with open('aoc3.txt', 'r') as file:
+    with open('../Inputfiles/aoc3.txt', 'r') as file:
         mydiag = Diagnostics(file.read().strip('\n'))
     print("Part 1: ", mydiag.getpowerconsumption())
     print("Part 2: ", mydiag.getlifesupportrating())
