@@ -184,7 +184,7 @@ def getlightscore(startrow: int, startcol: int, startdirection: lightdirections)
 
 mirrorgrid = []
 
-with open("aoc16.txt", "r") as file:
+with open("../Inputfiles/aoc16.txt", "r") as file:
     for line in file.readlines():
         mirrorgrid.append(line.strip("\n"))
 
