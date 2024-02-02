@@ -12,7 +12,7 @@ class Elf:
 
 def main() -> int:
     elf_list = []
-    with open('aoc1.txt', 'r') as file:
+    with open('../Inputfiles/aoc1.txt', 'r') as file:
         indata = file.read().split('\n\n')
     [elf_list.append(Elf(list(map(int, elf.strip('\n').split('\n'))))) for elf in indata]
 
