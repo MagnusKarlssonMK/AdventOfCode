@@ -7,7 +7,7 @@ def get_most_and_least_common(inlist: list[str]) -> tuple[str, str]:
         for i, c in enumerate(line):
             gamma[i] += int(c)
     for i in range(len(gamma)):
-        gamma[i] = 2 * gamma[i] // len(inlist)
+        gamma[i] = min(1, 2 * gamma[i] // len(inlist))  # There's got to be a more intuitive way to do this...
     epsilon = [(i + 1) % 2 for i in gamma]
     return "".join(list(map(str, gamma))), "".join(list(map(str, epsilon)))
 
