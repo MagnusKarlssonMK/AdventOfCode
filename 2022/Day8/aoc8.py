@@ -73,7 +73,7 @@ class Forest:
 
 
 def main() -> int:
-    with open('aoc8.txt') as file:
+    with open('../Inputfiles/aoc8.txt') as file:
         myforest = Forest(file.read().strip('\n'))
 
     print("Part1: ", myforest.getvisibletreecount())
