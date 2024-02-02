@@ -27,7 +27,7 @@ class Board:
             bincubestring = "0" + bincubestring
         self.roundrows.append([int(binroundstring[i:i + base], 2) for i in range(0, len(binroundstring), base)])
         self.cuberows.append([int(bincubestring[i:i + base], 2) for i in range(0, len(bincubestring), base)])
-        print(self.cuberows[-1], " : ", self.roundrows[-1])
+        # print(self.cuberows[-1], " : ", self.roundrows[-1])
 
     def settilt(self, newdirection: tiltdirections):
         if newdirection == tiltdirections["North"]:
@@ -91,15 +91,10 @@ class Board:
 
 myboard = Board()
 
-with open("aoc14.txt", "r") as file:
+with open("../Inputfiles/aoc14.txt", "r") as file:
     for line in file.readlines():
         myboard.addrow(line.strip("\n"))
 
-print(myboard)
-
 myboard.settilt(tiltdirections["North"])
 
-print(myboard)
-
-print("")
 print("Load calculation: ", myboard.getload())

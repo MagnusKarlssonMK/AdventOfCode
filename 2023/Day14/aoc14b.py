@@ -124,7 +124,7 @@ class Board:
 
 myboard = Board()
 
-with open("aoc14.txt", "r") as file:
+with open("../Inputfiles/aoc14.txt", "r") as file:
     for line in file.readlines():
         myboard.addrow(line.strip("\n"))
 
@@ -152,7 +152,4 @@ while count < cycles:
     seen.add(thiscycle)
     seenlist.append(thiscycle)
 
-print("")
-print(myboard)
-print("")
 print("Load calculation: ", myboard.getload(tiltdirections["North"]))
