@@ -35,7 +35,7 @@ def determinehand(left: str, right: str) -> str:
 def main() -> int:
     result_p1 = 0
     result_p2 = 0
-    with open('aoc2.txt', 'r') as file:
+    with open('../Inputfiles/aoc2.txt', 'r') as file:
         for line in file.readlines():
             if len(line) > 1:
                 left, right = line.strip('\n').split()
