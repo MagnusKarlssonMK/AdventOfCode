@@ -1,6 +1,6 @@
 # Change "aocpart" to select part (A or B)
 # Could do with some cleanup, and possibly some optimizations (part 2 is really slow)
-# Consider adding a classs function in Grid to do the bulk of the work in what would be "main", and use a class
+# Consider adding a class function in Grid to do the bulk of the work in what would be "main", and use a class
 # attribute to select p1 or p2 (A / B)
 
 RowCol = tuple[int, int]
@@ -52,7 +52,7 @@ startnode = None
 exitnode = None
 alist = AdjacencyList()
 
-with open("aoc23.txt", "r") as file:
+with open("../Inputfiles/aoc23.txt", "r") as file:
     [mygrid.addrow(line.strip("\n")) for line in file.readlines() if len(line) > 1]
 
 # Step 1: find vertices = tiles that have more than 2 neighbors
