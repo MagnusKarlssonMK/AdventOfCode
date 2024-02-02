@@ -107,7 +107,7 @@ class Cityboard:
 
 mycityboard = Cityboard()
 
-with open("aoc17.txt", "r") as file:
+with open("../Inputfiles/aoc17.txt", "r") as file:
     for line in file:
         mycityboard.addgridline(line.strip("\n"))
 
