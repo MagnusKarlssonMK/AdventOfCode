@@ -43,7 +43,7 @@ class Lightmachine:
 
 
 def main() -> int:
-    with open("aoc15.txt", "r") as file:
+    with open("../Inputfiles/aoc15.txt", "r") as file:
         words = file.readline().strip("\n").split(",")
 
     # Part 1
