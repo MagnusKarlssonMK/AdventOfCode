@@ -15,7 +15,7 @@ class ValveNetwork:
 
 
 def main() -> int:
-    with open('testinput.txt', 'r') as file:
+    with open('../Inputfiles/aoc16_example.txt', 'r') as file:
         myvalves = ValveNetwork(file.read().strip('\n'))
     p1 = myvalves.getmaxflow()
     print("Part1: ", p1)
