@@ -39,7 +39,7 @@ class CPU:
 def main() -> int:
     mycpu1 = CPU([20, 60, 100, 140, 180, 220])
     mycpu2 = CPU([40, 80, 120, 160, 200, 240])
-    with open('aoc10.txt', 'r') as file:
+    with open('../Inputfiles/aoc10.txt', 'r') as file:
         for line in file.readlines():
             if len(line) > 1:
                 mycpu1.addcommand(line.strip('\n'))
