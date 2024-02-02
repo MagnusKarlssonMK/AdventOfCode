@@ -45,7 +45,7 @@ def main() -> int:
     mytrench_p1 = Trench("A")
     mytrench_p2 = Trench("B")
 
-    with open("aoc18.txt") as file:
+    with open("../Inputfiles/aoc18.txt") as file:
         for line in file.readlines():
             mytrench_p1.dig(line.strip("\n"))
             mytrench_p2.dig(line.strip("\n"))
