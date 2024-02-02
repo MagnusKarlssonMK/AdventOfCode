@@ -30,7 +30,7 @@ class Grid:
 
 
 def main() -> int:
-    with open('aoc12.txt', 'r') as file:
+    with open('../Inputfiles/aoc12.txt', 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
 
     # Part 1: Regular BFS search from S to E
