@@ -156,7 +156,7 @@ class Grid:
 
 def main() -> int:
     starttime = timeit.default_timer()
-    with open('aoc16.txt', 'r') as file:
+    with open('../Inputfiles/aoc16.txt', 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
         inittime = timeit.default_timer()
     print("Init time: ", inittime - starttime)
