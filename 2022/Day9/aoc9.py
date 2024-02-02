@@ -31,7 +31,7 @@ class Rope:
 def main() -> int:
     myfirstrope = Rope(2)
     mysecondrope = Rope(10)
-    with open('aoc9.txt') as file:
+    with open('../Inputfiles/aoc9.txt') as file:
         for line in file.readlines():
             if len(line) > 1:
                 direction, length = line.strip('\n').split()
