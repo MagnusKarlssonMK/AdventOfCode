@@ -77,7 +77,7 @@ class ElfList:
 
 
 def main() -> int:
-    with open('aoc13.txt', 'r') as file:
+    with open('../Inputfiles/aoc13.txt', 'r') as file:
         indata: list[str] = file.read().strip('\n').split('\n\n')
     pairs: list[tuple[ElfList, ElfList]] = []
     for pair in indata:
