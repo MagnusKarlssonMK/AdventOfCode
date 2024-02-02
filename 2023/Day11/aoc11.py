@@ -54,7 +54,7 @@ class Grid:
 
 
 def main() -> int:
-    with open("aoc11.txt", "r") as file:
+    with open("../Inputfiles/aoc11.txt", "r") as file:
         mygrid = Grid(file.read())
 
     result_p1 = mygrid.getdistancesum()
