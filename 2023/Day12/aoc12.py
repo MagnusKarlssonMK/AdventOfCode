@@ -26,7 +26,7 @@ def main() -> int:
     totalsum_p1 = 0
     totalsum_p2 = 0
 
-    with open("aoc12.txt", "r") as file:
+    with open("../Inputfiles/aoc12.txt", "r") as file:
         for line in file.readlines():
             springs, keys = line.strip("\n").split()
             keylist_p1 = [int(char) for char in keys.split(",")]
