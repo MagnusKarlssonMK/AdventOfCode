@@ -60,7 +60,7 @@ class Grid:
 grid = Grid()
 start: Vertex = -1, -1
 
-with open("aoc21.txt", "r") as file:
+with open("../Inputfiles/aoc21.txt", "r") as file:
     for line in file.readlines():
         if len(line) > 1:
             grid.addrow(line.strip("\n"))
