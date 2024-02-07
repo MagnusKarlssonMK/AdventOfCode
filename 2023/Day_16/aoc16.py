@@ -1,6 +1,13 @@
+"""
+Store the bouncers in a Grid class, along with per-row and per-column dicts for faster lookups and filtering when
+looking for the next possible step. Also creates an adjacency list of the bouncers coupled with the incoming direction,
+i.e. every bouncer can exist in up to 4 entries depending on the type of bouncer. Then, when a light source is added,
+a stripped down BFS is used to traverse the bouncers and record the movement on a grid.
+Building the adjacency list takes some minor extra time for Part 1, but makes up for it for Part 2.
+"""
 import sys
 import re
-import timeit
+
 
 RowCol = tuple[int, int]
 Directions: dict[str: RowCol] = {'u': (-1, 0), 'r': (0, 1), 'd': (1, 0), 'l': (0, -1)}
@@ -65,18 +72,19 @@ class Grid:
                     self.__bouncerspercol[int(c.start())].append(row)
                 except KeyError:
                     self.__bouncerspercol[int(c.start())] = [row]
-        self.width = len(grid)
-        self.height = len(grid[0])
+        self.width = len(grid[0])
+        self.height = len(grid)
         self.__lightgrid: list[list[int]] = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.__adj: dict[tuple[RowCol, Directions]: set[tuple[RowCol, Directions]]] = {}
         for vertex in list(self.__bouncers.keys()):
             for indir in list(Directions.values()):
-                outdir = []
-                [outdir.append(d) for d in self.__bouncers[vertex].bouncelight(indir)]
+                outdir = [d for d in self.__bouncers[vertex].bouncelight(indir)]
                 if indir not in outdir:
                     if (vertex, indir) not in self.__adj:
                         self.__adj[(vertex, indir)] = set()
-                    [self.__adj[(vertex, indir)].add((self.__getnextpos(vertex, out), out)) for out in outdir]
+                    for out in outdir:
+                        if (nextpos := self.__getnextpos(vertex, out)) != vertex:
+                            self.__adj[(vertex, indir)].add((nextpos, out))
 
     def insertlight(self, pos: RowCol, direction: Directions) -> int:
         """Inserts a light source at the given position and direction, returns the score and resets the grid."""
@@ -100,8 +108,6 @@ class Grid:
                     pass
                 visited.add((headpos, headdir))
         score = self.__getlightscore()
-        for line in self.__lightgrid:
-            print(line)
         self.__resetlightgrid()
         return score
 
@@ -109,32 +115,28 @@ class Grid:
         if direction == Directions['r']:
             cols = sorted(list(filter(lambda x: x > pos[1], self.__bouncersperrow[pos[0]])))
             for i in cols:
-                bounced = []
-                [bounced.append(d) for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
                 if direction not in bounced:
                     return pos[0], i
             return pos[0], self.width - 1
         elif direction == Directions['l']:
             cols = sorted(list(filter(lambda x: x < pos[1], self.__bouncersperrow[pos[0]])), reverse=True)
             for i in cols:
-                bounced = []
-                [bounced.append(d) for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
                 if direction not in bounced:
                     return pos[0], i
             return pos[0], 0
         elif direction == Directions['u']:
             rows = sorted(list(filter(lambda x: x < pos[0], self.__bouncerspercol[pos[1]])), reverse=True)
             for i in rows:
-                bounced = []
-                [bounced.append(d) for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
                 if direction not in bounced:
                     return i, pos[1]
             return 0, pos[1]
         elif direction == Directions['d']:
             rows = sorted(list(filter(lambda x: x > pos[0], self.__bouncerspercol[pos[1]])))
             for i in rows:
-                bounced = []
-                [bounced.append(d) for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
                 if direction not in bounced:
                     return i, pos[1]
             return self.height - 1, pos[1]
@@ -155,16 +157,11 @@ class Grid:
 
 
 def main() -> int:
-    starttime = timeit.default_timer()
     with open('../Inputfiles/aoc16.txt', 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
-        inittime = timeit.default_timer()
-    print("Init time: ", inittime - starttime)
     p1 = mygrid.insertlight((0, 0), Directions['r'])
-    p1time = timeit.default_timer()
-    print("Insert time: ", p1time - inittime)
     print("Part1: ", p1)
-    """
+
     # Part 2
     p2 = 0
     for row in range(mygrid.height):
@@ -173,9 +170,7 @@ def main() -> int:
     for col in range(mygrid.width):
         p2 = max(p2, mygrid.insertlight((0, col), Directions['d']))
         p2 = max(p2, mygrid.insertlight((mygrid.height - 1, col), Directions['u']))
-    p2time = timeit.default_timer()
-    print("P2 time: ", p2time - p1time)
-    print("Part2: ", p2) """
+    print("Part2: ", p2)
     return 0
 
 
