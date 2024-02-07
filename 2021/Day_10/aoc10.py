@@ -31,8 +31,16 @@ class NavigationLine:
     def __init__(self, newline: str):
         self.line = newline
 
+    def validateline(self) -> tuple[int, int]:
+        idx = 0
+        while idx < len(self.line):
+            result = self.validatechunk(idx)
+            if result[0] != 0:
+                return result
+            idx = result[1] + 1
+        return 0, idx
+
     def validatechunk(self, startidx: int = 0) -> tuple[int, int]:
-        """TBD - some lines end up with '0' verdict incorrectly which are actually '1'"""
         if self.line[startidx] not in OpeningBrackets:
             return 2, getsyntaxscore(self.line[startidx])
         if startidx >= len(self.line) - 1:
@@ -85,10 +93,10 @@ def main() -> int:
     incompletelines: list[NavigationLine] = []
     for line in lines:
         newline = NavigationLine(line)
-        result, score = newline.validatechunk()
+        result, score = newline.validateline()
         if result == 2:
             p1_score += score
-        else:
+        elif result == 1:
             incompletelines.append(newline)
     print("Part 1: ", p1_score)
     p2_scores = sorted([inc_line.autocomplete() for inc_line in incompletelines])
