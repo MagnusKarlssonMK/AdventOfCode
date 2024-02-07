@@ -1,40 +1,48 @@
+"""
+Stores the node input in a dict in a class, which provides methods to calculate the corresponding answers to Part 1
+and Part 2, with the sequence as input. Uses LCM from the math module to calculate the value for part 2.
+"""
 import sys
 import re
 import math
 
 
-def main() -> int:
-    nodes: dict[str: dict[str]] = {}
-
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
-        seq = file.readline().strip('\n')
-        for line in file.readlines():
+class NodeNetwork:
+    def __init__(self, rawinput: str):
+        self.nodes: dict[str: dict[str: str]] = {}
+        for line in rawinput.splitlines():
             if len(line) > 1:
                 a, b, c = re.findall(r"\w+", line)
-                nodes[a] = {'L': b, 'R': c}
+                self.nodes[a] = {'L': b, 'R': c}
 
-    location_p1 = 'AAA'
-    stepcount_p1 = 0
+    def stepcount_zzz(self, seq: str) -> int:
+        location = 'AAA'
+        stepcount = 0
+        while location != 'ZZZ':
+            location = self.nodes[location][seq[stepcount % len(seq)]]
+            stepcount += 1
+        return stepcount
 
-    while location_p1 != 'ZZZ':
-        location_p1 = nodes[location_p1][seq[stepcount_p1 % len(seq)]]
-        stepcount_p1 += 1
+    def stepcount_atoz(self, seq: str) -> int:
+        location = [strwa for strwa in list(self.nodes.keys()) if strwa[2] == 'A']
+        cycles = []
+        for startpoint in location:
+            stepcount = 0
+            currentloc = startpoint
+            while currentloc[2] != 'Z':
+                currentloc = self.nodes[currentloc][seq[stepcount % len(seq)]]
+                stepcount += 1
+            cycles.append(stepcount)
+        return math.lcm(*cycles)
 
-    location_p2 = [strwa for strwa in list(nodes.keys()) if strwa[2] == 'A']
-    cycles = []
 
-    for startpoint in location_p2:
-        stepcount_p2 = 0
-        currentloc = startpoint
-        while currentloc[2] != 'Z':
-            currentloc = nodes[currentloc][seq[stepcount_p2 % len(seq)]]
-            stepcount_p2 += 1
-        cycles.append(stepcount_p2)
-    result_p2 = math.lcm(*cycles)
+def main() -> int:
+    with open('../Inputfiles/aoc8.txt', 'r') as file:
+        sequence, lines = file.read().strip('\n').split('\n\n')
+        mynodes = NodeNetwork(lines)
 
-    print("Part1: ", stepcount_p1)
-    print("Part2: ", result_p2)
-
+    print("Part1: ", mynodes.stepcount_zzz(sequence))
+    print("Part2: ", mynodes.stepcount_atoz(sequence))
     return 0
 
 
