@@ -1,3 +1,8 @@
+"""
+Part 1: Create a submarine class to hold the coordinates and provide methods to execute the move commands and to
+calculate the final score.
+Part 2: Create a subclass to submarine which also holds the 'aim' and modifies the move command method.
+"""
 import sys
 
 
