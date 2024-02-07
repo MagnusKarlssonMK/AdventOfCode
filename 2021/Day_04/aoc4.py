@@ -1,3 +1,10 @@
+"""
+Create a class to hold each bingo board with methods to draw a number.
+Loop through the numbers for each bingo board and save the result for Part 1 on the first bingo.
+Loop the boards in reverse order so that they can be popped safely when getting bingo, and keep
+going until there is only one board left to get the score for Part 2.
+
+"""
 import sys
 
 
