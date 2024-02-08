@@ -42,6 +42,9 @@ def main() -> int:
     with open('../Inputfiles/aoc17.txt') as file:
         mygrid = CityBoard(file.read().strip('\n'))
     print("Part 1:", mygrid.findshortestpath())
+    mygrid.minsteps = 4
+    mygrid.maxsteps = 10
+    print("Part 2:", mygrid.findshortestpath())
     return 0
 
 
