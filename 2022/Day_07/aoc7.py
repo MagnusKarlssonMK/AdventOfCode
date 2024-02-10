@@ -1,113 +1,95 @@
-import re
+"""
+Create a main class to hold the file system and a class to represent a directory, which in turn contains a list of
+__files and directories. This is initialized while parsing the input, using a 'head' attribute in the file system
+containing a list of the directory path to where the commands are issues, and calls to directires are done recursively.
+"""
 import sys
 
 
 class Directory:
     def __init__(self, name: str):
         self.name = name
-        self.totalfilesize = 0
-        self.files: dict[str: int] = {}
-        self.subdirectories: dict[str: Directory] = {}
+        self.__totalfilesize = 0
+        self.__totalsubdirsize = -1
+        self.__files: dict[str: int] = {}
+        self.__subdirectories: dict[str: Directory] = {}
 
-    def addsubdir(self, path: list[str]) -> None:
-        if len(path) > 1:
-            self.subdirectories[path[0]].addsubdir(path[1:])
-        else:
-            if path[0] not in list(self.subdirectories.keys()):
-                self.subdirectories[path[0]] = Directory(path[0])
-
-    def addfiles(self, path: list[str], newfiles) -> None:
+    def addsubdir(self, path: list[str], dirname: str) -> None:
         if len(path) > 0:
-            self.subdirectories[path[0]].addfiles(path[1:], newfiles)
+            self.__subdirectories[path[0]].addsubdir(path[1:], dirname)
         else:
-            for line in newfiles:
-                left, right = line.split()
-                if left == "dir":
-                    if right not in list(self.subdirectories.keys()):
-                        self.subdirectories[right] = Directory(right)
-                else:
-                    self.files[right] = int(left)
-                    self.totalfilesize += int(left)
+            if dirname not in self.__subdirectories.keys():
+                self.__subdirectories[dirname] = Directory(dirname)
 
-    def gettotalsize(self, maxsize: int) -> tuple[int, bool]:
-        capped = False
-        fromdirs = 0
-        for subdir in list(self.subdirectories.keys()):
-            val, cap = self.subdirectories[subdir].gettotalsize(maxsize)
-            fromdirs += val
-            if cap:
-                capped = True
-        fromself = fromdirs + self.totalfilesize
-        if maxsize > 0:
-            if fromself > maxsize or capped:
-                return fromdirs, True
-            else:
-                return fromself + fromdirs, False
+    def addfile(self, path: list[str], filename: str, size: int) -> None:
+        if len(path) > 0:
+            self.__subdirectories[path[0]].addfile(path[1:], filename, size)
         else:
-            return fromself, False
-        # The code handling part 1 makes no sense but works somehow, probably need to rethink something
+            self.__files[filename] = size
+            self.__totalfilesize += size
 
-    def getsmallest(self, threshold: int) -> int:
+    def gettotalsize(self) -> int:
+        if self.__totalsubdirsize >= 0:
+            return self.__totalsubdirsize + self.__totalfilesize
+        else:
+            self.__totalsubdirsize = 0
+            for key in list(self.__subdirectories.keys()):
+                self.__totalsubdirsize += self.__subdirectories[key].gettotalsize()
+            return self.__totalsubdirsize + self.__totalfilesize
+
+    def getfilteredsize(self, limit: int) -> int:
+        """Assumes that 'gettotalsize()' has been called first to initialize the cached total size."""
+        result = sum([self.__subdirectories[key].getfilteredsize(limit) for key in list(self.__subdirectories.keys())])
+        if (self.__totalsubdirsize + self.__totalfilesize) <= limit:
+            result += self.__totalsubdirsize + self.__totalfilesize
+        return result
+
+    def getsmallest_todelete(self, threshold: int) -> int:
         fromdirs = 0
         bestfromdirs = 0
-        for subdir in list(self.subdirectories.keys()):
-            dirsize = self.subdirectories[subdir].getsmallest(threshold)
+        for subdir in list(self.__subdirectories.keys()):
+            dirsize = self.__subdirectories[subdir].getsmallest_todelete(threshold)
             fromdirs += dirsize
             if dirsize >= threshold:
                 bestfromdirs = dirsize if bestfromdirs == 0 else min(dirsize, bestfromdirs)
-        if bestfromdirs != 0:
+        if bestfromdirs != 0:  # There is a subdirectory that satisfies the condition
             return bestfromdirs
-        else:
-            fromself = fromdirs + self.totalfilesize
-            return fromself
+        else:  # No subdirectory is large enough, best we can do is to return our own size
+            return self.__totalfilesize + self.__totalsubdirsize
 
-    def __str__(self):
-        return f"<dir>{list(self.subdirectories.keys())} <f>{list(self.files.keys())}"
+    def __repr__(self):
+        return f"<dir>{list(self.__subdirectories.keys())} <f>{list(self.__files.keys())}"
 
 
-class Filesystem:
+class FileSystem:
     def __init__(self):
-        self.head = ["/"]
-        self.root: Directory = Directory("/")
+        self.root = Directory("/")
+        self.__head = []
 
-    def handlecommand(self, cmdlist: list[str]) -> None:
-        cmd, _, arg = re.findall(r"(\w+)(\s)?(.*)?", cmdlist[0])[0]
-        match cmd:
-            case 'cd':
-                match arg:
-                    case '/':
-                        self.head = ['/']
-                    case '..':
-                        self.head.pop()
-                    case _:
-                        self.head.append(arg)
-                        self.root.addsubdir(self.head[1:])
-            case 'ls':
-                self.root.addfiles(self.head[1:], cmdlist[1:])
-
-    def gettotalsize(self, maxsize: int = 0) -> int:
-        return self.root.gettotalsize(maxsize)[0]
-
-    def getsmallestsizeabove(self, threshold: int) -> int:
-        return self.root.getsmallest(threshold)
+    def handlecommands(self, cmdlist: list[list[str]]) -> None:
+        for line in cmdlist:
+            match line[0]:
+                case "$":
+                    if line[1] == "cd":
+                        if line[2] == "/":
+                            self.__head = []
+                        elif line[2] == "..":
+                            self.__head.pop()
+                        else:
+                            self.__head.append(line[2])
+                case "dir":
+                    self.root.addsubdir(self.__head, line[1])
+                case _:
+                    self.root.addfile(self.__head, line[1], int(line[0]))
 
 
 def main() -> int:
-    myfs = Filesystem()
-    cmdlines = []
+    myfs = FileSystem()
     with open('../Inputfiles/aoc7.txt', 'r') as file:
-        rawinput = file.read().strip('\n')
-    for cmdlist in rawinput.strip("$ ").split("\n$ "):
-        cmdlines.append(cmdlist.splitlines())
-
-    for line in cmdlines:
-        myfs.handlecommand(line)
-
-    print("Part1: ", myfs.gettotalsize(100000))
-
-    sizetodelete = myfs.gettotalsize() - (70000000 - 30000000)
-    print("Total size: ", myfs.gettotalsize())
-    print("Part2: ", myfs.getsmallestsizeabove(sizetodelete))
+        myfs.handlecommands([line.split() for line in file.read().strip('\n').splitlines()])
+    needtodelete = myfs.root.gettotalsize() - (70000000 - 30000000)  # Call this first to initialize the internal sizes
+    print("Part 1:", myfs.root.getfilteredsize(100000))
+    print("Part 2:", myfs.root.getsmallest_todelete(needtodelete))
     return 0
 
 
