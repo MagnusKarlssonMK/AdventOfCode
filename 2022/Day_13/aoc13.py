@@ -38,10 +38,6 @@ class ElfList:
                 i += 1
 
     def issmallerthan(self, other) -> int:
-        if len(self.list) == 0:
-            return 1
-        if len(other.list) == 0:
-            return -1
         for i in range(min(len(self.list), len(other.list))):
             if isinstance(self.list[i], int):
                 if isinstance(other.list[i], int):
@@ -70,25 +66,20 @@ class ElfList:
         return 0
 
     def __lt__(self, other) -> bool:
-        return self.issmallerthan(other) == 1
+        return self.issmallerthan(other) != -1
 
     def __repr__(self):
         return str(self.list)
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
-        indata: list[str] = file.read().strip('\n').split('\n\n')
     pairs: list[tuple[ElfList, ElfList]] = []
-    for pair in indata:
-        left, right = pair.split('\n')
-        pairs.append((ElfList(left), ElfList(right)))
+    with open('../Inputfiles/aoc13.txt', 'r') as file:
+        for pair in file.read().strip('\n').split('\n\n'):
+            left, right = pair.split('\n')
+            pairs.append((ElfList(left), ElfList(right)))
 
-    count = 0
-    for idx, pair in enumerate(pairs):
-        if (pair[0] < pair[1]) == 1:
-            count += idx + 1
-    print("Part1: ", count)
+    print("Part1:", sum([idx + 1 for idx, pair in enumerate(pairs) if pair[0] < pair[1]]))
 
     allpacketlist = []
     for packet in pairs:
@@ -100,7 +91,7 @@ def main() -> int:
     allpacketlist.append(divider_six)
     allpacketssorted = sorted(allpacketlist)
 
-    print("Part2: ", (allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1))
+    print("Part2:", (allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1))
     return 0
 
 
