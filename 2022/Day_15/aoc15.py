@@ -20,12 +20,11 @@ def main() -> int:
     p1_rangelist: list[list[int]] = []  # Start, stop
     y_value = 2000000
     with open('../Inputfiles/aoc15.txt', 'r') as file:
-        for line in file.read().strip('\n').split('\n'):
+        for line in file.read().strip('\n').splitlines():
             s_x, s_y, b_x, b_y = list(map(int, re.findall(r"-?\d+", line)))
             sensors[(s_x, s_y)] = (b_x, b_y)
             manhattan = abs(s_x - b_x) + abs(s_y - b_y)
-            x_at_y = manhattan - abs(y_value - s_y)
-            if x_at_y > 0:
+            if (x_at_y := manhattan - abs(y_value - s_y)) > 0:
                 p1_rangelist.append([s_x - x_at_y, s_x + x_at_y])
     # Merge overlapping ranges
     filtered_rangelist: list[list[int]] = []
@@ -46,6 +45,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-# P1: 5394423
-# P2: 11840879211051
