@@ -1,6 +1,9 @@
 """
 Part 1: Pretty much a basic Djikstra exercise.
 Part 2: Expand the graph according to the updated rules and re-run the shortest-path calculation.
+I chose to convert the grid to an adjacency list format, anticipating that to be beneficial for Part 2, but it sort
+of worked the other way, and it would have probably been faster to keep it in the small grid and generate values on
+the fly for part 2 with div / mod.
 """
 import sys
 from heapq import heappop, heappush
