@@ -1,3 +1,12 @@
+"""
+Stores the input as ranges in a number of maps. For part 1 it's mainly a matter of running the seeds through the maps
+and see what it has been translated to in the other end.
+For part 2 however it gets a lot more messy when the seeds are ranges themselves, which then gets split into other
+ranges as they travel through the map filters.
+Consider changing the maprange() function to a 'yield' iterator kind of return instead, so the caller can put the
+result into a list, rather than having the function returning a nested list like it is now which then needs to be
+flattened before processed further.
+"""
 import sys
 from itertools import chain
 
@@ -5,13 +14,12 @@ Mapfilter = tuple[range, int]
 
 
 class Map:
-    def __init__(self, inputstr: str):
-        self.source, self.destination = inputstr.strip(" map:").split("-to-")
+    def __init__(self, mapinput: list[str]):
+        self.source, self.destination = mapinput[0].strip(" map:").split("-to-")
         self.filterlist: list[Mapfilter] = []
-
-    def addfilter(self, inputstr: str) -> None:
-        dest_start, source_start, size = map(int, inputstr.split())
-        self.filterlist.append((range(source_start, source_start + size), dest_start - source_start))
+        for line in mapinput[1:]:
+            dest_start, source_start, size = map(int, line.split())
+            self.filterlist.append((range(source_start, source_start + size), dest_start - source_start))
 
     def mapnumber(self, inputnbr: int) -> int:
         for rangemask, offset in self.filterlist:
@@ -44,34 +52,23 @@ class Map:
 
 
 def main() -> int:
-    seedlist: list[int] = []
-    maplist: list[Map] = []
-    seedrangelist: list[range] = []
-
     with open("../Inputfiles/aoc5.txt", "r") as file:
-        for line in file.readlines():
-            if len(seedlist) == 0 and line.__contains__("seeds: "):
-                [seedlist.append(int(seed)) for seed in line.strip("seeds: ").strip("\n").split()]
-                for idx in range(len(seedlist)):
-                    if idx % 2 == 0:
-                        seedrangelist.append(range(seedlist[idx], seedlist[idx] + seedlist[idx + 1]))
-            elif line.__contains__(" map:"):
-                maplist.append(Map(line.strip("\n")))
-            elif len(line) > 1 and len(maplist) > 0:
-                maplist[-1].addfilter(line.strip("\n"))
+        blocks = file.read().strip('\n').split('\n\n')
+    seedlist: list[int] = [int(seed) for seed in blocks[0].strip("seeds: ").split()]
+    seedrangelist: list[range] = [range(seedlist[idx], seedlist[idx] + seedlist[idx + 1])
+                                  for idx in range(0, len(seedlist), 2)]
+    maplist: list[Map] = [Map(block.splitlines()) for block in blocks[1:]]
 
     result_p1 = [seedlist]
-
     """ Note: this step assumes that all maps are stored in order. A more advanced and safe approach could
         be to match the 'source' and 'destination' attributes in the maps. """
     for nextmap in maplist:
-        tmplist = []
-        [tmplist.append(nextmap.mapnumber(seed)) for seed in result_p1[-1]]
+        tmplist = [nextmap.mapnumber(seed) for seed in result_p1[-1]]
         result_p1.append(tmplist)
 
-    print("Lowest number (Part1): ", min(result_p1[-1]))
+    print("Part1:", min(result_p1[-1]))
 
-    tmp = seedrangelist.copy()
+    tmp = list(seedrangelist)
     result_p2 = None
     for nextmap in maplist:
         tmp2 = []
@@ -80,7 +77,7 @@ def main() -> int:
             tmp2.append(nextmap.maprange(nextrange))
         tmp = list(chain.from_iterable(tmp2))
         result_p2 = sorted(tmp, key=lambda r: r.start)
-    print("Part2: ", result_p2[0].start)
+    print("Part2:", result_p2[0].start)
 
     return 0
 
