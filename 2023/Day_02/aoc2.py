@@ -1,12 +1,11 @@
+"""
+Most of the work here is parsing the input, with that done it's mostly down to walking through the content and checking
+the specified conditions.
+"""
 import sys
 import re
 
 Colors = {"red", "green", "blue"}
-Colorlimits = {'green': 13, 'blue': 14, 'red': 12}
-
-
-class GameInputError(Exception):
-    pass
 
 
 class Game:
@@ -20,8 +19,9 @@ class Game:
                 self.hands[-1][color] = int(count)
 
     def ishandvalid(self) -> bool:
+        colorlimits = {'green': 13, 'blue': 14, 'red': 12}
         for hand in self.hands:
-            if any(hand[color] > Colorlimits[color] for color in Colors):
+            if any(hand[color] > colorlimits[color] for color in Colors):
                 return False
         return True
 
@@ -35,29 +35,20 @@ class Game:
             retval *= mins[color]
         return retval
 
-    def __str__(self):
-        retstr = "GameID: " + str(self.gameid) + " "
-        for n in self.hands:
-            retstr += str(n) + " "
-        return retstr
-
 
 def main() -> int:
     totalsum_part1 = 0
     totalpower_part2 = 0
 
     with open("../Inputfiles/aoc2.txt", "r") as file:
-        for line in file.readlines():
-            try:
-                newgame = Game(line.strip("\n"))
-                if newgame.ishandvalid():
-                    totalsum_part1 += newgame.gameid
-                totalpower_part2 += newgame.gethandpower()
-            except GameInputError:
-                print("Invalid line, discarding")
+        for line in file.read().strip('\n').splitlines():
+            newgame = Game(line)
+            if newgame.ishandvalid():
+                totalsum_part1 += newgame.gameid
+            totalpower_part2 += newgame.gethandpower()
 
-    print("Sum of game ids for valid games (Part1): ", totalsum_part1)
-    print("Sum of hand power values (Part2): ", totalpower_part2)
+    print("Part1:", totalsum_part1)
+    print("Part2:", totalpower_part2)
     return 0
 
 
