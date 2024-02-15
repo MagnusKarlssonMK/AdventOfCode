@@ -1,3 +1,8 @@
+"""
+Store the data in a grid, then for Part 1 simply walk through the system until returning to the start, then calculating
+the answer by dividing the number of steps taken by 2. For part 2, calculate the answer with shoelace formula into
+Pick's theorem.
+"""
 import sys
 
 RowCol = tuple[int, int]
@@ -11,15 +16,10 @@ def getreversedirection(indir: str) -> RowCol:
 
 
 class Grid:
-    def __init__(self):
-        self.grid = []
-        self.width = 0
-        self.height = 0
-
-    def addrow(self, newrow: str) -> None:
-        self.grid.append(newrow)
-        self.height += 1
-        self.width = max(self.width, len(newrow))
+    def __init__(self, gridinput: list[str]):
+        self.grid = list(gridinput)
+        self.height = len(self.grid)
+        self.width = len(self.grid[0])
 
     def getvalue(self, coord: RowCol) -> str:
         return self.grid[coord[0]][coord[1]]
@@ -47,12 +47,10 @@ def picks(a: int, b: int) -> int:
 
 
 def main() -> int:
-    mygrid = Grid()
-    startpoint: RowCol = -1, -1
-
     with open("../Inputfiles/aoc10.txt", "r") as file:
-        [mygrid.addrow(line.strip("\n")) for line in file.readlines() if len(line) > 1]
+        mygrid = Grid(file.read().strip('\n').splitlines())
 
+    startpoint: RowCol = -1, -1
     for rowidx, row in enumerate(mygrid.grid):
         if (idx := row.find("S")) >= 0:
             startpoint = rowidx, idx
@@ -73,8 +71,8 @@ def main() -> int:
             # Note: neighbor list should only contain one element after removing the previous node
             nexttile.append((neighbors[0], current))
 
-    print("Part1: ", len(pipepath) // 2)
-    print("Part2: ", picks(shoelace_area(pipepath), len(pipepath)))
+    print("Part1:", len(pipepath) // 2)
+    print("Part2:", picks(shoelace_area(pipepath), len(pipepath)))
     return 0
 
 
