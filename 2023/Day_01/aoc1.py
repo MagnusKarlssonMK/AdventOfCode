@@ -31,8 +31,8 @@ def main() -> int:
             calibrationsum_part1 += newcal.getcalibrationvalue()
             calibrationsum_part2 += newcal.getcalibrationvalue(True)
 
-    print("Calibration value sum (Part1): ", calibrationsum_part1)
-    print("Calibration value sum (Part2): ", calibrationsum_part2)
+    print("Part1:", calibrationsum_part1)
+    print("Part2:", calibrationsum_part2)
     return 0
 
 
