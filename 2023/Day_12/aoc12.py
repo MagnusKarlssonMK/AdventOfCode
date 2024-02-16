@@ -1,3 +1,6 @@
+"""
+Memoized recursive solution, using the functools cache.
+"""
 import sys
 from functools import lru_cache
 
@@ -27,17 +30,17 @@ def main() -> int:
     totalsum_p2 = 0
 
     with open("../Inputfiles/aoc12.txt", "r") as file:
-        for line in file.readlines():
-            springs, keys = line.strip("\n").split()
+        for line in file.read().strip('\n').splitlines():
+            springs, keys = line.split()
             keylist_p1 = [int(char) for char in keys.split(",")]
-            keylist_p2 = [int(char) for char in keys.split(",")] * 5
-            springs_p1 = "?".join([springs]).lstrip(".")
+            keylist_p2 = list(keylist_p1) * 5
+            springs_p1 = springs.lstrip(".")
             springs_p2 = "?".join([springs] * 5).lstrip(".")
-            totalsum_p1 += calculatecombinations(springs_p1, (*keylist_p1, ))
+            totalsum_p1 += calculatecombinations(springs_p1, (*keylist_p1,))
             totalsum_p2 += calculatecombinations(springs_p2, (*keylist_p2,))
 
-    print("Part1: ", totalsum_p1)
-    print("Part2: ", totalsum_p2)
+    print("Part1:", totalsum_p1)
+    print("Part2:", totalsum_p2)
     return 0
 
 
