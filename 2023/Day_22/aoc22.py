@@ -1,6 +1,9 @@
+"""
+Sort of 3d tetris in the start to let the bricks fall down as far as possible. To speed this up, bricks are dropped in
+order of original height, and the highest point for any XY coordinate is stored as a sort 'ground zero' and updated
+after every dropped brick.
+"""
 import sys
-import re
-import timeit
 
 XYZ_Coordinate = tuple[int, int, int]
 
@@ -57,9 +60,9 @@ class Grid:
         if self.state != "open":
             return
         left, right = rawstr.split("~")
-        l_list = [int(nbr) for nbr in re.findall(r"\d+", left)]
-        r_list = [int(nbr) for nbr in re.findall(r"\d+", right)]
-        self.moving_bricks.append(Brick(tuple(l_list), tuple(r_list)))
+        x1, y1, z1 = [int(nbr) for nbr in left.split(',')]
+        x2, y2, z2 = [int(nbr) for nbr in right.split(',')]
+        self.moving_bricks.append(Brick((x1, y1, z1), (x2, y2, z2)))
         # print(self.moving_bricks[-1])
 
     def unfreeze(self) -> None:
@@ -107,31 +110,21 @@ class Grid:
                 poof = poofqueue.pop(0)
                 if all(down in poofed for down in self.resting_bricks[poof][1]):
                     poofed.update({poof})
-                    for up in self.resting_bricks[poof][2]:
-                        if up not in poofqueue:
-                            poofqueue.append(up)
+                    [poofqueue.append(up) for up in self.resting_bricks[poof][2] if up not in poofqueue]
             retval += len(poofed) - 1
         return retval
 
 
 def main() -> int:
     mygrid = Grid()
-
     with open("../Inputfiles/aoc22.txt", "r") as file:
-        for line in file.readlines():
-            mygrid.addbrick(line.strip("\n"))
+        [mygrid.addbrick(line) for line in file.read().strip('\n').splitlines()]
 
-    timestamp = timeit.default_timer()
     mygrid.unfreeze()
-    timestamp = timeit.default_timer() - timestamp
-    print("Part1: ", mygrid.getnbrofsafebricks())
-    print("Time: ", timestamp)
+    print("Part1:", mygrid.getnbrofsafebricks())
 
-    timestamp = timeit.default_timer()
     partb = mygrid.gettotalnbrofdisintegratedbricks()
-    timestamp = timeit.default_timer() - timestamp
-    print("Part2: ", partb)
-    print("Time: ", timestamp)
+    print("Part2:", partb)
     return 0
 
 
