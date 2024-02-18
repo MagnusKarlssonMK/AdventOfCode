@@ -1,96 +1,85 @@
-# Change "aocpart" to select part (A or B)
-# Could do with some cleanup, and possibly some optimizations (part 2 is really slow)
-# Consider adding a class function in Grid to do the bulk of the work in what would be "main", and use a class
-# attribute to select p1 or p2 (A / B)
-
-RowCol = tuple[int, int]
-Directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-OppositeChar = ["^", "<", "v", ">"]
-
-
-class Grid:
-    def __init__(self):
-        self.grid = []
-        self.width = 0
-        self.height = 0
-
-    def addrow(self, rawstring: str):
-        self.grid.append(rawstring)
-        self.width = max(len(rawstring), self.width)
-        self.height += 1
-
-    def findneighbors(self, incoord: RowCol) -> list[RowCol]:
-        retval = []
-        for dR, dC in Directions:
-            if (0 <= incoord[0] + dR < self.height and 0 <= incoord[1] + dC < self.width and
-                    self.grid[incoord[0] + dR][incoord[1] + dC] != "#"):
-                retval.append((incoord[0] + dR, incoord[1] + dC))
-        return retval
+"""
+Stores the grid as a graph with the gridpoints connecting to more than two neighbors as vertices. Uses BFS to find
+the edges, and then a recursive DFS to calculate all path lengths from start to exit to find the longest path.
+An argument can be given when building the graph to ignore the slopes for part 2. Note that this results in
+significantly more edges and makes Part 2 take well over 10 seconds to complete.
+"""
+import sys
 
 
-class AdjacencyList:
-    def __init__(self):
-        self.adj: dict[RowCol: list[tuple[RowCol, int]]] = {}  # vertexXY: list(neighborXY, cost)
+class Island:
+    def __init__(self, griddata: list[str]):
+        self.__grid = list(griddata)
+        self.__height = len(self.__grid)
+        self.__width = len(self.__grid[0])
+        self.start: tuple[int, int] = 0, self.__grid[0].index('.')
+        self.exit: tuple[int, int] = self.__height - 1, self.__grid[-1].index('.')
+        # Find vertices
+        self.__vertices = set()
+        self.__adj: dict[tuple[int, int]: set[tuple[int, int]]] = {}
+        for row in range(self.__height):
+            for col in range(self.__width):
+                if self.__grid[row][col] == "#":
+                    continue
+                neighbors = 0
+                for drow, dcol in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    if (0 <= row + drow < self.__height and 0 <= col + dcol < self.__width and
+                            self.__grid[row + drow][col + dcol] != "#"):
+                        neighbors += 1
+                if neighbors > 2:
+                    self.__vertices.add((row, col))
+        self.__vertices.add(self.start)
+        self.__vertices.add(self.exit)
 
-    def dfs(self, start: RowCol, end: RowCol, seen=None) -> list:
-        if start == end:
+    def load_tree(self, ignore_slopes: bool = False):
+        self.__adj.clear()
+        for vertex in self.__vertices:
+            queue: list[tuple[tuple[int, int], int]] = [(vertex, 0)]
+            visited: set[tuple[int, int]] = set()
+            if vertex not in list(self.__adj.keys()):
+                self.__adj[vertex] = set()
+            while queue:
+                (row, col), distance = queue.pop(0)
+                if (row, col) not in visited:
+                    visited.add((row, col))
+                    for drow, dcol in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                        neighbor = row + drow, col + dcol
+                        if (0 <= neighbor[0] < self.__height and 0 <= neighbor[1] < self.__width and
+                                (nchar := self.__grid[neighbor[0]][neighbor[1]]) != "#"):
+                            if neighbor in self.__vertices and neighbor != vertex:
+                                self.__adj[vertex].add((neighbor, distance + 1))
+                            else:
+                                if not ignore_slopes:
+                                    opposite_direction = {(0, 1): '<', (0, -1): '>', (1, 0): '^', (-1, 0): 'v'}
+                                    if nchar == opposite_direction[drow, dcol]:
+                                        continue
+                                queue.append((neighbor, distance + 1))
+
+    def __dfs(self, from_v: tuple[int, int], to_v: tuple[int, int], seen: set) -> list[int]:
+        if from_v == to_v:
             return [0]
-        if seen is None:
-            seen = set()
-        seen.add(start)
+        seen.add(from_v)
         lengthlist = []
-        for nextvertex, distance in self.adj[start]:
-            if nextvertex not in seen:
-                for length in self.dfs(nextvertex, end, seen):
+        for next_v, distance in self.__adj[from_v]:
+            if next_v not in seen:
+                for length in self.__dfs(next_v, to_v, seen):
                     lengthlist.append(length + distance)
-        seen.remove(start)
+        seen.remove(from_v)
         return lengthlist
 
+    def get_maxpathlength(self) -> int:
+        return max(self.__dfs(self.start, self.exit, set()))
 
-mygrid = Grid()
-startnode = None
-exitnode = None
-alist = AdjacencyList()
 
-with open("../Inputfiles/aoc23.txt", "r") as file:
-    [mygrid.addrow(line.strip("\n")) for line in file.readlines() if len(line) > 1]
+def main() -> int:
+    with open('../Inputfiles/aoc23.txt', 'r') as file:
+        island = Island(file.read().strip('\n').splitlines())
+    island.load_tree()
+    print("Part 1:", island.get_maxpathlength())
+    island.load_tree(True)
+    print("Part 2:", island.get_maxpathlength())
+    return 0
 
-# Step 1: find vertices = tiles that have more than 2 neighbors
-# a) Find start node
-for idx, tile in enumerate(mygrid.grid[0]):
-    if tile != "#":
-        alist.adj[0, idx] = []
-        startnode = (0, idx)
-        break
-# b) Find tiles with more than 2 neighbors
-for rowidx in range(1, mygrid.height - 1):
-    for colidx in range(1, mygrid.width - 1):
-        if mygrid.grid[rowidx][colidx] != "#" and len(mygrid.findneighbors((rowidx, colidx))) > 2:
-            alist.adj[rowidx, colidx] = []
 
-# c) Find exit tile
-for idx, tile in enumerate(mygrid.grid[mygrid.height - 1]):
-    if tile != "#":
-        alist.adj[mygrid.height - 1, idx] = []
-        exitnode = (mygrid.height - 1, idx)
-        break
-aocpart = "B"
-# Step 2: Find the edges and their "costs"
-for vertex in list(alist.adj.keys()):
-    vq: list[tuple[RowCol, int]] = [(vertex, 0)]
-    visited = set()
-    while len(vq) > 0:
-        currentV = vq.pop(0)
-        if currentV[0] not in visited:
-            visited.add(currentV[0])
-            for neighbor in mygrid.findneighbors(currentV[0]):
-                if neighbor in alist.adj and neighbor != vertex:
-                    alist.adj[vertex].append((neighbor, currentV[1] + 1))
-                    continue
-                neighborchar = mygrid.grid[neighbor[0]][neighbor[1]]
-                drow, dcol = neighbor[0] - currentV[0][0], neighbor[1] - currentV[0][1]
-                if neighborchar != OppositeChar[Directions.index((drow, dcol))] or aocpart != "A":
-                    vq.append((neighbor, currentV[1] + 1))
-
-# Step 3: Calculate the longest path with DFS
-print("Part2:", aocpart, ": ", max(alist.dfs(startnode, exitnode)))
+if __name__ == "__main__":
+    sys.exit(main())
