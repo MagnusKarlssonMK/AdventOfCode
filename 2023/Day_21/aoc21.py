@@ -1,107 +1,69 @@
-# Advent of code 2023 Day 21
-# Not done - part 2 still not working
+"""
+Part 1: Stores the grid in a new class, and finds reachable tiles within the step count limit using BFS, then count
+only the ones that have odd/even number of steps (depending on whether the count limit is odd/even).
+Part 2: Solves it with three-point-formula to determine the coefficients in a quadratic formula, and calculate the
+answer from that.
+"""
+import sys
 
-Vstate = {"Visited": 0, "Seen": 1, "Unseen": 2}
-Vertex = tuple[int, int]  # row, col
-Vproperties = list[str, int, Vertex]  # state
+
+RowCol = tuple[int, int]
 
 
 class Grid:
-    def __init__(self):
-        self.gridpoints = []
-        self.height = 0
-        self.width = 0
+    def __init__(self, rawstr: str):
+        self.grid = rawstr.splitlines()
+        self.__height = len(self.grid)
+        self.__width = len(self.grid[0])
+        self.start = -1, -1
+        for row in range(self.__height):
+            if (col := self.grid[row].find('S')) >= 0:
+                self.start = row, col
 
-    def addrow(self, newrow: str) -> None:
-        self.gridpoints.append(newrow)
-        self.width = max(self.width, len(newrow))
-        self.height += 1
+    def __get_neighbors(self, coord: RowCol, expand: bool) -> iter:
+        for direction in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            row, col = tuple(map(sum, zip(coord, direction)))
+            if expand:
+                if self.grid[row % self.__height][col % self.__width] != "#":
+                    yield row, col
+            else:
+                if 0 <= row < self.__height and 0 <= col < self.__width and self.grid[row][col] != "#":
+                    yield row, col
 
-    def getneighbors(self, invertex: Vertex) -> list[Vertex]:
-        retlist = []
-        if invertex[0] > 0:  # Up
-            if self.gridpoints[invertex[0] - 1][invertex[1]] != "#":
-                retlist.append((invertex[0] - 1, invertex[1]))
-        if invertex[0] < self.height - 1:   # Down
-            if self.gridpoints[invertex[0] + 1][invertex[1]] != "#":
-                retlist.append((invertex[0] + 1, invertex[1]))
-        if invertex[1] > 0:  # Left
-            if self.gridpoints[invertex[0]][invertex[1] - 1] != "#":
-                retlist.append((invertex[0], invertex[1] - 1))
-        if invertex[1] < self.width - 1:   # Right
-            if self.gridpoints[invertex[0]][invertex[1] + 1] != "#":
-                retlist.append((invertex[0], invertex[1] + 1))
-        return retlist
+    def get_reachablecount(self, steps: int, expand: bool = False) -> int:
+        seen: set[RowCol] = set()
+        reachable: set[RowCol] = set()
+        bfs_queue = [(self.start, 0)]
+        while bfs_queue:
+            u, count = bfs_queue.pop(0)
+            if count <= steps:
+                if count % 2 == steps % 2:
+                    reachable.add(u)
+                for v in self.__get_neighbors(u, expand):
+                    if v not in seen:
+                        bfs_queue.append((v, count + 1))
+                        seen.add(v)
+        return len(reachable)
 
-    def getreachablecells(self, vstart: Vertex, nbrsteps: int) -> int:
-        vertexlist: dict[Vertex: Vproperties] = {}
-        bfs_queue = [vstart]
-        vertexlist[vstart] = [Vstate["Seen"], 0, None]
-        while len(bfs_queue) > 0:
-            u = bfs_queue.pop(0)
-            neighbors = self.getneighbors(u)
-            for v in neighbors:
-                try:
-                    if vertexlist[v][0] != Vstate["Unseen"]:
-                        continue
-                except KeyError:
-                    pass
-                vertexlist[v] = [Vstate["Seen"], vertexlist[u][1] + 1, u]
-                bfs_queue.append(v)
-            vertexlist[u][0] = Vstate["Visited"]
-        count = 0
-        offset = sum(vstart) % 2
-        for vkey in list(vertexlist.keys()):
-            if vertexlist[vkey][1] <= nbrsteps and (vertexlist[vkey][1] % 2 == (nbrsteps + offset) % 2):
-                count += 1
-        return count
+    def get_reachablecount_infinite(self, maxstep: int) -> int:
+        n = (self.__height - 1) // 2
+        three_vec = [n + (self.__height * i) for i in range(3)]
+        # y = a*x^2 + b*x + c
+        y = [self.get_reachablecount(i, True) for i in three_vec]
+        c = y[0]
+        b = ((4 * y[1]) - (3 * y[0]) - y[2]) // 2
+        a = y[1] - y[0] - b
+        x = (maxstep - n) // self.__height
+        return (a * x ** 2) + (b * x) + c
 
 
-grid = Grid()
-start: Vertex = -1, -1
+def main() -> int:
+    with open('../Inputfiles/aoc21.txt', 'r') as file:
+        mygrid = Grid(file.read().strip('\n'))
+    print("Part 1:", mygrid.get_reachablecount(64))
+    print("Part 2:", mygrid.get_reachablecount_infinite(26501365))
+    return 0
 
-with open("../Inputfiles/aoc21.txt", "r") as file:
-    for line in file.readlines():
-        if len(line) > 1:
-            grid.addrow(line.strip("\n"))
-            if (startidx := line.find("S")) >= 0:
-                start = grid.height - 1, startidx
 
-print("Part1: ", grid.getreachablecells(start, 64))
-
-D = 26501365
-w = grid.width
-h = w
-s = (w - 1) // 2, (h - 1) // 2
-N = (D - s[0]) // w
-E = grid.getreachablecells(s, 3 * w)
-O = grid.getreachablecells(s, (3 * w) + 1)
-print(f"N={N} E={E} O= {O}")
-sa = w + D - (N * w) - 1
-sb = D - (N * w)
-st = w - 1
-
-a1 = grid.getreachablecells((0, 0), sa)
-a2 = grid.getreachablecells((0, h - 1), sa)
-a3 = grid.getreachablecells((w - 1, 0), sa)
-a4 = grid.getreachablecells((w - 1, h - 1), sa)
-a_tot = a1 + a2 + a3 + a4
-b1 = grid.getreachablecells((0, 0), sb)
-b2 = grid.getreachablecells((0, h - 1), sb)
-b3 = grid.getreachablecells((w - 1, 0), sb)
-b4 = grid.getreachablecells((w - 1, h - 1), sb)
-b_tot = b1 + b2 + b3 + b4
-t1 = grid.getreachablecells((0, s[1]), st)
-t2 = grid.getreachablecells((s[0], 0), st)
-t3 = grid.getreachablecells((w - 1, s[1]), st)
-t4 = grid.getreachablecells((s[0], h - 1), st)
-t_tot = t1 + t2 + t3 + t4
-
-print(f"A={a_tot} B={b_tot} T={t_tot}")
-
-F = (O * ((N - 1) ** 2)) + (E * (N ** 2)) + (a_tot * (N - 1)) + (N * b_tot) + t_tot
-
-print("F=", F)
-# 610158222359995
-
-# Correct answer: 610158187362102
+if __name__ == "__main__":
+    sys.exit(main())
