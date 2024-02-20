@@ -62,7 +62,8 @@ class Air:
         unknowns = sp.symbols('x y z dx dy dz t1 t2 t3')
         x, y, z, dx, dy, dz, *time = unknowns
         equations = []
-        for t, h in zip(time, [stone.get_datapoints() for stone in self.hailstones]):
+        # Note: 3 stones is enough datapoints to find the solution, no need to go through the entire list
+        for t, h in zip(time, [self.hailstones[stone].get_datapoints() for stone in range(3)]):
             equations.append(sp.Eq(x + t * dx, h[0] + t * h[3]))
             equations.append(sp.Eq(y + t * dy, h[1] + t * h[4]))
             equations.append(sp.Eq(z + t * dz, h[2] + t * h[5]))
