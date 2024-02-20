@@ -1,68 +1,82 @@
+"""
+Part 1: Iterates over all combinations of intersections using itertools, and finds the intersection (if any) for
+all combinations using x0, y0 = (b1*c2-b2*c1)/(a1*b2-a2*b1) , (c1*a2-c2*a1)/(a1*b2-a2*b1). y = x*dy/dx + c, so
+a=dy, b=-dx, c can be found based on the given coordinate.
+Part 2: Uses the sympy equation solver to find the answer. I may have borrowed the basis for this solution from
+people smarter than me...
+"""
 import sys
 from itertools import combinations
 import sympy as sp
 
-# with open('aoc24.txt', 'r') as f:
-#     puzzle_input = f.read()
+
+class Hailstone:
+    def __init__(self, rawstr: str):
+        left, right = rawstr.split(' @ ')
+        self.x, self.y, self.z = list(map(int, left.split(', ')))
+        self.dx, self.dy, self.dz = list(map(int, right.split(', ')))
+
+    def get_2d_intersection(self, other: 'Hailstone') -> tuple[bool, float, float]:  # Intersects, x, y
+        """Calculates the intersection point (if any) of two hailstones in the XY plane. Also checks whether
+        the intersection happens in the future. Returns a boolean to indicate whether any future intersection
+        was found, and the X,Y coordinates for it."""
+        a1, a2 = self.dy, other.dy
+        b1, b2 = -self.dx, -other.dx
+        if (d := (a1 * b2) - (a2 * b1)) == 0:
+            return False, 0, 0
+        c1 = -((self.x * self.dy) - (self.y * self.dx))
+        c2 = -((other.x * other.dy) - (other.y * other.dx))
+        x0 = ((b1 * c2) - (b2 * c1)) / d
+        y0 = ((c1 * a2) - (c2 * a1)) / d
+        if (((x0 > self.x and self.dx > 0) or (x0 < self.x and self.dx < 0)) and
+                ((x0 > other.x and other.dx > 0) or (x0 < other.x and other.dx < 0))):
+            return True, x0, y0
+        return False, x0, y0
+
+    def get_datapoints(self) -> tuple[int, int, int, int, int, int]:
+        return self.x, self.y, self.z, self.dx, self.dy, self.dz
+
+    def __str__(self):
+        return f"({self.x},{self.y},{self.z}) - ({self.dx},{self.dy},{self.dz})"
 
 
-def part1(p_input, test_input=False):
-    hailstones = []
-    for line in p_input.splitlines():
-        if len(line) > 1:
-            nums = line.replace('@', ',').split(',')
-            hailstones.append(tuple(map(int, nums)))
+class Air:
+    def __init__(self):
+        self.hailstones: list[Hailstone] = []
+        self.xy_intersection_range = (200000000000000, 400000000000000)
 
-    if test_input:
-        lo, hi = 7, 27
-    else:
-        lo, hi = 2e14, 4e14
+    def add_hailstone(self, rawstr: str) -> None:
+        self.hailstones.append(Hailstone(rawstr))
 
-    total = 0
-    for h1, h2 in combinations(hailstones, 2):
-        x1, y1, _, dx1, dy1, _ = h1
-        x2, y2, _, dx2, dy2, _ = h2
-        m1 = dy1 / dx1
-        m2 = dy2 / dx2
-        if m1 == m2:  # they move in parallel and never meet
-            continue
-        b1 = y1 - m1 * x1
-        b2 = y2 - m2 * x2
-        x = (b2 - b1) / (m1 - m2)
-        y = m1 * x + b1
-        if all((lo <= x <= hi,  # x and y need to be in range
-                lo <= y <= hi,
-                (x > x1 and dx1 > 0) or (x < x1 and dx1 < 0),  # itersection needs to happen in the future
-                (x > x2 and dx2 > 0) or (x < x2 and dx2 < 0))):
-            total += 1
+    def get_2d_intersectioncount(self) -> int:
+        intersections = 0
+        for h1, h2 in combinations(self.hailstones, 2):
+            intersects, x, y = h1.get_2d_intersection(h2)
+            if (intersects and self.xy_intersection_range[0] <= x <= self.xy_intersection_range[1] and
+                    self.xy_intersection_range[0] <= y <= self.xy_intersection_range[1]):
+                intersections += 1
+        return intersections
 
-    return total
-
-
-def part2(p_input):
-    first_three_hailstones = []
-    for line in p_input.split('\n')[:3]:
-        nums = line.replace('@', ',').split(',')
-        first_three_hailstones.append(tuple(map(int, nums)))
-
-    unknowns = sp.symbols('x y z dx dy dz t1 t2 t3')
-    x, y, z, dx, dy, dz, *time = unknowns
-
-    equations = []  # build system of 9 equations with 9 unknowns
-    for t, h in zip(time, first_three_hailstones):
-        equations.append(sp.Eq(x + t * dx, h[0] + t * h[3]))
-        equations.append(sp.Eq(y + t * dy, h[1] + t * h[4]))
-        equations.append(sp.Eq(z + t * dz, h[2] + t * h[5]))
-
-    solution = sp.solve(equations, unknowns).pop()
-    return sum(solution[:3])
+    def get_3d_silverbullet(self) -> int:
+        """Calculates and returns the score for part 2."""
+        unknowns = sp.symbols('x y z dx dy dz t1 t2 t3')
+        x, y, z, dx, dy, dz, *time = unknowns
+        equations = []
+        for t, h in zip(time, [stone.get_datapoints() for stone in self.hailstones]):
+            equations.append(sp.Eq(x + t * dx, h[0] + t * h[3]))
+            equations.append(sp.Eq(y + t * dy, h[1] + t * h[4]))
+            equations.append(sp.Eq(z + t * dz, h[2] + t * h[5]))
+        solution = sp.solve(equations, unknowns).pop()
+        return sum(solution[:3])
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as f:
-        puzzle_input = f.read()
-    print('Part 1:', part1(puzzle_input))
-    print('Part 2:', part2(puzzle_input))
+    myair = Air()
+    with open('../Inputfiles/aoc24.txt', 'r') as file:
+        for line in file.read().strip('\n').splitlines():
+            myair.add_hailstone(line)
+    print("Part 1:", myair.get_2d_intersectioncount())
+    print("Part 2:", myair.get_3d_silverbullet())
     return 0
 
 
