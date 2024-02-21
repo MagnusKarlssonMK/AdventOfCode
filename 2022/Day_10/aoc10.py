@@ -40,20 +40,14 @@ def main() -> int:
     mycpu1 = CPU([20, 60, 100, 140, 180, 220])
     mycpu2 = CPU([40, 80, 120, 160, 200, 240])
     with open('../Inputfiles/aoc10.txt', 'r') as file:
-        for line in file.readlines():
-            if len(line) > 1:
-                mycpu1.addcommand(line.strip('\n'))
-                mycpu2.addcommand(line.strip('\n'))
+        for line in file.read().strip('\n').splitlines():
+            mycpu1.addcommand(line)
+            mycpu2.addcommand(line)
 
-    values_p1 = []
-    for i in mycpu1.processqueue():
-        values_p1.append(i[0])
-    print("Part1: ", sum(values_p1), '\n')
-    crt = ""
-    for i in mycpu2.processqueue():
-        crt += i[1]
+    value_count = sum([i[0] for i in mycpu1.processqueue()])
+    print("Part1:", value_count, '\n')
+    crt = "".join([i[1] for i in mycpu2.processqueue()])
     print(crt)
-
     return 0
 
 
