@@ -32,13 +32,12 @@ def main() -> int:
     myfirstrope = Rope(2)
     mysecondrope = Rope(10)
     with open('../Inputfiles/aoc9.txt') as file:
-        for line in file.readlines():
-            if len(line) > 1:
-                direction, length = line.strip('\n').split()
-                myfirstrope.movehead(DirMap[direction], int(length))
-                mysecondrope.movehead(DirMap[direction], int(length))
-    print("Part1: ", len(myfirstrope.tailvisited))
-    print("Part2: ", len(mysecondrope.tailvisited))
+        for line in file.read().strip('\n').splitlines():
+            direction, length = line.strip('\n').split()
+            myfirstrope.movehead(DirMap[direction], int(length))
+            mysecondrope.movehead(DirMap[direction], int(length))
+    print("Part1:", len(myfirstrope.tailvisited))
+    print("Part2:", len(mysecondrope.tailvisited))
     return 0
 
 
