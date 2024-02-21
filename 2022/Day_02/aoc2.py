@@ -1,3 +1,6 @@
+"""
+Maps the input to numbers to more easily calculate the outcomes.
+"""
 import sys
 
 """
@@ -36,11 +39,10 @@ def main() -> int:
     result_p1 = 0
     result_p2 = 0
     with open('../Inputfiles/aoc2.txt', 'r') as file:
-        for line in file.readlines():
-            if len(line) > 1:
-                left, right = line.strip('\n').split()
-                result_p1 += getscore(handtonum[left], handtonum[right])
-                result_p2 += getscore(handtonum[left], handtonum[determinehand(left, right)])
+        for line in file.read().strip('\n').splitlines():
+            left, right = line.strip('\n').split()
+            result_p1 += getscore(handtonum[left], handtonum[right])
+            result_p2 += getscore(handtonum[left], handtonum[determinehand(left, right)])
     print("Part1: ", result_p1)
     print("Part2: ", result_p2)
     return 0
