@@ -1,7 +1,14 @@
+"""
+Part 1 - loads the grid into a grid class, and then finding the path is pretty much just a basic BFS, with some extra
+condition checks when looking up the neighbors.
+Part 2 - similar to Part 1, but this instead does the BFS 'backwards' starting from the end point and also reverses
+the condition in the neighbor check.
+Possible improvement: the grid class methods for part 1 and 2 can probably be merged, since most of the code is the
+same.
+"""
 import sys
 
 RowCol = tuple[int, int]
-Directions = ((0, 1), (1, 0), (0, -1), (-1, 0))
 
 
 class Grid:
@@ -21,51 +28,54 @@ class Grid:
                 self.grid[row] = self.grid[row].replace('E', 'z')
 
     def getneigbors(self, coord: RowCol, downhill: bool = False) -> iter:
-        for d in Directions:
+        for d in ((0, 1), (1, 0), (0, -1), (-1, 0)):
             if 0 <= coord[0] + d[0] < self.height and 0 <= coord[1] + d[1] < self.width:
                 current = ord(self.grid[coord[0]][coord[1]])
                 candidate = ord(self.grid[coord[0] + d[0]][coord[1] + d[1]])
                 if (current + 1 >= candidate and not downhill) or (current <= candidate + 1 and downhill):
                     yield coord[0] + d[0], coord[1] + d[1]
 
+    def get_minsteps_fromstart(self) -> int:
+        # Part 1: Regular BFS search from S to E
+        visited: dict[RowCol: (int, RowCol)] = {}
+        tilequeue: list[tuple[RowCol, int, RowCol]] = [(self.startpos, 0, None)]
+        while len(tilequeue) > 0:
+            current = tilequeue.pop(0)
+            if current[0] in visited:
+                continue
+            for neighbor in self.getneigbors(current[0]):
+                if neighbor not in visited:
+                    tilequeue.append((neighbor, current[1] + 1, current[0]))
+            visited[current[0]] = current[1], current[2]
+            if self.endpos in visited:
+                break
+        return visited[self.endpos][0]
+
+    def get_minsteps_fromany(self) -> int:
+        # Part 2: BFS again but starting from E and going downhill until finding the first 'a'
+        visited: dict[RowCol: (int, RowCol)] = {}
+        tilequeue: list[tuple[RowCol, int, RowCol]] = [(self.endpos, 0, None)]
+        beststart = -1, -1
+        while len(tilequeue) > 0:
+            current = tilequeue.pop(0)
+            if current[0] in visited:
+                continue
+            for neighbor in self.getneigbors(current[0], True):
+                if neighbor not in visited:
+                    tilequeue.append((neighbor, current[1] + 1, current[0]))
+            visited[current[0]] = current[1], current[2]
+            if self.grid[current[0][0]][current[0][1]] == 'a':
+                beststart = current[0]
+                break
+        return visited[beststart][0]
+
 
 def main() -> int:
     with open('../Inputfiles/aoc12.txt', 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
 
-    # Part 1: Regular BFS search from S to E
-    visited: dict[RowCol: (int, RowCol)] = {}
-    tilequeue: list[tuple[RowCol, int, RowCol]] = [(mygrid.startpos, 0, None)]
-    while len(tilequeue) > 0:
-        current = tilequeue.pop(0)
-        if current[0] in visited:
-            continue
-        for neighbor in mygrid.getneigbors(current[0]):
-            if neighbor not in visited:
-                tilequeue.append((neighbor, current[1] + 1, current[0]))
-        visited[current[0]] = current[1], current[2]
-        if mygrid.endpos in visited:
-            break
-
-    print("Part 1:", visited[mygrid.endpos][0])
-
-    # Part 2: BFS again but starting from E and going downhill until finding the first 'a'
-    visited_p2: dict[RowCol: (int, RowCol)] = {}
-    tilequeue_p2: list[tuple[RowCol, int, RowCol]] = [(mygrid.endpos, 0, None)]
-    beststart = -1, -1
-    while len(tilequeue_p2) > 0:
-        current = tilequeue_p2.pop(0)
-        if current[0] in visited_p2:
-            continue
-        for neighbor in mygrid.getneigbors(current[0], True):
-            if neighbor not in visited_p2:
-                tilequeue_p2.append((neighbor, current[1] + 1, current[0]))
-        visited_p2[current[0]] = current[1], current[2]
-        if mygrid.grid[current[0][0]][current[0][1]] == 'a':
-            beststart = current[0]
-            break
-
-    print("Part 2:", visited_p2[beststart][0], beststart)
+    print("Part 1:", mygrid.get_minsteps_fromstart())
+    print("Part 2:", mygrid.get_minsteps_fromany())
     return 0
 
 
