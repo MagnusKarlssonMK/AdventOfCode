@@ -1,3 +1,7 @@
+"""
+Part 1: Simply parse the input a store it in a list sorted by total calories, and the largest value is the answer.
+Part 2: From the same list, just take the sum of the top three.
+"""
 import sys
 
 
@@ -15,12 +19,10 @@ def main() -> int:
     with open('../Inputfiles/aoc1.txt', 'r') as file:
         indata = file.read().split('\n\n')
     [elf_list.append(Elf(list(map(int, elf.strip('\n').split('\n'))))) for elf in indata]
-
     elf_list.sort(key=lambda tot: tot.totalcalories, reverse=True)
 
-    print("Part1: ", elf_list[0].totalcalories)
-
-    print("Part2: ", sum([elf_list[num].totalcalories for num in range(3)]))
+    print("Part1:", elf_list[0].totalcalories)
+    print("Part2:", sum([elf_list[num].totalcalories for num in range(3)]))
     return 0
 
 
