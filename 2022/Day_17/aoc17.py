@@ -1,6 +1,8 @@
 """
 Pretty much tetris with side controls determined by the jet stream input.
 Shapes and grid stored in binary format per row in dicts and bitshifted / bitmasked to move and check for overlap.
+For part 2, will need cycle recognition. Try store a hashed tuple for every dropped rock containing rock index,
+jet stream index, and top grid shape (per column).
 """
 import sys
 
