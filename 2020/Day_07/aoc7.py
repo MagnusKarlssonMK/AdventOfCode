@@ -1,55 +1,48 @@
 """
-Even more string parsing gymnastics. Extract the data into a dictionary, reverse that dictionary to get a directed
-adjaceny list of 'bag contained by...'. BFS to get a visited list of all reachable bags from the starting bag, which
-gives the answer to Part 1. For Part 2, make a recursive call on the first dictionary to count the bags in the bag in
-the bag... I added a cache for the recursion just in case since I suspected that there would be a lot of repeated
+Even more string parsing gymnastics. Extract the data into a dictionary, BFS to expand all reachable bags from the
+starting bag until either the golden bag is found or list runs out, which gives the answer to Part 1.
+For Part 2, make a recursive call on the dictionary to count the bags in the bag in the bag...
+I added a memo cache for the recursion just in case, since I suspected that there would be a lot of repeated
 calls for the same bag, but it doesn't seem to make much of a performance difference.
 """
 import sys
 
 
 class BagRules:
-    def __init__(self):
-        self.rules: dict[str: list[tuple[str, int]]] = {}
-        self.invertedrules: dict[str: set[str]] = {}
-        self.bagcontentcache: dict[str: int] = {}
-
-    def addrule(self, rulekey: str, rulelist: list[str]):
-        if rulekey not in self.rules:
-            self.rules[rulekey] = []
-        if rulekey not in self.invertedrules:
-            self.invertedrules[rulekey] = set()
-        if len(rulelist) > 0:
-            self.rules[rulekey].append((rulelist[1], rulelist[0]))
-            if rulelist[1] not in self.invertedrules:
-                self.invertedrules[rulelist[1]] = set()
-            self.invertedrules[rulelist[1]].add(rulekey)
+    def __init__(self, rawdata):
+        self.__rules: dict[str: list[tuple[str, int]]] = {}
+        for line in rawdata:
+            self.__rules[line[0]] = []
+            for content in line[1]:
+                if 'no other' in content:
+                    break
+                nbr, bag_p1, bag_p2, _ = content.split()
+                self.__rules[line[0]].append((int(nbr), bag_p1 + ' ' + bag_p2))
+        self.__bagcontentcache: dict[str: int] = {}
 
     def countcontainedin(self, bag: str) -> int:
-        if bag not in self.invertedrules:
-            return 0
-        seen: set[str] = set()
-        bfsq = [bag]
-        while bfsq:
-            current = bfsq.pop(0)
-            if current not in seen:
-                for n in self.invertedrules[current]:
-                    if n not in seen:
-                        bfsq.append(n)
-                seen.add(current)
-        return len(seen) - 1  # -1 to subtract the starting bag color
+        count = 0
+        for key in self.__rules:
+            content = list(self.__rules[key])
+            while content:
+                _, color = content.pop(0)
+                if color == bag:
+                    count += 1
+                    break
+                for m in self.__rules[color]:
+                    content.append(m)
+        return count
 
     def countbagscontainedin(self, bag: str) -> int:
-        if bag not in self.rules:
-            return 0
-        count = 0
-        for rule in self.rules[bag]:
-            if rule[0] not in self.bagcontentcache:
-                result = self.countbagscontainedin(rule[0])
-                count += rule[1] * (result + 1)  # +1 to include the rule[0] bag itself too, not just its content.
-                self.bagcontentcache[rule[0]] = result
-            else:
-                count += rule[1] * (self.bagcontentcache[rule[0]] + 1)
+        return self.__countcontent(bag) - 1  # -1 to not count the input bag itself
+
+    def __countcontent(self, bag: str) -> int:
+        if bag in self.__bagcontentcache:
+            return self.__bagcontentcache[bag]
+        count = 1  # +1 to include the bag itself too, not just its content.
+        for nbr, color in self.__rules[bag]:
+            count += nbr * self.__countcontent(color)
+        self.__bagcontentcache[bag] = count
         return count
 
 
@@ -57,14 +50,7 @@ def main() -> int:
     with open('../Inputfiles/aoc7.txt', 'r') as file:
         lines = [[i[0], i[1].split(', ')] for i in [line.split(' bags contain ')
                                                     for line in file.read().strip('\n').splitlines()]]
-    rules = BagRules()
-    for line in lines:
-        for i in line[1]:
-            if "no other" in i:
-                rules.addrule(line[0], [])
-                break
-            content = i.split()
-            rules.addrule(line[0], [int(content[0]), content[1] + " " + content[2]])
+    rules = BagRules(lines)
 
     print("Part 1:", rules.countcontainedin("shiny gold"))
     print("Part 2:", rules.countbagscontainedin("shiny gold"))
