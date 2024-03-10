@@ -3,18 +3,18 @@ import sys
 
 def main() -> int:
     with open('../Inputfiles/aoc6.txt') as file:
-        line = file.readline().strip('\n')
+        line = file.read().strip('\n')
 
-    # A
+    # Part 1
     for idx in range(len(line) - 3):
         if len(set(line[idx:idx+4])) == 4:
-            print("Part1: ", idx + 4)
+            print(f"Part1: {idx + 4}")
             break
 
-    # B
+    # Part 2
     for idx in range(len(line) - 13):
         if len(set(line[idx:idx+14])) == 14:
-            print("Part2: ", idx + 14)
+            print(f"Part2: {idx + 14}")
             break
     return 0
 
