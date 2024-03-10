@@ -23,21 +23,21 @@ class Crateship:
 
     def run_procedures(self, multicrates: bool = False) -> str:
         crates = deepcopy(self.crates)
-        for proc in self.procedures:  # Procedures: Nbr - from - to
-            for idx in range(proc[0]):
+        for proc_nbr, proc_from, proc_to in self.procedures:
+            for idx in range(proc_nbr):
                 if multicrates:
-                    movecrate = crates[proc[1]].pop(idx - proc[0])
+                    movecrate = crates[proc_from].pop(idx - proc_nbr)
                 else:
-                    movecrate = crates[proc[1]].pop()
-                crates[proc[2]].append(movecrate)
+                    movecrate = crates[proc_from].pop()
+                crates[proc_to].append(movecrate)
         return ''.join([crates[key][-1] for key in list(crates.keys())])
 
 
 def main() -> int:
     with open('../Inputfiles/aoc5.txt', 'r') as file:
         ship = Crateship(*file.read().strip('\n').split('\n\n'))
-    print("Part 1:", ship.run_procedures())
-    print("Part 2:", ship.run_procedures(True))
+    print(f"Part 1: {ship.run_procedures()}")
+    print(f"Part 2: {ship.run_procedures(True)}")
     return 0
 
 
