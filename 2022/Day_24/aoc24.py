@@ -36,8 +36,8 @@ class Valley:
                 return True
         return False
 
-    def get_answer(self) -> int:
-        queue = [(self.__startpoint, 0)]
+    def __bfs(self, start: tuple[int, int], end: tuple[int, int], startstep: int = 0) -> int:
+        queue = [(start, startstep)]
         seen = set()
         while queue:
             point, steps = queue.pop(0)
@@ -50,23 +50,34 @@ class Valley:
                 new_col = point_col + d_col
                 new_point = (new_row, new_col)
                 next_step = steps + 1
-                if new_point == self.__startpoint and (d_row, d_col) != self.__startpoint:
+                if new_point == start and (d_row, d_col) != start:
                     # The start point won't pass the boundary check below, and the occupied check won't work for it
                     # either. So just put it on the queue directly as a workaround.
                     queue.append((new_point, next_step))
                     continue
-                if new_point == self.__exitpoint:
+                if new_point == end:
                     return next_step
                 if 0 < new_row <= self.__height and 0 < new_col <= self.__width:
                     if not self.__is_occupied_at_step(new_row, new_col, next_step):
                         queue.append((new_point, next_step))
         return -1
 
+    def get_there(self) -> int:
+        return self.__bfs(self.__startpoint, self.__exitpoint)
+
+    def get_there_and_back_again(self) -> int:
+        a = self.__bfs(self.__startpoint, self.__exitpoint, 0)
+        # Could have perhaps cached the 'a' value from the part 1 run
+        b = self.__bfs(self.__exitpoint, self.__startpoint, a)
+        c = self.__bfs(self.__startpoint, self.__exitpoint, b)
+        return c
+
 
 def main() -> int:
     with open('../Inputfiles/aoc24.txt', 'r') as file:
         valley = Valley(file.read().strip('\n'))
-    print(f"Part 1: {valley.get_answer()}")
+    print(f"Part 1: {valley.get_there()}")
+    print(f"Part 2: {valley.get_there_and_back_again()}")
     return 0
 
 
