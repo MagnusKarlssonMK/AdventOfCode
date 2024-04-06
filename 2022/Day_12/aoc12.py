@@ -28,25 +28,26 @@ class Grid:
                 self.grid[row] = self.grid[row].replace('E', 'z')
 
     def getneigbors(self, coord: RowCol, downhill: bool = False) -> iter:
-        for d in ((0, 1), (1, 0), (0, -1), (-1, 0)):
-            if 0 <= coord[0] + d[0] < self.height and 0 <= coord[1] + d[1] < self.width:
-                current = ord(self.grid[coord[0]][coord[1]])
-                candidate = ord(self.grid[coord[0] + d[0]][coord[1] + d[1]])
+        row, col = coord
+        for dr, dc in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+            if 0 <= row + dr < self.height and 0 <= col + dc < self.width:
+                current = ord(self.grid[row][col])
+                candidate = ord(self.grid[row + dr][col + dc])
                 if (current + 1 >= candidate and not downhill) or (current <= candidate + 1 and downhill):
-                    yield coord[0] + d[0], coord[1] + d[1]
+                    yield row + dr, col + dc
 
     def get_minsteps_fromstart(self) -> int:
         # Part 1: Regular BFS search from S to E
         visited: dict[RowCol: (int, RowCol)] = {}
         tilequeue: list[tuple[RowCol, int, RowCol]] = [(self.startpos, 0, None)]
         while len(tilequeue) > 0:
-            current = tilequeue.pop(0)
-            if current[0] in visited:
+            current_pos, current_steps, previous = tilequeue.pop(0)
+            if current_pos in visited:
                 continue
-            for neighbor in self.getneigbors(current[0]):
+            for neighbor in self.getneigbors(current_pos):
                 if neighbor not in visited:
-                    tilequeue.append((neighbor, current[1] + 1, current[0]))
-            visited[current[0]] = current[1], current[2]
+                    tilequeue.append((neighbor, current_steps + 1, current_pos))
+            visited[current_pos] = current_steps, previous
             if self.endpos in visited:
                 break
         return visited[self.endpos][0]
@@ -57,15 +58,15 @@ class Grid:
         tilequeue: list[tuple[RowCol, int, RowCol]] = [(self.endpos, 0, None)]
         beststart = -1, -1
         while len(tilequeue) > 0:
-            current = tilequeue.pop(0)
-            if current[0] in visited:
+            current_pos, current_steps, previous = tilequeue.pop(0)
+            if current_pos in visited:
                 continue
-            for neighbor in self.getneigbors(current[0], True):
+            for neighbor in self.getneigbors(current_pos, True):
                 if neighbor not in visited:
-                    tilequeue.append((neighbor, current[1] + 1, current[0]))
-            visited[current[0]] = current[1], current[2]
-            if self.grid[current[0][0]][current[0][1]] == 'a':
-                beststart = current[0]
+                    tilequeue.append((neighbor, current_steps + 1, current_pos))
+            visited[current_pos] = current_steps, previous
+            if self.grid[current_pos[0]][current_pos[1]] == 'a':
+                beststart = current_pos
                 break
         return visited[beststart][0]
 
