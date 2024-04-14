@@ -18,20 +18,21 @@ class Grid:
         self.__lowpoints = [p for p in self.__findlowpoints()]
 
     def __getneighborpoints(self, p: Point) -> iter:
-        if p[0] > 0:  # up
-            yield p[0] - 1, p[1]
-        if p[0] < self.__height - 1:  # down
-            yield p[0] + 1, p[1]
-        if p[1] > 0:  # left
-            yield p[0], p[1] - 1
-        if p[1] < self.__width - 1:  # right
-            yield p[0], p[1] + 1
+        row, col = p
+        if row > 0:  # up
+            yield row - 1, col
+        if row < self.__height - 1:  # down
+            yield row + 1, col
+        if col > 0:  # left
+            yield row, col - 1
+        if col < self.__width - 1:  # right
+            yield row, col + 1
 
     def __findlowpoints(self) -> iter:
         for row in range(self.__height):
             for col in range(self.__width):
-                for n in self.__getneighborpoints((row, col)):
-                    if self.__grid[row][col] >= self.__grid[n[0]][n[1]]:
+                for n_r, n_c in self.__getneighborpoints((row, col)):
+                    if self.__grid[row][col] >= self.__grid[n_r][n_c]:
                         break
                 else:
                     yield row, col
@@ -39,21 +40,18 @@ class Grid:
     def __findbasinpoints(self, lowpoint: Point) -> list[Point]:
         visited = []
         searchqueue = [lowpoint]
-        while len(searchqueue) > 0:
+        while searchqueue:
             current = searchqueue.pop(0)
             if current not in visited:
-                for n in self.__getneighborpoints(current):
-                    if n not in visited and self.__grid[n[0]][n[1]] < 9:
-                        searchqueue.append(n)
+                for n_r, n_c in self.__getneighborpoints(current):
+                    if (n_r, n_c) not in visited and self.__grid[n_r][n_c] < 9:
+                        searchqueue.append((n_r, n_c))
                 visited.append(current)
         return visited
 
     def getlowpointscore(self) -> int:
         """Gives the answer to Part 1."""
-        retval = 0
-        for p in self.__findlowpoints():
-            retval += self.__grid[p[0]][p[1]] + 1
-        return retval
+        return sum([self.__grid[row][col] + 1 for row, col in self.__findlowpoints()])
 
     def getbasinscore(self) -> int:
         """Gives the answer to Part 1."""
@@ -64,8 +62,8 @@ class Grid:
 def main() -> int:
     with open('../Inputfiles/aoc9.txt', 'r') as file:
         mygrid = Grid(file.read().strip('\n').splitlines())
-    print("Part 1: ", mygrid.getlowpointscore())
-    print("Part 2: ", mygrid.getbasinscore())
+    print(f"Part 1: {mygrid.getlowpointscore()}")
+    print(f"Part 2: {mygrid.getbasinscore()}")
     return 0
 
 
