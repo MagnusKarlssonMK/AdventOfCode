@@ -15,14 +15,14 @@ BracketMap = {'(': ')', '{': '}', '<': '>', '[': ']'}
 
 def getsyntaxscore(char: str) -> int:
     scoretable = {')': 3, ']': 57, '}': 1197, '>': 25137}
-    if char in list(scoretable.keys()):
+    if char in scoretable:
         return scoretable[char]
     return 0
 
 
 def getautocompletescore(char: str) -> int:
     scoretable = {')': 1, ']': 2, '}': 3, '>': 4}
-    if char in list(scoretable.keys()):
+    if char in scoretable:
         return scoretable[char]
     return 0
 
@@ -34,10 +34,10 @@ class NavigationLine:
     def validateline(self) -> tuple[int, int]:
         idx = 0
         while idx < len(self.line):
-            result = self.validatechunk(idx)
-            if result[0] != 0:
-                return result
-            idx = result[1] + 1
+            res, i = self.validatechunk(idx)
+            if res != 0:
+                return res, i
+            idx = i + 1
         return 0, idx
 
     def validatechunk(self, startidx: int = 0) -> tuple[int, int]:
@@ -49,17 +49,17 @@ class NavigationLine:
             return 0, startidx + 1
         currentidx = startidx + 1
         while currentidx < len(self.line):
-            result = self.validatechunk(currentidx)
-            if result[0] == 0:
-                if result[1] + 1 >= len(self.line):
-                    return 1, result[1]
-                if self.line[result[1] + 1] == BracketMap[self.line[startidx]]:
-                    return 0, result[1] + 1
-                elif self.line[result[1] + 1] not in OpeningBrackets:
-                    return 2, getsyntaxscore(self.line[result[1] + 1])
-                currentidx = result[1] + 1
+            res, i = self.validatechunk(currentidx)
+            if res == 0:
+                if i + 1 >= len(self.line):
+                    return 1, i
+                if self.line[i + 1] == BracketMap[self.line[startidx]]:
+                    return 0, i + 1
+                elif self.line[i + 1] not in OpeningBrackets:
+                    return 2, getsyntaxscore(self.line[i + 1])
+                currentidx = i + 1
             else:
-                return result
+                return res, i
         return 1, currentidx
 
     def autocomplete(self) -> int:
@@ -98,9 +98,9 @@ def main() -> int:
             p1_score += score
         elif result == 1:
             incompletelines.append(newline)
-    print("Part 1: ", p1_score)
+    print(f"Part 1: {p1_score}")
     p2_scores = sorted([inc_line.autocomplete() for inc_line in incompletelines])
-    print("Part 2: ", p2_scores[len(p2_scores) // 2])
+    print(f"Part 2: {p2_scores[len(p2_scores) // 2]}")
     return 0
 
 
