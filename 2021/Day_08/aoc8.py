@@ -19,7 +19,7 @@ def setwires(pattern: list[str], output: list[str]) -> int:
     numbers: dict[int: list[set[str]]] = {nbr: [] for nbr in range(10)}
     mapping: dict[str: str] = {}
     for p in pattern:  # Store candidate signals for each number based on length
-        for key in list(NumSegMap.keys()):
+        for key in NumSegMap:
             if len(p) == len(NumSegMap[key]):
                 numbers[key].append(set(p))
     mapping['a'] = numbers[7][0] - numbers[1][0]  # Determine 'a' from 7 and 1
@@ -41,7 +41,7 @@ def setwires(pattern: list[str], output: list[str]) -> int:
     for signal in output:
         sigset = set()
         [sigset.add(imapping[c]) for c in signal]
-        for nbr in list(NumSegMap.keys()):
+        for nbr in NumSegMap:
             if sigset == NumSegMap[nbr]:
                 retstr += str(nbr)
                 break
@@ -50,13 +50,13 @@ def setwires(pattern: list[str], output: list[str]) -> int:
 
 def main() -> int:
     with open('../Inputfiles/aoc8.txt', 'r') as file:
-        lines = [(row[0].split(), row[1].split()) for row in [line.split(' | ')
-                                                              for line in file.read().strip('\n').splitlines()]]
+        lines = [(row[0].split(), row[1].split()) for row in
+                 [line.split(' | ') for line in file.read().strip('\n').splitlines()]]
         p1_result = 0
         for line in lines:
             p1_result += sum([1 for word in line[1] if len(word) in (2, 3, 4, 7)])
-        print("Part 1: ", p1_result)
-        print("Part 2: ", sum([setwires(row[0], row[1]) for row in lines]))
+        print(f"Part 1: {p1_result}")
+        print(f"Part 2: {sum([setwires(row[0], row[1]) for row in lines])}")
     return 0
 
 
