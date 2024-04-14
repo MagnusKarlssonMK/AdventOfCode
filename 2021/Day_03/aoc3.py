@@ -2,11 +2,11 @@ import sys
 
 
 def get_most_and_least_common(inlist: list[str]) -> tuple[str, str]:
-    gamma = [0 for _ in range(len(inlist[0]))]
+    gamma = [0 for _, _ in enumerate(inlist[0])]
     for line in inlist:
         for i, c in enumerate(line):
             gamma[i] += int(c)
-    for i in range(len(gamma)):
+    for i, _ in enumerate(gamma):
         gamma[i] = min(1, 2 * gamma[i] // len(inlist))  # There's got to be a more intuitive way to do this...
     epsilon = [(i + 1) % 2 for i in gamma]
     return "".join(list(map(str, gamma))), "".join(list(map(str, epsilon)))
@@ -27,7 +27,7 @@ class Diagnostics:
 
     def __getrating(self, most_least: int) -> int:
         nbrlist = self.__lines.copy()
-        for i in range(len(nbrlist[0])):
+        for i, _ in enumerate(nbrlist[0]):
             if len(nbrlist) <= 1:
                 break
             bufferlist = []
