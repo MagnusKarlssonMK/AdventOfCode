@@ -30,12 +30,11 @@ class Polymer:
     def takesteps(self, count: int):
         for _ in range(count):
             buffer = []
-            for key in list(self.paircount.keys()):
+            for key in self.paircount:
                 buffer.append((key[0] + self.rules[key], self.paircount[key]))
                 buffer.append((self.rules[key] + key[1], self.paircount[key]))
             self.paircount.clear()
-            for b in buffer:
-                self.__addpair(b[0], b[1])
+            [self.__addpair(*b) for b in buffer]
 
     def getscore(self) -> int:
         countlist = Counter()
@@ -51,10 +50,10 @@ def main() -> int:
     rules = [(left, right) for left, right in [line.split(' -> ') for line in r.splitlines()]]
     poly = Polymer(template, rules)
     poly.takesteps(10)
-    print("Part 1:", poly.getscore())
+    print(f"Part 1: {poly.getscore()}")
     poly.reset()
     poly.takesteps(40)
-    print("Part 2:", poly.getscore())
+    print(f"Part 2: {poly.getscore()}")
     return 0
 
 
