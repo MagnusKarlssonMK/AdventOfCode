@@ -17,7 +17,7 @@ def count_window_depth_increase(nbrlist: list[int]) -> int:
     window_buffer = []
     previous = 999999  # Initialize to something large to make sure we don't count the first window as an increase.
     inc_count = 0
-    for n in range(len(nbrlist)):
+    for n, _ in enumerate(nbrlist):
         window_buffer.append(nbrlist[n])
         if len(window_buffer) > 3:
             window_buffer.pop(0)
@@ -29,9 +29,9 @@ def count_window_depth_increase(nbrlist: list[int]) -> int:
 
 def main() -> int:
     with open('../Inputfiles/aoc1.txt', 'r') as file:
-        numbers = list(map(int, file.read().strip('\n').split('\n')))
-    print("Part 1:", count_depth_increase(numbers))
-    print("Part 2:", count_window_depth_increase(numbers))
+        numbers = list(map(int, file.read().strip('\n').splitlines()))
+    print(f"Part 1: {count_depth_increase(numbers)}")
+    print(f"Part 2: {count_window_depth_increase(numbers)}")
     return 0
 
 
