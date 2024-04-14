@@ -28,7 +28,7 @@ class Cavern:
                     yield r, c
 
     def takestep(self) -> bool:
-        for key in list(self.__adj.keys()):
+        for key in self.__adj:
             if key not in self.__flashed:
                 self.__increment(*key)
         flashed = len(self.__flashed)
@@ -60,8 +60,8 @@ def main() -> int:
         count += 1
         if count == 100:
             p1 = cavern.flashcount
-    print("Part 1:", p1)
-    print("Part 2:", count + 1)
+    print(f"Part 1: {p1}")
+    print(f"Part 2: {count + 1}")
     return 0
 
 
