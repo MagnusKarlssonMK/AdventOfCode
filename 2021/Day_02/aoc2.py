@@ -48,13 +48,13 @@ def main() -> int:
     mysub = Submarine(0, 0)
     myaimedsub = AimedSubmarine(0, 0)
     with open('../Inputfiles/aoc2.txt', 'r') as file:
-        lines = file.read().strip('\n').split('\n')
+        lines = file.read().strip('\n').splitlines()
     for line in lines:
         direction, value = line.split()
         mysub.movecommand(direction, int(value))
         myaimedsub.movecommand(direction, int(value))
-    print("Part 1: ", mysub.getscore())
-    print("Part 2: ", myaimedsub.getscore())
+    print(f"Part 1: {mysub.getscore()}")
+    print(f"Part 2: {myaimedsub.getscore()}")
     return 0
 
 
