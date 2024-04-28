@@ -37,22 +37,30 @@ class BingoBoard:
         return lastnbr * nomatchsum
 
 
+class BingoModule:
+    def __init__(self, rawinput: str):
+        blocks = rawinput.split('\n\n')
+        self.__nbrs = list(map(int, blocks[0].split(',')))
+        self.__boards = [BingoBoard(blocks[b_idx]) for b_idx in range(1, len(blocks))]
+
+    def get_scores(self) -> tuple[int, int]:  # (Part1, Part2)
+        p1_score = 0
+        p2_score = 0
+        for nbr in self.__nbrs:
+            for b in reversed(range(len(self.__boards))):
+                if (result := self.__boards[b].drawnumber(nbr)) > 0:
+                    if p1_score == 0:
+                        p1_score = result
+                    if len(self.__boards) == 1:
+                        p2_score = result
+                    self.__boards.pop(b)
+        return p1_score, p2_score
+
+
 def main() -> int:
     with open('../Inputfiles/aoc4.txt', 'r') as file:
-        lines = file.read().strip('\n').split('\n\n')
-    numbers = list(map(int, lines[0].strip('\n').split(',')))
-    boards = [BingoBoard(lines[b_idx]) for b_idx in range(1, len(lines))]
-
-    p1_score = 0
-    p2_score = 0
-    for nbr in numbers:
-        for b in reversed(range(len(boards))):
-            if (result := boards[b].drawnumber(nbr)) > 0:
-                if p1_score == 0:
-                    p1_score = result
-                if len(boards) == 1:
-                    p2_score = result
-                boards.pop(b)
+        bingo = BingoModule(file.read().strip('\n'))
+    p1_score, p2_score = bingo.get_scores()
     print(f"Part 1: {p1_score}")
     print(f"Part 2: {p2_score}")
     return 0
