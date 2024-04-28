@@ -8,6 +8,9 @@ that a face can only connect to a specific face once.
 
 With the neighbor relations (including relative rotation information) setup, we can simply follow the instructions
 and walk the map, using the face relation info whenever going out of bounds of the current face.
+
+A lot of the coordinate and direction handling would probably have been much smoother by using a proper point class
+or vector or similar, so there is quite a bit of room for improvement in the details.
 """
 import sys
 import re
@@ -127,16 +130,24 @@ class MonkeyMap:
                             break
                         row = newrow
                         col = newcol
-                    else:
+                    else:  # Move to neighbor face and rotate direction if needed
                         newface, newdir = (self.__faces[face].cube_neighbors[direction] if iscube
                                            else self.__faces[face].neighbors[direction])
-                        newrow %= self.__face_len
-                        newcol %= self.__face_len
-                        # TBD adjust rotation and position for part 2
+                        newrow %= self.__face_len  # Flip the coordinate in our direction to the other side
+                        newcol %= self.__face_len  # Lazy way - mod on both instead of checking against direction
+                        rotation = direction
+                        while rotation != newdir:
+                            # Rotate clock-wise until our direction is correct
+                            rotation = self.DIRECTIONS[(self.DIRECTIONS.index(rotation) + 1) % len(self.DIRECTIONS)]
+                            tmp = newrow
+                            newrow = newcol
+                            newcol = self.__face_len - 1 - tmp
                         if self.__faces[newface].gridlines[newrow][newcol] == '#':
+                            # No need to keep the loop going if we bump into a wall
                             break
                         row = newrow
                         col = newcol
+                        direction = newdir
                         face = newface
             else:
                 if instruction == 'R':
@@ -153,7 +164,8 @@ def main() -> int:
     with open('../Inputfiles/aoc22.txt', 'r') as file:
         grid, path = file.read().strip('\n').split('\n\n')
     mymap = MonkeyMap(grid, path)
-    print(f"Part1: {mymap.get_password()}")
+    print(f"Part 1: {mymap.get_password()}")
+    print(f"Part 2: {mymap.get_password(True)}")
     return 0
 
 
