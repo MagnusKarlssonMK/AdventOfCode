@@ -1,40 +1,63 @@
 """
 Taking an easy approach - simply storing the lines on a grid quite literally as in the example.
-Not very efficient, as compared to a more advanced approach like trying to detect and count intersection points,
-but since the coordinate numbers are relatively small we can get away with a simple solution.
+After experimenting with other approaches, such as dumping all points in sets and counting length, or comparing
+all line combinations and storing only intersecting points in a set, this simple solution still seems to perform
+best. The first alternative is noticably slower, and the second alternative is slightly faster but much more
+complicated implementation and scales badly with increased number of lines.
 """
-
 import sys
 import re
+from dataclasses import dataclass
 
-XY = tuple[int, int]
+
+@dataclass(frozen=True)
+class Coord:
+    x: int = 0
+    y: int = 0
+
+    def __add__(self, other: "Coord") -> "Coord":
+        return Coord(self.x + other.x, self.y + other.y)
+
+
+class Line:
+    max_x = 0
+    max_y = 0
+
+    def __init__(self, x1: int, y1: int, x2: int, y2: int):
+        self.__points = [Coord(x1, y1), Coord(x2, y2)] if x1 >= x2 else [Coord(x2, y2), Coord(x1, y1)]
+        Line.max_x = max(Line.max_x, x1, x2)
+        Line.max_y = max(Line.max_y, y1, y2)
+
+    def is_diagonal(self) -> bool:
+        return self.__points[0].x != self.__points[1].x and self.__points[0].y != self.__points[1].y
+
+    def get_points(self) -> iter:
+        dx = (self.__points[1].x - self.__points[0].x) // max(abs(self.__points[1].x - self.__points[0].x),
+                                                              abs(self.__points[1].y - self.__points[0].y), 1)
+        dy = (self.__points[1].y - self.__points[0].y) // max(abs(self.__points[1].x - self.__points[0].x),
+                                                              abs(self.__points[1].y - self.__points[0].y), 1)
+        dxdy = Coord(dx, dy)
+        point = self.__points[0]
+        while True:
+            yield point
+            if point == self.__points[1]:
+                break
+            point += dxdy
+
+    def __repr__(self):
+        return f"Line: {self.__points[0]} - {self.__points[1]}"
 
 
 class Seabottom:
-    def __init__(self, points: list[tuple[XY, XY]]):
-        self.__points = points
-        self.__x_max = 0
-        self.__y_max = 0
-        for p in self.__points:
-            self.__x_max = max(p[0][0], p[1][0], self.__x_max)
-            self.__y_max = max(p[0][1], p[1][1], self.__y_max)
-        self.__x_max += 1
-        self.__y_max += 1
-        self.__grid = [[0 for _ in range(self.__x_max)] for _ in range(self.__y_max)]
-        for p in self.__points:
-            dx = (p[1][0] - p[0][0]) // max(abs(p[1][0] - p[0][0]), abs(p[1][1] - p[0][1]), 1)
-            dy = (p[1][1] - p[0][1]) // max(abs(p[1][0] - p[0][0]), abs(p[1][1] - p[0][1]), 1)
-            # Note - '1' as third max argument in divider in case of start point == stop point
-            x = p[0][0]
-            y = p[0][1]
-            while True:
-                self.__grid[y][x] += 1
-                if (x, y) == p[1]:
-                    break
-                x += dx
-                y += dy
+    def __init__(self, inputlines: list[str]):
+        self.__lines = [Line(*list(map(int, re.findall(r"\d+", line)))) for line in inputlines]
+        self.__grid = [[0 for _ in range(Line.max_x + 1)] for _ in range(Line.max_y + 1)]
 
-    def getscore(self) -> int:
+    def get_score(self, use_diagonal: bool = False) -> int:
+        for line in self.__lines:
+            if line.is_diagonal() == use_diagonal:
+                for p in line.get_points():
+                    self.__grid[p.y][p.x] += 1
         retval = 0
         for y in self.__grid:
             for x in y:
@@ -44,20 +67,10 @@ class Seabottom:
 
 
 def main() -> int:
-    lines: list[tuple[XY, XY]] = []
-    with open('../Inputfiles/aoc5.txt') as file:
-        for line in file.read().strip('\n').splitlines():
-            x1, y1, x2, y2 = list(map(int, re.findall(r"\d+", line)))
-            lines.append(((x1, y1), (x2, y2)))
-    p1_lines = []
-    for line in lines:
-        if line[0][0] == line[1][0] or line[0][1] == line[1][1]:
-            p1_lines.append(line)
-    p1_bottom = Seabottom(p1_lines)
-    print("Part 1: ", p1_bottom.getscore())
-
-    p2_bottom = Seabottom(lines)
-    print("Part 2: ", p2_bottom.getscore())
+    with open('../Inputfiles/aoc5.txt', 'r') as file:
+        seabottom = Seabottom(file.read().strip('\n').splitlines())
+    print(f"Part 1: {seabottom.get_score()}")
+    print(f"Part 2: {seabottom.get_score(True)}")
     return 0
 
 
