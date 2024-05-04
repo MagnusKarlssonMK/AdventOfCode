@@ -8,7 +8,9 @@ import sys
 
 
 class Cavesystem:
-    def __init__(self, pathlist: list[tuple[str, str]]):
+    def __init__(self, rawstr: str) -> None:
+        pathlist: list[tuple[str, str]] = [(node[0], node[1]) for node in
+                                           [line.split('-') for line in rawstr.splitlines()]]
         self.__adj: dict[str: list[str]] = {}
         for nodes in pathlist:
             for i in range(2):
@@ -53,8 +55,7 @@ class Cavesystem:
 
 def main() -> int:
     with open('../Inputfiles/aoc12.txt', 'r') as file:
-        paths = [(node[0], node[1]) for node in [line.split('-') for line in file.read().strip('\n').splitlines()]]
-    cave = Cavesystem(paths)
+        cave = Cavesystem(file.read().strip('\n'))
     print("Part 1:", cave.findallpaths())
     print("Part 2:", cave.findallpaths(1))
     return 0
