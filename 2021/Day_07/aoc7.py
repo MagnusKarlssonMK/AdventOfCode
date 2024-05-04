@@ -8,22 +8,32 @@ import sys
 import statistics
 
 
-def calibrationcost_p1(nbrlist: list[int], calnbr: int) -> int:
-    return sum([abs(nbr - calnbr) for nbr in nbrlist])
+class CrabArmy:
+    def __init__(self, rawstr: str):
+        self.__crabs = sorted(list(map(int, rawstr.split(','))))
 
+    def get_calibration_cost(self, scaling_fuel_rate: bool = False) -> int:
+        if not scaling_fuel_rate:
+            # Part 1
+            calnbr = int(statistics.median(self.__crabs))
+            return sum([abs(crab - calnbr) for crab in self.__crabs])
+        else:
+            # Part 2
+            distance = int(statistics.mean(self.__crabs))
+            cost = min(self.__scaling_cost(distance),
+                       self.__scaling_cost(distance - 1),
+                       self.__scaling_cost(distance + 1))
+            return cost
 
-def calibrationcost_p2(nbrlist: list[int], calnbr: int) -> int:
-    return sum([d * (d + 1) // 2 for d in [abs(nbr - calnbr) for nbr in nbrlist]])
+    def __scaling_cost(self, calnbr) -> int:
+        return sum([d * (d + 1) // 2 for d in [abs(crab - calnbr) for crab in self.__crabs]])
 
 
 def main() -> int:
     with open('../Inputfiles/aoc7.txt', 'r') as file:
-        nbrs = sorted(list(map(int, file.read().strip('\n').split(','))))
-        print("Part 1: ", calibrationcost_p1(nbrs, int(statistics.median(nbrs))))
-        p2_dist = int(statistics.mean(nbrs))
-        p2 = min(calibrationcost_p2(nbrs, p2_dist), calibrationcost_p2(nbrs, p2_dist - 1),
-                 calibrationcost_p2(nbrs, p2_dist + 1))
-        print("Part 2: ", p2)
+        crabs = CrabArmy(file.read().strip('\n'))
+    print(f"Part 1: {crabs.get_calibration_cost()}")
+    print(f"Part 2: {crabs.get_calibration_cost(True)}")
     return 0
 
 
