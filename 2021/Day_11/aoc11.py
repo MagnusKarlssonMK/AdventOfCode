@@ -8,11 +8,11 @@ import sys
 
 
 class Cavern:
-    def __init__(self, indata: list[str]):
-        self.grid = [[int(c) for c in line] for line in indata]
-        self.__height = len(self.grid)
-        self.__width = len(self.grid[0])
-        self.flashcount = 0
+    def __init__(self, rawstr: str) -> None:
+        self.__grid = [[int(c) for c in line] for line in rawstr.splitlines()]
+        self.__height = len(self.__grid)
+        self.__width = len(self.__grid[0])
+        self.__flashcount = 0
         self.__flashed: set[tuple[int, int]] = set()
         self.__adj: dict[tuple[int, int]: list[tuple[int, int]]] = {}
         for row in range(self.__height):
@@ -27,12 +27,12 @@ class Cavern:
                 if (r, c) != (row, col):
                     yield r, c
 
-    def takestep(self) -> bool:
+    def __takestep(self) -> bool:
         for key in self.__adj:
             if key not in self.__flashed:
                 self.__increment(*key)
         flashed = len(self.__flashed)
-        self.flashcount += flashed
+        self.__flashcount += flashed
         self.__flashed = set()
         if flashed == self.__height * self.__width:
             return True
@@ -40,28 +40,32 @@ class Cavern:
 
     def __increment(self, row: int, col: int):
         if (row, col) not in self.__flashed:
-            if self.grid[row][col] < 9:
-                self.grid[row][col] += 1
+            if self.__grid[row][col] < 9:
+                self.__grid[row][col] += 1
             else:
-                self.grid[row][col] = 0
+                self.__grid[row][col] = 0
                 self.__flashed.add((row, col))
                 [self.__increment(r, c) for r, c in self.__adj[(row, col)]]
 
+    def get_flashcounts(self) -> tuple[int, int]:
+        p2 = 0
+        p1 = -1
+        while not self.__takestep():
+            p2 += 1
+            if p2 == 100:
+                p1 = self.__flashcount
+        return p1, p2 + 1
+
     def __str__(self):
-        return f"{''.join([''.join([str(n) for n in row]) + '\n' for row in self.grid])}"
+        return f"{''.join([''.join([str(n) for n in row]) + '\n' for row in self.__grid])}"
 
 
 def main() -> int:
     with open('../Inputfiles/aoc11.txt', 'r') as file:
-        cavern = Cavern(file.read().strip('\n').splitlines())
-    count = 0
-    p1 = -1
-    while not cavern.takestep():
-        count += 1
-        if count == 100:
-            p1 = cavern.flashcount
+        cavern = Cavern(file.read().strip('\n'))
+    p1, p2 = cavern.get_flashcounts()
     print(f"Part 1: {p1}")
-    print(f"Part 2: {count + 1}")
+    print(f"Part 2: {p2}")
     return 0
 
 
