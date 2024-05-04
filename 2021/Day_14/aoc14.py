@@ -7,48 +7,47 @@ from collections import Counter
 
 
 class Polymer:
-    def __init__(self, template: str, rules: list[tuple[str, str]]):
-        self.template = template
-        self.rules: dict[str: str] = {}
-        self.paircount: dict[str: int] = {}
+    def __init__(self, rawstr: str) -> None:
+        self.__template, r = rawstr.split('\n\n')
+        rules = [(left, right) for left, right in [line.split(' -> ') for line in r.splitlines()]]
+        self.__rules: dict[str: str] = {}
+        self.__paircount: dict[str: int] = {}
         for left, right in rules:
-            self.rules[left] = right
+            self.__rules[left] = right
         self.reset()
 
-    def reset(self):
-        self.paircount.clear()
-        for i in range(len(self.template) - 1):
-            pair = self.template[i] + self.template[i + 1]
+    def reset(self) -> None:
+        self.__paircount.clear()
+        for i in range(len(self.__template) - 1):
+            pair = self.__template[i] + self.__template[i + 1]
             self.__addpair(pair, 1)
 
-    def __addpair(self, pair: str, count: int):
-        if pair in self.paircount:
-            self.paircount[pair] += count
+    def __addpair(self, pair: str, count: int) -> None:
+        if pair in self.__paircount:
+            self.__paircount[pair] += count
         else:
-            self.paircount[pair] = count
+            self.__paircount[pair] = count
 
-    def takesteps(self, count: int):
+    def takesteps(self, count: int) -> None:
         for _ in range(count):
             buffer = []
-            for key in self.paircount:
-                buffer.append((key[0] + self.rules[key], self.paircount[key]))
-                buffer.append((self.rules[key] + key[1], self.paircount[key]))
-            self.paircount.clear()
+            for key in self.__paircount:
+                buffer.append((key[0] + self.__rules[key], self.__paircount[key]))
+                buffer.append((self.__rules[key] + key[1], self.__paircount[key]))
+            self.__paircount.clear()
             [self.__addpair(*b) for b in buffer]
 
     def getscore(self) -> int:
         countlist = Counter()
-        for pair in list(self.paircount.keys()):
-            countlist[pair[0]] += self.paircount[pair]
-        countlist[self.template[-1]] += 1
+        for pair in list(self.__paircount.keys()):
+            countlist[pair[0]] += self.__paircount[pair]
+        countlist[self.__template[-1]] += 1
         return max(countlist.values()) - min(countlist.values())
 
 
 def main() -> int:
     with open('../Inputfiles/aoc14.txt', 'r') as file:
-        template, r = file.read().strip('\n').split('\n\n')
-    rules = [(left, right) for left, right in [line.split(' -> ') for line in r.splitlines()]]
-    poly = Polymer(template, rules)
+        poly = Polymer(file.read().strip('\n'))
     poly.takesteps(10)
     print(f"Part 1: {poly.getscore()}")
     poly.reset()
