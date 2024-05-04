@@ -9,9 +9,6 @@ converting to their corresponding closing brackets.
 """
 import sys
 
-OpeningBrackets = ('(', '{', '<', '[')
-BracketMap = {'(': ')', '{': '}', '<': '>', '[': ']'}
-
 
 def getsyntaxscore(char: str) -> int:
     scoretable = {')': 3, ']': 57, '}': 1197, '>': 25137}
@@ -28,7 +25,10 @@ def getautocompletescore(char: str) -> int:
 
 
 class NavigationLine:
-    def __init__(self, newline: str):
+    OPENING_BRACKETS = ('(', '{', '<', '[')
+    BRACKET_MAP = {'(': ')', '{': '}', '<': '>', '[': ']'}
+
+    def __init__(self, newline: str) -> None:
         self.line = newline
 
     def validateline(self) -> tuple[int, int]:
@@ -41,11 +41,11 @@ class NavigationLine:
         return 0, idx
 
     def validatechunk(self, startidx: int = 0) -> tuple[int, int]:
-        if self.line[startidx] not in OpeningBrackets:
+        if self.line[startidx] not in NavigationLine.OPENING_BRACKETS:
             return 2, getsyntaxscore(self.line[startidx])
         if startidx >= len(self.line) - 1:
             return 1, startidx + 1
-        if self.line[startidx + 1] == BracketMap[self.line[startidx]]:
+        if self.line[startidx + 1] == NavigationLine.BRACKET_MAP[self.line[startidx]]:
             return 0, startidx + 1
         currentidx = startidx + 1
         while currentidx < len(self.line):
@@ -53,9 +53,9 @@ class NavigationLine:
             if res == 0:
                 if i + 1 >= len(self.line):
                     return 1, i
-                if self.line[i + 1] == BracketMap[self.line[startidx]]:
+                if self.line[i + 1] == NavigationLine.BRACKET_MAP[self.line[startidx]]:
                     return 0, i + 1
-                elif self.line[i + 1] not in OpeningBrackets:
+                elif self.line[i + 1] not in NavigationLine.OPENING_BRACKETS:
                     return 2, getsyntaxscore(self.line[i + 1])
                 currentidx = i + 1
             else:
@@ -67,7 +67,7 @@ class NavigationLine:
         count = 0
         close_br = ""
         for idx in reversed(range(len(self.line))):
-            if line[idx] not in OpeningBrackets:
+            if line[idx] not in NavigationLine.OPENING_BRACKETS:
                 if count == 0:
                     close_br = line[idx]
                     count = 1
@@ -75,10 +75,10 @@ class NavigationLine:
                     count += 1
                 line.pop(idx)
             elif count > 0:
-                if BracketMap[line[idx]] == close_br:
+                if NavigationLine.BRACKET_MAP[line[idx]] == close_br:
                     count -= 1
                 line.pop(idx)
-        resultlist = [getautocompletescore(BracketMap[c]) for c in reversed(line)]
+        resultlist = [getautocompletescore(NavigationLine.BRACKET_MAP[c]) for c in reversed(line)]
         retval = 0
         for i in resultlist:
             retval *= 5
@@ -86,21 +86,32 @@ class NavigationLine:
         return retval
 
 
+class NavigationSubsystem:
+    def __init__(self, rawstr: str) -> None:
+        self.__lines: list[str] = rawstr.splitlines()
+        self.__incomplete_lines: list[NavigationLine] = []
+
+    def get_corrupted_score(self) -> int:
+        retval = 0
+        for line in self.__lines:
+            newline = NavigationLine(line)
+            result, score = newline.validateline()
+            if result == 2:
+                retval += score
+            elif result == 1:
+                self.__incomplete_lines.append(newline)
+        return retval
+
+    def get_middle_score(self) -> int:
+        scores = sorted([incomplete.autocomplete() for incomplete in self.__incomplete_lines])
+        return scores[len(scores) // 2]
+
+
 def main() -> int:
     with open('../Inputfiles/aoc10.txt', 'r') as file:
-        lines = file.read().strip('\n').splitlines()
-    p1_score = 0
-    incompletelines: list[NavigationLine] = []
-    for line in lines:
-        newline = NavigationLine(line)
-        result, score = newline.validateline()
-        if result == 2:
-            p1_score += score
-        elif result == 1:
-            incompletelines.append(newline)
-    print(f"Part 1: {p1_score}")
-    p2_scores = sorted([inc_line.autocomplete() for inc_line in incompletelines])
-    print(f"Part 2: {p2_scores[len(p2_scores) // 2]}")
+        mysystem = NavigationSubsystem(file.read().strip('\n'))
+    print(f"Part 1: {mysystem.get_corrupted_score()}")
+    print(f"Part 2: {mysystem.get_middle_score()}")
     return 0
 
 
