@@ -6,11 +6,18 @@ also not clear what 'its' is referring to - the value or the (sub)package? Or th
 """
 import sys
 from enum import Enum
+from math import prod
 
 
 class PacketType(Enum):
+    SUM = 0
+    PRODUCT = 1
+    MIN = 2
+    MAX = 3
     LITERAL_VALUE = 4
-    OPERATION = 0
+    GT = 5
+    LT = 6
+    EQ = 7
 
 
 class Packet:
@@ -27,10 +34,21 @@ class Packet:
         if self.packet_type == PacketType.LITERAL_VALUE:
             return self.literal_value
         else:
-            return sum([sp.get_value() for sp in self.subpackets])
-
-    def __repr__(self):
-        return f"Ver: {self.version} - IsLiteral: {self.packet_type} - Val: {self.literal_value}"
+            match self.packet_type:
+                case PacketType.SUM:
+                    return sum([sp.get_value() for sp in self.subpackets])
+                case PacketType.PRODUCT:
+                    return prod([sp.get_value() for sp in self.subpackets])
+                case PacketType.MIN:
+                    return min([sp.get_value() for sp in self.subpackets])
+                case PacketType.MAX:
+                    return max([sp.get_value() for sp in self.subpackets])
+                case PacketType.GT:
+                    return 1 if self.subpackets[0].get_value() > self.subpackets[1].get_value() else 0
+                case PacketType.LT:
+                    return 1 if self.subpackets[0].get_value() < self.subpackets[1].get_value() else 0
+                case PacketType.EQ:
+                    return 1 if self.subpackets[0].get_value() == self.subpackets[1].get_value() else 0
 
 
 class BitsDecoder:
@@ -56,7 +74,7 @@ class BitsDecoder:
         else:
             length_type = int(self.__bitstream[head])
             head += 1
-            newpacket = Packet(version, PacketType.OPERATION)
+            newpacket = Packet(version, PacketType(packet_type))
             if length_type == 0:
                 subpacket_length = int(self.__bitstream[head:head+15], 2)
                 head += 15
@@ -96,8 +114,8 @@ def main() -> int:
     with open('../Inputfiles/aoc16.txt', 'r') as file:
         decoder = BitsDecoder(file.read().strip('\n'))
     mypacket = decoder.decodestream()
-    print(mypacket)
     print(f"Part 1: {decoder.versionsum}")
+    print(f"Part 2: {mypacket.get_value()}")
     return 0
 
 
