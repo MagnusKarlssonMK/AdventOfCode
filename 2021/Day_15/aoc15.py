@@ -1,17 +1,19 @@
 """
 Part 1: Pretty much a basic Djikstra exercise.
 Part 2: Expand the graph according to the updated rules and re-run the shortest-path calculation.
-I chose to convert the grid to an adjacency list format, anticipating that to be beneficial for Part 2, but it sort
-of worked the other way, and it would have probably been faster to keep it in the small grid and generate values on
-the fly for part 2 with div / mod.
+I chose to convert the grid to an adjacency list format, anticipating that to be beneficial for Part 2. Which it turned
+out not to quite be the case, but it's actually faster than keeping it in a basic grid format and calculating neighbors
+on the fly.
+As a small potential optimization, both parts could be kept in the same 'expanded' object and an input parameter
+to the 'get' function could set the limits on which parts of the grid can be used.
 """
 import sys
 from heapq import heappop, heappush
 
 
 class Cavegrid:
-    def __init__(self, griddata: list[str], expanded: bool = False):
-        grid = griddata
+    def __init__(self, rawstr: str, expanded: bool = False) -> None:
+        grid = rawstr.splitlines()
         self.__height = len(grid)
         self.__width = len(grid[0])
         if expanded:
@@ -27,12 +29,11 @@ class Cavegrid:
                         row_mod = (row + direction[0]) % len(grid)
                         col_div = (col + direction[1]) // len(grid[0])
                         col_mod = (col + direction[1]) % len(grid[0])
-                        value = int(grid[row_mod][col_mod]) + row_div + col_div
-                        if value > 9:  # Note - wrap around to 1, not 0
-                            value -= 9
+                        # Note - value wraps around to 1, not 0
+                        value = 1 + (int(grid[row_mod][col_mod]) - 1 + row_div + col_div) % 9
                         self.__adj[(row, col)].append((row + direction[0], col + direction[1], value))
 
-    def getminimumrisk(self) -> int:
+    def get_minimum_risk(self) -> int:
         start = 0, 0
         end = self.__height - 1, self.__width - 1
         costs = {start: 0}
@@ -55,11 +56,11 @@ class Cavegrid:
 
 def main() -> int:
     with open('../Inputfiles/aoc15.txt', 'r') as file:
-        indata = file.read().strip('\n').splitlines()
+        indata = file.read().strip('\n')
         cave = Cavegrid(indata)
         largecave = Cavegrid(indata, True)
-    print("Part 1:", cave.getminimumrisk())
-    print("Part 2:", largecave.getminimumrisk())
+    print("Part 1:", cave.get_minimum_risk())
+    print("Part 2:", largecave.get_minimum_risk())
     return 0
 
 
