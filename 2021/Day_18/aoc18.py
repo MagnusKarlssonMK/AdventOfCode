@@ -1,5 +1,8 @@
 """
-
+Resisting the temptation to build a tree, instead storing the numbers as a flat list of tuples of value and level
+(tuple represented by a dataclass to easier access and change the values). Pairs can then be identified by comparing
+levels of adjacent entries when scanning the tuples from left to right. That way it becomes almost trivial to explode
+and split numbers, compared to how it would have been in a tree.
 """
 import sys
 from dataclasses import dataclass
@@ -30,11 +33,7 @@ class Snailnumber:
         changed = True
         while changed:
             self.__explode()
-            # print("After explode:")
-            # print(self.__nbrs)
             changed = self.__split()
-            # print("After split:")
-            # print(self.__nbrs)
 
     def __explode(self) -> None:
         i = 0
@@ -57,6 +56,7 @@ class Snailnumber:
                 right = SingleNbr((self.__nbrs[i].nbr + 1) // 2, self.__nbrs[i].level + 1)
                 self.__nbrs[i] = left
                 self.__nbrs.insert(i+1, right)
+                # Note: we need to run the explosion again after every single split, we can't do all splits in one go
                 return True
             i += 1
         return False
@@ -67,8 +67,6 @@ class Snailnumber:
             newnbr.__nbrs.append(SingleNbr(nbr.nbr, nbr.level + 1))
         for nbr in other.__nbrs:
             newnbr.__nbrs.append(SingleNbr(nbr.nbr, nbr.level + 1))
-        # print("Before reduce:")
-        # print(newnbr)
         newnbr.__reducenbr()
         return newnbr
 
@@ -100,15 +98,25 @@ class Calculator:
         sumvalue = self.__nbrs[0] + self.__nbrs[1]
         for i in range(2, len(self.__nbrs)):
             sumvalue += self.__nbrs[i]
-        print(sumvalue)
         # Calculate value
         return sumvalue.get_magnitude()
+
+    def get_maximum_magnitude(self) -> int:
+        maxmag = 0
+        for i in range(len(self.__nbrs)):
+            for j in range(len(self.__nbrs)):
+                if i == j:
+                    continue
+                val = self.__nbrs[i] + self.__nbrs[j]
+                maxmag = max(maxmag, val.get_magnitude())
+        return maxmag
 
 
 def main() -> int:
     with open('../Inputfiles/aoc18.txt', 'r') as file:
         lines = Calculator(file.read().strip('\n'))
     print(f"Part 1: {lines.get_finalsum()}")
+    print(f"Part 2: {lines.get_maximum_magnitude()}")
     return 0
 
 
