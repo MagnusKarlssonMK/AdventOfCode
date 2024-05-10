@@ -4,36 +4,46 @@ the specified conditions.
 """
 import sys
 import re
+from dataclasses import dataclass
 
-Colors = {"red", "green", "blue"}
+
+@dataclass(frozen=True)
+class Hand:
+    red: int
+    blue: int
+    green: int
+
+    def is_valid(self) -> bool:
+        return all([self.red <= 12, self.blue <= 14, self.green <= 13])
+
+    def get_power(self) -> int:
+        return self.red * self.blue * self.green
+
+    def get_max(self, other: "Hand") -> "Hand":
+        return Hand(max(self.red, other.red), max(self.blue, other.blue), max(self.green, other.green))
 
 
 class Game:
-    def __init__(self, inputstr: str):
+    __COLORS = ["red", "blue", "green"]
+
+    def __init__(self, inputstr: str) -> None:
         gameidstring, handstring = inputstr.split(": ")
         self.gameid = int(gameidstring.split()[1])
-        self.hands = []
+        self.__hands = []
         for hand in handstring.split("; "):
-            self.hands.append(dict(red=0, green=0, blue=0))
+            newhand = {color: 0 for color in Game.__COLORS}
             for count, color in re.findall(r"(\d+) (\w+)", hand):
-                self.hands[-1][color] = int(count)
+                newhand[color] = int(count)
+            self.__hands.append(Hand(newhand[Game.__COLORS[0]], newhand[Game.__COLORS[1]], newhand[Game.__COLORS[2]]))
 
-    def ishandvalid(self) -> bool:
-        colorlimits = {'green': 13, 'blue': 14, 'red': 12}
-        for hand in self.hands:
-            if any(hand[color] > colorlimits[color] for color in Colors):
-                return False
-        return True
+    def is_valid(self) -> bool:
+        return all([hand.is_valid() for hand in self.__hands])
 
-    def gethandpower(self) -> int:
-        mins = dict(red=0, green=0, blue=0)
-        for hand in self.hands:
-            for color in Colors:
-                mins[color] = max(mins[color], hand[color])
-        retval = 1
-        for color in Colors:
-            retval *= mins[color]
-        return retval
+    def get_power(self) -> int:
+        minimum_required = Hand(0, 0, 0)
+        for hand in self.__hands:
+            minimum_required = hand.get_max(minimum_required)
+        return minimum_required.get_power()
 
 
 def main() -> int:
@@ -43,12 +53,12 @@ def main() -> int:
     with open("../Inputfiles/aoc2.txt", "r") as file:
         for line in file.read().strip('\n').splitlines():
             newgame = Game(line)
-            if newgame.ishandvalid():
+            if newgame.is_valid():
                 totalsum_part1 += newgame.gameid
-            totalpower_part2 += newgame.gethandpower()
+            totalpower_part2 += newgame.get_power()
 
-    print("Part1:", totalsum_part1)
-    print("Part2:", totalpower_part2)
+    print(f"Part1: {totalsum_part1}")
+    print(f"Part2: {totalpower_part2}")
     return 0
 
 
