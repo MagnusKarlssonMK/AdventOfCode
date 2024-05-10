@@ -1,41 +1,46 @@
 """
 Basically decodes the input into a Scratchcard class, and then counts the scores according to the rules.
-Having a class for the card is a bit over the top, I expected it to be beneficial for part 2 before seeing it.
 """
 import sys
 import re
 
 
 class Scratchcard:
-    def __init__(self, inputstring: str):
-        self.drawnumbers = []
+    def __init__(self, inputstring: str) -> None:
         cardstr, reststr = inputstring.split(":")
         self.cardid = int(re.findall(r"\d+", cardstr)[0])
         winstr, drawstr = reststr.split(" | ")
-        self.winningnumbers = list(map(int, [nbr for nbr in winstr.split()]))
-        self.drawnumbers = list(map(int, [nbr for nbr in drawstr.split()]))
-        self.wincount = len(set(self.winningnumbers) & set(self.drawnumbers))
+        winningnumbers = set(map(int, [nbr for nbr in winstr.split()]))
+        drawnumbers = set(map(int, [nbr for nbr in drawstr.split()]))
+        self.wincount = len(winningnumbers & drawnumbers)
         self.score = 2 ** (self.wincount - 1) if self.wincount > 0 else 0
 
 
-def main() -> int:
-    totalscore = 0
-    totalnbrofcards = 0
-    copylist = [0 for _ in range(10)]
+class Cardpile:
+    def __init__(self, rawstr: str) -> None:
+        self.__cards = [Scratchcard(line) for line in rawstr.splitlines()]
 
-    with open("../Inputfiles/aoc4.txt", "r") as file:
-        for line in file.read().strip('\n').splitlines():
-            newcard = Scratchcard(line)
+    def get_totalpoints(self) -> int:
+        return sum([card.score for card in self.__cards])
+
+    def get_cardcount(self) -> int:
+        total_nbr = 0
+        copylist = [0 for _ in range(10)]
+        for card in self.__cards:
             newcardcount = 1 + copylist.pop(0)
-            totalnbrofcards += newcardcount
+            total_nbr += newcardcount
             copylist.append(0)
-            for copyidx in range(len(copylist)):
-                if copyidx < newcard.wincount:
-                    copylist[copyidx] += newcardcount
-            totalscore += newcard.score
+            for i, _ in enumerate(copylist):
+                if i < card.wincount:
+                    copylist[i] += newcardcount
+        return total_nbr
 
-    print("Part1:", totalscore)
-    print("Part2:", totalnbrofcards)
+
+def main() -> int:
+    with open("../Inputfiles/aoc4.txt", "r") as file:
+        pile = Cardpile(file.read().strip('\n'))
+    print(f"Part 1: {pile.get_totalpoints()}")
+    print(f"Part 2: {pile.get_cardcount()}")
     return 0
 
 
