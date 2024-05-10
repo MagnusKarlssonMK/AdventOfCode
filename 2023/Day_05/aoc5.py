@@ -2,83 +2,89 @@
 Stores the input as ranges in a number of maps. For part 1 it's mainly a matter of running the seeds through the maps
 and see what it has been translated to in the other end.
 For part 2 however it gets a lot more messy when the seeds are ranges themselves, which then gets split into other
-ranges as they travel through the map filters.
-Consider changing the maprange() function to a 'yield' iterator kind of return instead, so the caller can put the
-result into a list, rather than having the function returning a nested list like it is now which then needs to be
-flattened before processed further.
+ranges as they travel through the map filters, which means a bit of recursion when evaluating the filter translations.
 """
 import sys
-from itertools import chain
+from dataclasses import dataclass
 
-Mapfilter = tuple[range, int]
+
+@dataclass(frozen=True)
+class Mapfilter:
+    mask: range
+    offset: int
 
 
 class Map:
-    def __init__(self, mapinput: list[str]):
+    def __init__(self, mapinput: list[str]) -> None:
         self.source, self.destination = mapinput[0].strip(" map:").split("-to-")
-        self.filterlist: list[Mapfilter] = []
+        self.__filterlist: list[Mapfilter] = []
         for line in mapinput[1:]:
             dest_start, source_start, size = map(int, line.split())
-            self.filterlist.append((range(source_start, source_start + size), dest_start - source_start))
+            self.__filterlist.append(Mapfilter(range(source_start, source_start + size), dest_start - source_start))
 
-    def mapnumber(self, inputnbr: int) -> int:
-        for rangemask, offset in self.filterlist:
-            if inputnbr in rangemask:
-                return inputnbr + offset
-        return inputnbr
+    def map_number(self, nbr: int) -> int:
+        for mapfilter in self.__filterlist:
+            if nbr in mapfilter.mask:
+                return nbr + mapfilter.offset
+        return nbr
 
-    def maprange(self, inputrange: range) -> list[range]:
-        for rangemask, offset in self.filterlist:
-            a: range = rangemask
-            b: range = inputrange
-            if a.start < b.stop and a.stop > b.start:  # At least some overlap
-                if a.start <= b.start and b.stop <= a.stop:  # Filter completely covers input range
-                    return [range(b.start + offset, b.stop + offset)]
-                if b.start < a.start and a.stop < b.stop:  # Input range sticks out on both sides of filter
-                    return [*self.maprange(range(b.start, a.start)),
-                            range(a.start + offset, a.stop + offset),
-                            *self.maprange(range(a.stop, b.stop))]
-                if a.start <= b.start and a.stop < b.stop:  # Input range sticks out only above the filter
-                    return [range(b.start + offset, a.stop + offset),
-                            *self.maprange(range(a.stop, b.stop))]
-                if b.start < a.start and b.stop <= a.stop:  # Input range sticks out only below the filter
-                    return [*self.maprange(range(b.start, a.start)),
-                            range(a.start + offset, b.stop + offset)]
+    def map_range(self, i: range) -> iter:
+        for f in self.__filterlist:
+            if f.mask.start < i.stop and f.mask.stop > i.start:  # At least some overlap
+                if f.mask.start <= i.start and i.stop <= f.mask.stop:  # Filter completely covers input range
+                    yield range(i.start + f.offset, i.stop + f.offset)
+                    return
+                if i.start < f.mask.start and f.mask.stop < i.stop:  # Input range sticks out on both sides
+                    yield from self.map_range(range(i.start, f.mask.start))
+                    yield range(f.mask.start + f.offset, f.mask.stop + f.offset)
+                    yield from self.map_range(range(f.mask.stop, i.stop))
+                    return
+                if f.mask.start <= i.start and f.mask.stop < i.stop:  # Input range sticks out only above
+                    yield range(i.start + f.offset, f.mask.stop + f.offset)
+                    yield from self.map_range(range(f.mask.stop, i.stop))
+                    return
+                if i.start < f.mask.start and i.stop <= f.mask.stop:  # Input range sticks out only below
+                    yield from self.map_range(range(i.start, f.mask.start))
+                    yield range(f.mask.start + f.offset, i.stop + f.offset)
+                    return
             # else - no overlap, try next filter
-        return [inputrange]
+        yield i
 
-    def __str__(self):
-        return f"From: {self.source} To: {self.destination} NbrOfFilters: {len(self.filterlist)}"
+
+class Almanac:
+    def __init__(self, rawstr: str) -> None:
+        blocks = rawstr.split('\n\n')
+        self.__seeds: list[int] = [int(seed) for seed in blocks[0].strip("seeds: ").split()]
+        self.__maps = {m.source: m for m in [Map(block.splitlines()) for block in blocks[1:]]}
+
+    def get_lowest_location(self) -> int:
+        currentseeds = list(self.__seeds)
+        currenttype = 'seed'
+        while currenttype != 'location':
+            tmp = [self.__maps[currenttype].map_number(seed) for seed in currentseeds]
+            currentseeds = tmp
+            currenttype = self.__maps[currenttype].destination
+        return min(currentseeds)
+
+    def get_lowest_ranged_location(self) -> int:
+        seedranges: list[range] = [range(self.__seeds[idx], self.__seeds[idx] + self.__seeds[idx + 1])
+                                   for idx in range(0, len(self.__seeds), 2)]
+        currenttype = 'seed'
+        while currenttype != 'location':
+            tmp = []
+            for s in seedranges:
+                for newrange in self.__maps[currenttype].map_range(s):
+                    tmp.append(newrange)
+            seedranges = tmp
+            currenttype = self.__maps[currenttype].destination
+        return sorted(seedranges, key=lambda r: r.start)[0].start
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc5.txt", "r") as file:
-        blocks = file.read().strip('\n').split('\n\n')
-    seedlist: list[int] = [int(seed) for seed in blocks[0].strip("seeds: ").split()]
-    seedrangelist: list[range] = [range(seedlist[idx], seedlist[idx] + seedlist[idx + 1])
-                                  for idx in range(0, len(seedlist), 2)]
-    maplist: list[Map] = [Map(block.splitlines()) for block in blocks[1:]]
-
-    result_p1 = [seedlist]
-    """ Note: this step assumes that all maps are stored in order. A more advanced and safe approach could
-        be to match the 'source' and 'destination' attributes in the maps. """
-    for nextmap in maplist:
-        tmplist = [nextmap.mapnumber(seed) for seed in result_p1[-1]]
-        result_p1.append(tmplist)
-
-    print("Part1:", min(result_p1[-1]))
-
-    tmp = list(seedrangelist)
-    result_p2 = None
-    for nextmap in maplist:
-        tmp2 = []
-        while len(tmp) > 0:
-            nextrange = tmp.pop(0)
-            tmp2.append(nextmap.maprange(nextrange))
-        tmp = list(chain.from_iterable(tmp2))
-        result_p2 = sorted(tmp, key=lambda r: r.start)
-    print("Part2:", result_p2[0].start)
-
+    with open('../Inputfiles/aoc5.txt') as file:
+        myalmanac = Almanac(file.read().strip('\n'))
+    print(f"Part 1: {myalmanac.get_lowest_location()}")
+    print(f"Part 2: {myalmanac.get_lowest_ranged_location()}")
     return 0
 
 
