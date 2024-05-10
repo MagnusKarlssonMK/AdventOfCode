@@ -8,29 +8,30 @@ import math
 
 
 class NodeNetwork:
-    def __init__(self, rawinput: str):
-        self.nodes: dict[str: dict[str: str]] = {}
-        for line in rawinput.splitlines():
+    def __init__(self, rawstr: str) -> None:
+        self.__nodes: dict[str: dict[str: str]] = {}
+        self.__sequence, lines = rawstr.split('\n\n')
+        for line in lines.splitlines():
             if len(line) > 1:
                 a, b, c = re.findall(r"\w+", line)
-                self.nodes[a] = {'L': b, 'R': c}
+                self.__nodes[a] = {'L': b, 'R': c}
 
-    def stepcount_zzz(self, seq: str) -> int:
+    def stepcount_zzz(self) -> int:
         location = 'AAA'
         stepcount = 0
         while location != 'ZZZ':
-            location = self.nodes[location][seq[stepcount % len(seq)]]
+            location = self.__nodes[location][self.__sequence[stepcount % len(self.__sequence)]]
             stepcount += 1
         return stepcount
 
-    def stepcount_atoz(self, seq: str) -> int:
-        location = [strwa for strwa in list(self.nodes.keys()) if strwa[2] == 'A']
+    def stepcount_atoz(self) -> int:
+        location = [node for node in self.__nodes if node[-1] == 'A']
         cycles = []
         for startpoint in location:
             stepcount = 0
             currentloc = startpoint
-            while currentloc[2] != 'Z':
-                currentloc = self.nodes[currentloc][seq[stepcount % len(seq)]]
+            while currentloc[-1] != 'Z':
+                currentloc = self.__nodes[currentloc][self.__sequence[stepcount % len(self.__sequence)]]
                 stepcount += 1
             cycles.append(stepcount)
         return math.lcm(*cycles)
@@ -38,11 +39,10 @@ class NodeNetwork:
 
 def main() -> int:
     with open('../Inputfiles/aoc8.txt', 'r') as file:
-        sequence, lines = file.read().strip('\n').split('\n\n')
-        mynodes = NodeNetwork(lines)
+        mynodes = NodeNetwork(file.read().strip('\n'))
 
-    print("Part1: ", mynodes.stepcount_zzz(sequence))
-    print("Part2: ", mynodes.stepcount_atoz(sequence))
+    print(f"Part 1: {mynodes.stepcount_zzz()}")
+    print(f"Part 2: {mynodes.stepcount_atoz()}")
     return 0
 
 
