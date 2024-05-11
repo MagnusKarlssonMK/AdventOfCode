@@ -25,22 +25,28 @@ def calculatecombinations(springstring: str, inputkeys: tuple[int]) -> int:
     return skip + calculatecombinations(springstring[keylength + 1:].lstrip("."), tuple(inputkeys[1:]))
 
 
+class SpringRecord:
+    def __init__(self, rawstr: str) -> None:
+        self.__rows = []
+        for line in rawstr.splitlines():
+            springs, keystr = line.split()
+            keys = [int(c) for c in keystr.split(',')]
+            self.__rows.append((springs, keys))
+
+    def get_arrangement_sum(self, foldcount: int = 0) -> int:
+        retval = 0
+        for springs, keys in self.__rows:
+            tmpkeys = list(keys) if foldcount == 0 else list(keys) * foldcount
+            tmpsprings = springs.lstrip('.') if foldcount == 0 else '?'.join([springs] * foldcount).lstrip('.')
+            retval += calculatecombinations(tmpsprings, (*tmpkeys,))
+        return retval
+
+
 def main() -> int:
-    totalsum_p1 = 0
-    totalsum_p2 = 0
-
     with open("../Inputfiles/aoc12.txt", "r") as file:
-        for line in file.read().strip('\n').splitlines():
-            springs, keys = line.split()
-            keylist_p1 = [int(char) for char in keys.split(",")]
-            keylist_p2 = list(keylist_p1) * 5
-            springs_p1 = springs.lstrip(".")
-            springs_p2 = "?".join([springs] * 5).lstrip(".")
-            totalsum_p1 += calculatecombinations(springs_p1, (*keylist_p1,))
-            totalsum_p2 += calculatecombinations(springs_p2, (*keylist_p2,))
-
-    print("Part1:", totalsum_p1)
-    print("Part2:", totalsum_p2)
+        myrecord = SpringRecord(file.read().strip('\n'))
+    print(f"Part 1: {myrecord.get_arrangement_sum()}")
+    print(f"Part 2: {myrecord.get_arrangement_sum(5)}")
     return 0
 
 
