@@ -1,80 +1,90 @@
 """
 Store the data in a grid, then for Part 1 simply walk through the system until returning to the start, then calculating
-the answer by dividing the number of steps taken by 2. For part 2, calculate the answer with shoelace formula into
-Pick's theorem.
+the answer by dividing the number of steps taken by 2. For part 2, calculate the answer by first determining the area
+with the shoelace formula and then use that with Pick's theorem.
 """
 import sys
-
-RowCol = tuple[int, int]
-Directions: dict[str: RowCol] = {'u': (-1, 0), 'r': (0, 1), 'd': (1, 0), 'l': (0, -1)}
-Pipes: dict[str: tuple[str]] = {'|': ('u', 'd'), '-': ('l', 'r'), 'L': ('u', 'r'), 'J': ('u', 'l'),
-                                '7': ('d', 'l'), 'F': ('d', 'r'), 'S': {'u', 'r', 'd', 'l'}, '.': ()}
+from dataclasses import dataclass
 
 
-def getreversedirection(indir: str) -> RowCol:
-    return Directions[indir][0] * -1, Directions[indir][1] * -1
+@dataclass(frozen=True)
+class Coord:
+    row: int
+    col: int
+
+    def __add__(self, other: "Coord") -> "Coord":
+        return Coord(self.row + other.row, self.col + other.col)
+
+    def get_reverse(self) -> "Coord":
+        return Coord(self.row * -1, self.col * -1)
 
 
-class Grid:
-    def __init__(self, gridinput: list[str]):
-        self.grid = list(gridinput)
-        self.height = len(self.grid)
-        self.width = len(self.grid[0])
+class Maze:
+    __DIRECTIONS = {'u': Coord(-1, 0), 'r': Coord(0, 1), 'd': Coord(1, 0), 'l': Coord(0, -1)}
+    __PIPES = {'|': ('u', 'd'), '-': ('l', 'r'), 'L': ('u', 'r'), 'J': ('u', 'l'), '7': ('d', 'l'),
+               'F': ('d', 'r')}
 
-    def getvalue(self, coord: RowCol) -> str:
-        return self.grid[coord[0]][coord[1]]
+    def __init__(self, rawstr: str) -> None:
+        self.__grid = rawstr.splitlines()
+        self.__startpoint = None
+        for rowidx, row in enumerate(self.__grid):
+            if (idx := row.find('S')) >= 0:
+                self.__startpoint = Coord(rowidx, idx)
+        # Note: when starting at 'S', take whatever direction we find first, it doesn't matter which way we walk
+        for direction in Maze.__DIRECTIONS.values():
+            v = self.__get_value(self.__startpoint + direction)
+            if direction.get_reverse() in [Maze.__DIRECTIONS[p] for p in Maze.__PIPES[v]]:
+                self.__startdirection = direction
+                break
+        self.__pipepath: list[Coord] = []
 
-    def findneighbors(self, coord: RowCol) -> list[RowCol]:
-        retlist = []
-        for outdir in Pipes[self.getvalue(coord)]:
-            nextpos = coord[0] + Directions[outdir][0], coord[1] + Directions[outdir][1]
-            if 0 <= nextpos[0] < self.height and 0 <= nextpos[1] < self.width:
-                nextdirections = Pipes[self.getvalue(nextpos)]
-                if any(getreversedirection(nd) == Directions[outdir] for nd in nextdirections):
-                    retlist.append(nextpos)
-        return retlist
+    def __get_value(self, pos: Coord) -> str:
+        return self.__grid[pos.row][pos.col]
 
+    def __get_nextstepdir(self, pos: Coord, indir: Coord) -> Coord:
+        for outdir in Maze.__PIPES[self.__get_value(pos)]:
+            if Maze.__DIRECTIONS[outdir] != indir.get_reverse():
+                return Maze.__DIRECTIONS[outdir]
+        return indir  # Should never happen, there should always be one out...
 
-def shoelace_area(seq: list[RowCol]) -> int:
-    retval = 0
-    for idx in range(len(seq) - 1):
-        retval += (seq[idx][0] + seq[idx + 1][0]) * (seq[idx][1] - seq[idx + 1][1])
-    return abs(retval) // 2
+    def __traverse(self) -> None:
+        self.__pipepath = []
+        currentdir = self.__startdirection
+        currentpos = self.__startpoint + currentdir
+        self.__pipepath.append(self.__startpoint)
+        while currentpos != self.__startpoint:
+            self.__pipepath.append(currentpos)
+            # Trust that the grid content will never lead us outside the grid, so skip boundary check of new pos
+            currentdir = self.__get_nextstepdir(currentpos, currentdir)
+            currentpos += currentdir
 
+    def get_farpoint_length(self) -> int:
+        if not self.__pipepath:
+            self.__traverse()
+        return len(self.__pipepath) // 2
 
-def picks(a: int, b: int) -> int:
-    return a + 1 - (b // 2)
+    def get_enclosed_count(self) -> int:
+        if not self.__pipepath:
+            self.__traverse()
+        # Calculate shoelace area
+        area = 0
+        for idx, _ in enumerate(self.__pipepath):
+            area += ((self.__pipepath[idx].col * self.__pipepath[(idx + 1) % len(self.__pipepath)].row) -
+                     (self.__pipepath[(idx + 1) % len(self.__pipepath)].col * self.__pipepath[idx].row))
+            # Note: we need to 'close the loop' and include also the combination of the first and last entries, thus
+            # mod length for the idx + 1 point
+        area = abs(area) // 2
+        # Use Pick's theorem to get number of enclosed tiles
+        return area + 1 - (len(self.__pipepath) // 2)
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc10.txt", "r") as file:
-        mygrid = Grid(file.read().strip('\n').splitlines())
-
-    startpoint: RowCol = -1, -1
-    for rowidx, row in enumerate(mygrid.grid):
-        if (idx := row.find("S")) >= 0:
-            startpoint = rowidx, idx
-            break
-
-    pipepath: list[RowCol] = []
-    nexttile = [(startpoint, (-1, -1))]  # current tile, previous tile
-
-    while len(nexttile) > 0:
-        current, previous = nexttile.pop(0)
-        pipepath.append(current)
-        neighbors = mygrid.findneighbors(current)
-        if previous in neighbors:
-            neighbors.remove(previous)
-        if len(neighbors) > 0:
-            if startpoint in neighbors:  # Stop if we have completed the loop
-                break
-            # Note: neighbor list should only contain one element after removing the previous node
-            nexttile.append((neighbors[0], current))
-
-    print("Part1:", len(pipepath) // 2)
-    print("Part2:", picks(shoelace_area(pipepath), len(pipepath)))
+    with open('../Inputfiles/aoc10.txt', 'r') as file:
+        mymaze = Maze(file.read().strip('\n'))
+    print(f"Part 1: {mymaze.get_farpoint_length()}")
+    print(f"Part 2: {mymaze.get_enclosed_count()}")
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
