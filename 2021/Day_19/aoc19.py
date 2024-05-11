@@ -28,9 +28,6 @@ class Scanner:
             for j in range(i + 1, len(self.__beacons)):
                 self.__distancematrix[i][j] = self.__beacons[i].get_distance(self.__beacons[j])
                 self.__distancematrix[j][i] = self.__distancematrix[i][j]
-        # print("Scanner ID:", self.id)
-        # for row in self.__distancematrix:
-        #     print(row)
 
 
 class Probe:
