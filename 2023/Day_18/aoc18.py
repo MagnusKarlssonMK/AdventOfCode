@@ -1,56 +1,74 @@
 """
-Store the trench in a class with a dynamically sized grid, i.e. expands as we dig through it.
+Store the trench in a class as a list of dig steps, i.e. expands as we dig through it without using any static grid.
 After the dig commands have been carried out, the results are calculated with shoelace formula and Pick's theorem.
+For part 2, simply convert the instructions before running the command.
 """
 import sys
+from dataclasses import dataclass
 
-Directions: dict[str, tuple[int, int]] = {"R": (0, 1), "D": (1, 0), "L": (0, -1), "U": (-1, 0)}
 
-DirectionMap = {0: 'R', 1: "D", 2: 'L', 3: 'U'}
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
+
+    def scale(self, multiplier) -> "Point":
+        return Point(self.x * multiplier, self.y * multiplier)
+
+    def get_length(self, other: "Point") -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+    def get_det(self, other: "Point") -> int:
+        return (self.x * other.y) - (self.y * other.x)
+
+
+@dataclass(frozen=True)
+class DigPlan:
+    direction: Point
+    step: int
+    color: str
 
 
 class Trench:
-    def __init__(self, part: str):
-        self.digposition = (0, 0)
-        self.grid = [self.digposition]
-        self.decoderule = part  # 'A' or 'B'
+    __DIRECTIONS = {'R': Point(1, 0), 'D': Point(0, 1), 'L': Point(-1, 0), 'U': Point(0, -1)}
+    __DIRMAP = {0: 'R', 1: 'D', 2: 'L', 3: 'U'}
 
-    def dig(self, command: str) -> None:
-        directionstr, stepstr, colstr = command.split()
-        if self.decoderule == 'A':
-            direction = Directions[directionstr]
-            steps = int(stepstr)
-        else:
-            direction = Directions[DirectionMap[int(colstr[-2])]]
-            steps = int(colstr[2:7], 16)
-        movesum = (self.digposition[0] + steps * direction[0],
-                   self.digposition[1] + steps * direction[1])
-        self.digposition = movesum
-        self.grid.append(self.digposition)
+    def __init__(self, rawstr: str) -> None:
+        self.__digplan: list[DigPlan] = []
+        for line in rawstr.splitlines():
+            d, s, c = line.split()
+            c = c.strip('(').strip(')').strip('#')
+            self.__digplan.append(DigPlan(Trench.__DIRECTIONS[d], int(s), c))
+        self.__digpath: list[Point] = []
 
-    def getareapoints(self) -> int:
-        areasum = sum([((self.grid[idx][0] * self.grid[idx + 1][1]) - (self.grid[idx + 1][0] * self.grid[idx][1]))
-                       for idx in range(len(self.grid) - 1)])
-        length = self.getoutlinelength()
-        pick_i = abs(areasum // 2) + 1 + (length // 2)
-        return pick_i
+    def __dig(self, swapped: bool) -> None:
+        self.__digpath = [Point(0, 0)]
+        for planline in self.__digplan:
+            if swapped:
+                planline = DigPlan(Trench.__DIRECTIONS[Trench.__DIRMAP[int(planline.color[-1])]],
+                                   int(planline.color[0:5], 16), planline.color)
+            self.__digpath.append(self.__digpath[-1] + planline.direction.scale(planline.step))
 
-    def getoutlinelength(self) -> int:
-        return sum([abs(self.grid[idx + 1][0] - self.grid[idx][0]) + abs(self.grid[idx + 1][1] - self.grid[idx][1])
-                    for idx in range(len(self.grid) - 1)])
+    def __get_outlinelength(self) -> int:
+        return sum([self.__digpath[idx].get_length(self.__digpath[(idx + 1) % len(self.__digpath)])
+                    for idx, _ in enumerate(self.__digpath)])
+
+    def get_areapoints(self, swapped: bool = False) -> int:
+        self.__dig(swapped)
+        areasum = sum([self.__digpath[idx].get_det(self.__digpath[(idx + 1) % len(self.__digpath)])
+                       for idx, _ in enumerate(self.__digpath)])
+        length = self.__get_outlinelength()
+        return (abs(areasum) // 2) + 1 + (length // 2)
 
 
 def main() -> int:
-    mytrench_p1 = Trench("A")
-    mytrench_p2 = Trench("B")
-
-    with open("../Inputfiles/aoc18.txt") as file:
-        for line in file.read().strip('n').splitlines():
-            mytrench_p1.dig(line.strip("\n"))
-            mytrench_p2.dig(line.strip("\n"))
-
-    print("Part1:", mytrench_p1.getareapoints())
-    print("Part2:", mytrench_p2.getareapoints())
+    with open('../Inputfiles/aoc18.txt', 'r') as file:
+        mytrench = Trench(file.read().strip('\n'))
+    print(f"Part 1: {mytrench.get_areapoints()}")
+    print(f"Part 2: {mytrench.get_areapoints(True)}")
     return 0
 
 
