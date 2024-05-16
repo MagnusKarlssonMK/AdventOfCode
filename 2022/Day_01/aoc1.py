@@ -14,15 +14,24 @@ class Elf:
         return f"{self.calories}"
 
 
-def main() -> int:
-    elf_list = []
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
-        indata = file.read().split('\n\n')
-    [elf_list.append(Elf(list(map(int, elf.strip('\n').split('\n'))))) for elf in indata]
-    elf_list.sort(key=lambda tot: tot.totalcalories, reverse=True)
+class ElfGroup:
+    def __init__(self, rawstr: str) -> None:
+        blocks = rawstr.split('\n\n')
+        self.__elfs = sorted([Elf(list(map(int, elf.splitlines()))) for elf in blocks],
+                             key=lambda tot: tot.totalcalories, reverse=True)
 
-    print("Part1:", elf_list[0].totalcalories)
-    print("Part2:", sum([elf_list[num].totalcalories for num in range(3)]))
+    def get_maxcal(self) -> int:
+        return self.__elfs[0].totalcalories
+
+    def get_topthree(self) -> int:
+        return sum([self.__elfs[num].totalcalories for num in range(3)])
+
+
+def main() -> int:
+    with open('../Inputfiles/aoc1.txt', 'r') as file:
+        elfgroup = ElfGroup(file.read().strip('\n'))
+    print(f"Part1: {elfgroup.get_maxcal()}")
+    print(f"Part2: {elfgroup.get_topthree()}")
     return 0
 
 
