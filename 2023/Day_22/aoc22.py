@@ -4,127 +4,118 @@ order of original height, and the highest point for any XY coordinate is stored 
 after every dropped brick.
 """
 import sys
+from dataclasses import dataclass
 
-XYZ_Coordinate = tuple[int, int, int]
+
+@dataclass
+class Coord3D:
+    x: int
+    y: int
+    z: int
+
+    def __add__(self, other: "Coord3D") -> "Coord3D":
+        return Coord3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
+
+class Brick:
+    """A simple coordinate holder for a brick. The representation is one [X,Y,Z] list and one [dX,dY,dZ] list"""
+    def __init__(self, xyz1: Coord3D, xyz2: Coord3D):
+        self.pos: Coord3D = Coord3D(min(xyz1.x, xyz2.x), min(xyz1.y, xyz2.y), min(xyz1.z, xyz2.z))
+        self.dpos: Coord3D = Coord3D(abs(xyz1.x - xyz2.x), abs(xyz1.y - xyz2.y), abs(xyz1.z - xyz2.z))
+        self.id: str = str(self.pos.x) + "-" + str(self.pos.y) + "-" + str(self.pos.z)
+
+    def __str__(self):
+        return f"XYZ: {self.pos} - dXYZ: {self.dpos}"
 
 
 class GroundZero:
     """Class used to create a 3d grid of the highest Z position for each XY tile along with the ID of the brick
     that added that tile."""
-    def __init__(self, x_size: int, y_size: int):
-        self.count = 0
-        self.grid = [[[0, ""] for _ in range(y_size)] for _ in range(x_size)]
+    def __init__(self, x_size: int, y_size: int) -> None:
+        self.__count = 0
+        self.__grid = [[(0, '') for _ in range(y_size)] for _ in range(x_size)]
 
-    def dropnewbrick(self, xyz: XYZ_Coordinate, dxyz: XYZ_Coordinate, uid: str) -> [int, [str]]:
+    def drop_newbrick(self, brick: Brick) -> [int, set[str]]:
         """Finds the lowest available Z-coordinate for brick with ID 'uid' and updates the grid with the new brick.
         Returns the new lowest Z-value and a list of the id's of the bricks it is resting on."""
         new_z = 0
-        retidlist = []
-        for x in range(xyz[0], xyz[0] + dxyz[0] + 1):
-            for y in range(xyz[1], xyz[1] + dxyz[1] + 1):
-                if self.grid[x][y][0] + 1 >= new_z:
-                    if self.grid[x][y][0] + 1 > new_z:
-                        retidlist.clear()
-                        new_z = self.grid[x][y][0] + 1
-                    retidlist.append(self.grid[x][y][1])
-        for x in range(xyz[0], xyz[0] + dxyz[0] + 1):
-            for y in range(xyz[1], xyz[1] + dxyz[1] + 1):
-                self.grid[x][y] = [new_z + dxyz[2], uid]
-        self.count += 1
-        filtered_retidlist = []
-        [filtered_retidlist.append(someid) for someid in retidlist if someid not in filtered_retidlist and someid != ""]
-        return [new_z, filtered_retidlist]
-
-
-class Brick:
-    """A simple coordinate holder for a brick. The representation is one [X,Y,Z] list and one [dX,dY,dZ] list"""
-    def __init__(self, xyz1: XYZ_Coordinate, xyz2: XYZ_Coordinate):
-        self.xyz: XYZ_Coordinate = min(xyz1[0], xyz2[0]), min(xyz1[1], xyz2[1]), min(xyz1[2], xyz2[2])
-        self.dxyz: XYZ_Coordinate = abs(xyz1[0] - xyz2[0]), abs(xyz1[1] - xyz2[1]), abs(xyz1[2] - xyz2[2])
-
-    def __str__(self):
-        return f"XYZ: {self.xyz} - dXYZ: {self.dxyz}"
+        ret_idlist = []
+        nextpos = brick.pos + brick.dpos
+        for x in range(brick.pos.x, nextpos.x + 1):
+            for y in range(brick.pos.y, nextpos.y + 1):
+                if self.__grid[x][y][0] + 1 >= new_z:
+                    if self.__grid[x][y][0] + 1 > new_z:
+                        ret_idlist.clear()
+                        new_z = self.__grid[x][y][0] + 1
+                    ret_idlist.append(self.__grid[x][y][1])
+        for x in range(brick.pos.x, nextpos.x + 1):
+            for y in range(brick.pos.y, nextpos.y + 1):
+                self.__grid[x][y] = (new_z + brick.dpos.z, brick.id)
+        self.__count += 1
+        filtered_ret_idlist = {someid for someid in ret_idlist if someid != ""}
+        return [new_z, filtered_ret_idlist]
 
 
 class Grid:
-    def __init__(self):
-        self.moving_bricks: list[Brick] = []
-        self.resting_bricks: dict[str: Brick, [str], [str]] = {}  # {id: Brick, down-ids, up-ids}
-        self.state = "open"
-        self.gz = None
-        self.x_max = 0
-        self.y_max = 0
+    def __init__(self, rawstr: str) -> None:
+        self.__moving_bricks: list[Brick] = []
+        self.__resting_bricks: dict[str: Brick, [str], [str]] = {}  # {id: Brick, down-ids, up-ids}
+        for line in rawstr.splitlines():
+            left, right = line.split("~")
+            x1, y1, z1 = [int(nbr) for nbr in left.split(',')]
+            x2, y2, z2 = [int(nbr) for nbr in right.split(',')]
+            self.__moving_bricks.append(Brick(Coord3D(x1, y1, z1), Coord3D(x2, y2, z2)))
 
-    def addbrick(self, rawstr: str) -> None:
-        """Adds a brick to the grid with the raw string from AoC input row."""
-        if self.state != "open":
-            return
-        left, right = rawstr.split("~")
-        x1, y1, z1 = [int(nbr) for nbr in left.split(',')]
-        x2, y2, z2 = [int(nbr) for nbr in right.split(',')]
-        self.moving_bricks.append(Brick((x1, y1, z1), (x2, y2, z2)))
-        # print(self.moving_bricks[-1])
-
-    def unfreeze(self) -> None:
-        """Locks the grid and drops the bricks as far down in Z-plane as possible."""
-        self.state = "locked"
-        for brick in self.moving_bricks:
-            self.x_max = max(self.x_max, 1 + brick.xyz[0] + brick.dxyz[0])
-            self.y_max = max(self.y_max, 1 + brick.xyz[1] + brick.dxyz[1])
-        self.gz = GroundZero(self.x_max, self.y_max)
-        # sort elements in moving bricks by z
-        self.moving_bricks.sort(key=lambda br: br.xyz[2])
-
-        # tmpbrickids = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
-        while len(self.moving_bricks) > 0:
-            nextbrick = self.moving_bricks.pop(0)
-            brickid = str(nextbrick.xyz[0]) + "-" + str(nextbrick.xyz[1]) + "-" + str(nextbrick.xyz[2])
-            newz = self.gz.dropnewbrick(nextbrick.xyz, nextbrick.dxyz, brickid)
-            self.resting_bricks[brickid] = [Brick((nextbrick.xyz[0], nextbrick.xyz[1], newz[0]),
-                                                  (nextbrick.xyz[0] + nextbrick.dxyz[0],
-                                                   nextbrick.xyz[1] + nextbrick.dxyz[1], newz[0] + nextbrick.dxyz[2])),
-                                            newz[1], []]
+    def get_safebricks_count(self) -> int:
+        """Drops the bricks to rest state and returns the number of bricks that can safely be removed from the resting
+        grid without causing any other brick to fall."""
+        x_max = 0
+        y_max = 0
+        for brick in self.__moving_bricks:
+            x_max = max(x_max, brick.pos.x + brick.dpos.x + 1)
+            y_max = max(y_max, brick.pos.y + brick.dpos.y + 1)
+        groundzero = GroundZero(x_max, y_max)
+        # Sort elements in moving bricks by z
+        self.__moving_bricks.sort(key=lambda br: br.pos.z)
+        # Start dropping bricks
+        while self.__moving_bricks:
+            nextbrick = self.__moving_bricks.pop(0)
+            newz = groundzero.drop_newbrick(nextbrick)
+            self.__resting_bricks[nextbrick.id] = \
+                [Brick(Coord3D(nextbrick.pos.x, nextbrick.pos.y, newz[0]),
+                       Coord3D(nextbrick.pos.x + nextbrick.dpos.x, nextbrick.pos.y + nextbrick.dpos.y, newz[0] +
+                               nextbrick.dpos.z)), newz[1], []]
             for uplink in newz[1]:
-                self.resting_bricks[uplink][2].append(brickid)
-
-    def getnbrofsafebricks(self) -> int:
-        """Returns the number of bricks that can safely be removed from the resting grid
-        without causing any other brick to fall."""
-        if self.state != "locked":
-            return -1
+                self.__resting_bricks[uplink][2].append(nextbrick.id)
+        # Find number of bricks that can be safely removed
         retval = 0
-        for itemkey in list(self.resting_bricks.keys()):
-            upholdingbricks = self.resting_bricks[itemkey][2]
-            if all(len(self.resting_bricks[up][1]) > 1 for up in upholdingbricks):
+        for brickid in self.__resting_bricks:
+            upholdingbricks = self.__resting_bricks[brickid][2]
+            if all(len(self.__resting_bricks[up][1]) > 1 for up in upholdingbricks):
                 retval += 1
         return retval
 
-    def gettotalnbrofdisintegratedbricks(self) -> int:
+    def get_disintegrated_count(self) -> int:
         """Solves the second part of calculating the total sum number of bricks that would disintegrate as chain
         reaction when disintegrating each individual brick."""
         retval = 0
-        for nextkey in list(self.resting_bricks.keys()):
-            poofqueue: list[str] = self.resting_bricks[nextkey][2]
-            poofed = {nextkey}
-            while len(poofqueue) > 0:
-                poof = poofqueue.pop(0)
-                if all(down in poofed for down in self.resting_bricks[poof][1]):
-                    poofed.update({poof})
-                    [poofqueue.append(up) for up in self.resting_bricks[poof][2] if up not in poofqueue]
-            retval += len(poofed) - 1
+        for brick in self.__resting_bricks:
+            queue: list[str] = self.__resting_bricks[brick][2]
+            disintegrated = {brick}
+            while queue:
+                poof = queue.pop(0)
+                if all(down in disintegrated for down in self.__resting_bricks[poof][1]):
+                    disintegrated.update({poof})
+                    [queue.append(up) for up in self.__resting_bricks[poof][2] if up not in queue]
+            retval += len(disintegrated) - 1
         return retval
 
 
 def main() -> int:
-    mygrid = Grid()
-    with open("../Inputfiles/aoc22.txt", "r") as file:
-        [mygrid.addbrick(line) for line in file.read().strip('\n').splitlines()]
-
-    mygrid.unfreeze()
-    print("Part1:", mygrid.getnbrofsafebricks())
-
-    partb = mygrid.gettotalnbrofdisintegratedbricks()
-    print("Part2:", partb)
+    with open('../Inputfiles/aoc22.txt', 'r') as file:
+        mygrid = Grid(file.read().strip('\n'))
+    print(f"Part 1: {mygrid.get_safebricks_count()}")
+    print(f"Part 2: {mygrid.get_disintegrated_count()}")
     return 0
 
 
