@@ -1,70 +1,63 @@
 """
-Store the input image as a dict(?) of rows (y), each pointing to a set of cols (x) where the point is 'light' (#).
-Top left of the first input image is (0, 0), x+ -> right, y+ -v down.
-BUT - unlike the example input, the real input toggles the void at each enhancement. So we also need to keep track
-of the state of the void to get the correct result at the boundaries.
+Converts the image to rows of integer values based on binary representation of '#' and '.', and then performs the
+enhancement steps through bitmasking / bitshifting. Adds an extra layer in the map for every step.
+Possibly this could be further optimized by pruning the boundaries in case the lit pixels stops growing outwards at
+some point.
+Also - unlike the example input, the real input toggles the void at each enhancement. So we also need to keep track
+of the state of the void and use that for creating the outer buffer to get the correct result at the boundaries.
 """
 import sys
-from collections import defaultdict
 
 
-class Image:
+class ImageV2:
     def __init__(self, rawstr: str) -> None:
-        algo, input_img = rawstr.split('\n\n')
-        self.__image = defaultdict(set)
-        self.__x_range: list[int] = [0, 0]
-        self.__y_range: list[int] = [0, 0]
-        self.__algorithm = ''.join(['1' if c == '#' else '0' for c in algo])
+        algo, img_input = rawstr.split('\n\n')
         self.__voidvalue = '0'
-        for y, row in enumerate(input_img.splitlines()):
-            for x, col in enumerate(row):
-                if col == "#":
-                    self.__image[y].add(x)
-                    self.__x_range[1] = max(self.__x_range[1], x)
-                    self.__y_range[1] = max(self.__y_range[1], y)
+        self.__algorithm = ['1' if c == "#" else '0' for c in algo]
+        self.__x_range = 0
+        self.__image = [0, 0]
+        for line in img_input.splitlines():
+            self.__x_range = len(line) + 4
+            self.__image.append(int(''.join(['1' if c == "#" else '0' for c in line]) + '00', 2))
+        self.__image.append(0)
+        self.__image.append(0)
+        self.__y_range = len(self.__image)
 
-    def __get_coordvalue(self, x: int, y: int) -> str:
-        if not self.__y_range[0] <= y <= self.__y_range[1] or not self.__x_range[0] <= x <= self.__x_range[1]:
-            return self.__voidvalue
-        if y in self.__image and x in self.__image[y]:
-            return '1'
-        return '0'
-
-    def __apply_algorithm(self) -> None:
-        new_layer = defaultdict(set)
-        new_x_range = list(self.__x_range)
-        new_y_range = list(self.__y_range)
-        for x in range(self.__x_range[0] - 1, self.__x_range[1] + 2):
-            for y in range(self.__y_range[0] - 1, self.__y_range[1] + 2):
-                nbr = ''
-                for i in range(-1, 2):
-                    nbr += (self.__get_coordvalue(x - 1, y + i) + self.__get_coordvalue(x, y + i) +
-                            self.__get_coordvalue(x + 1, y + i))
-                if self.__algorithm[int(nbr, 2)] == '1':
-                    new_layer[y].add(x)
-                    new_x_range = [min(new_x_range[0], x), max(new_x_range[1], x)]
-                    new_y_range = [min(new_y_range[0], y), max(new_y_range[1], y)]
-        self.__image = new_layer
-        self.__x_range = list(new_x_range)
-        self.__y_range = list(new_y_range)
+    def __enhance_image(self) -> None:
         self.__voidvalue = self.__algorithm[0 if self.__voidvalue == '0' else -1]
+        voidrow = 0 if self.__voidvalue == '0' else int(''.join(['1' for _ in range(self.__x_range + 2)]), 2)
+        new_image = [voidrow, voidrow]
+        # Note: first and last row, and leftmost and rightmost columns just need to be there for the next positions
+        # to draw from, but it's easier to just recreate them every round while also adding an extra new layer, rather
+        # than converting based on void value. Thus adding buffer rows / cols twice every time.
+        for y in range(1, self.__y_range - 1):
+            new_row = self.__voidvalue + self.__voidvalue
+            for x in range(1, self.__x_range - 1):
+                v = ((((self.__image[y - 1] >> (self.__x_range - x - 2)) & 7) << 6) +
+                     (((self.__image[y] >> (self.__x_range - x - 2)) & 7) << 3) +
+                     ((self.__image[y + 1] >> (self.__x_range - x - 2)) & 7))
+                new_row += self.__algorithm[v]
+            new_row += self.__voidvalue + self.__voidvalue
+            new_image.append(int(new_row, 2))
+        new_image.append(voidrow)
+        new_image.append(voidrow)
+        self.__image = new_image
+        self.__x_range += 2
+        self.__y_range += 2
 
-    def get_tworounds_count(self) -> int:
-        self.__apply_algorithm()
-        self.__apply_algorithm()
-        count = 0
-        for y in self.__image:
-            count += len(self.__image[y])
-        return count
+    def get_enhancement_count(self, count: int) -> int:
+        for _ in range(count):
+            self.__enhance_image()
+        return sum([line.bit_count() for line in self.__image])
 
 
 def main() -> int:
     with open('../Inputfiles/aoc20.txt', 'r') as file:
-        myimg = Image(file.read().strip('\n'))
-    print(f"Part 1: {myimg.get_tworounds_count()}")
+        myimg = ImageV2(file.read().strip('\n'))
+    print(f"Part 1: {myimg.get_enhancement_count(2)}")
+    print(f"Part 2: {myimg.get_enhancement_count(48)}")
+    # Note: The state of the image is stored after the first two rounds, so we only need to do another 48 to get to 50.
     return 0
-
-# ! 5464
 
 
 if __name__ == "__main__":
