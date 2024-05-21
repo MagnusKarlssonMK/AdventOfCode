@@ -19,16 +19,27 @@ def decode_seat_id(rows: str, cols: str) -> int:
     return 8 * decode(rows, 'F', 'B', range(127)) + decode(cols, 'L', 'R', range(7))
 
 
+class Scanner:
+    def __init__(self, rawstr: str) -> None:
+        self.__boardingpasses = sorted([decode_seat_id(line[0:7], line[7:10]) for line in rawstr.splitlines()])
+
+    def get_highest_seat(self) -> int:
+        return self.__boardingpasses[-1]
+
+    def get_seat_id(self) -> int:
+        seat_ids = list(self.__boardingpasses)
+        while len(seat_ids) > 1:
+            if seat_ids[1] == seat_ids[0] + 2:
+                return seat_ids[1] - 1
+            seat_ids.pop(0)
+        return -1
+
+
 def main() -> int:
     with open('../Inputfiles/aoc5.txt', 'r') as file:
-        lines = file.read().strip('\n').splitlines()
-    seat_ids = sorted([decode_seat_id(line[0:7], line[7:10]) for line in lines])
-    print("Part 1:", seat_ids[-1])
-    while len(seat_ids) > 1:
-        if seat_ids[1] == seat_ids[0] + 2:
-            print("Part 2:", seat_ids[1] - 1)
-            break
-        seat_ids.pop(0)
+        passes = Scanner(file.read().strip('\n'))
+    print(f"Part 1: {passes.get_highest_seat()}")
+    print(f"Part 2: {passes.get_seat_id()}")
     return 0
 
 
