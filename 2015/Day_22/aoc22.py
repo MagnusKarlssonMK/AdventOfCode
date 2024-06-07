@@ -1,0 +1,147 @@
+"""
+Seems initially like a simple problem, but lots of tiny details to stumble on in the game rules.
+It's also really tempting to create a giant class structure and almost build an entire basis for an RPG game,
+similarly to the previous day, which here really just made it much harder to actually solve the problem.
+Basically keep game data in a state class which recursively tries different sequences of spells and finds the
+most mana efficient one.
+"""
+import sys
+from dataclasses import dataclass
+from enum import Enum, auto
+from copy import deepcopy
+
+
+class Spells(Enum):
+    MAGIC_MISSILE = auto()
+    DRAIN = auto()
+    SHIELD = auto()
+    POISON = auto()
+    RECHARGE = auto()
+
+
+@dataclass(frozen=True)
+class SpellEffects:
+    value: int
+    time: int
+
+    def countdown(self) -> "SpellEffects":
+        return SpellEffects(self.value, self.time - 1)
+
+
+class GameState:
+    """Class for handling DFS-like recursive search through the possible wizard actions."""
+    MIN_MANA_SPENT = None
+    SPELLS: dict[Spells: tuple[int, tuple[SpellEffects]]] = \
+        {Spells.MAGIC_MISSILE: (53, (SpellEffects(4, 0),)),
+         Spells.DRAIN: (73, (SpellEffects(2, 0), SpellEffects(2, 0))),
+         Spells.SHIELD: (113, (SpellEffects(7, 6),)),
+         Spells.POISON: (173, (SpellEffects(3, 6),)),
+         Spells.RECHARGE: (229, (SpellEffects(101, 5),))}
+
+    def __init__(self, bhp: int, bdmg: int, whp: int, wmn: int, hardmode: bool):
+        self.__boss_hp = bhp
+        self.__boss_dmg = bdmg
+        self.__wizard_hp = whp
+        self.__wizard_mana = wmn
+        self.__hardmode = hardmode
+        self.__turncount = 0
+        self.__manaspent = 0
+        self.__active_effects: dict[Spells: SpellEffects] = {}
+
+    def __effects_tick(self) -> None:
+        """Updates stats for any active additive effects, decreases their time by 1 and removes them from the state
+        if time goes to 0."""
+        expired = []
+        for effect in self.__active_effects:
+            match effect:
+                case Spells.POISON:
+                    self.__boss_hp -= self.__active_effects[effect].value
+                case Spells.RECHARGE:
+                    self.__wizard_mana += self.__active_effects[effect].value
+            self.__active_effects[effect] = self.__active_effects[effect].countdown()
+            if self.__active_effects[effect].time <= 0:
+                expired.append(effect)
+        for e in expired:
+            self.__active_effects.pop(e)
+            # Note - somewhat unclear from the rules if Shield should last the entire round, but it doesn't matter
+            # since it will always expire on the wizard's turn.
+
+    def __cast_spell(self, spell: Spells) -> None:
+        """Performs the actions related to casting a spell, i.e. direct damage / heal, or adding effect to state."""
+        manacost, effects = GameState.SPELLS[spell]
+        self.__wizard_mana -= manacost
+        self.__manaspent += manacost
+        match spell:
+            case Spells.MAGIC_MISSILE:
+                self.__boss_hp -= effects[0].value
+            case Spells.DRAIN:
+                self.__boss_hp -= effects[0].value
+                self.__wizard_hp += effects[1].value
+            case Spells.RECHARGE | Spells.POISON | Spells.SHIELD:
+                self.__active_effects[spell] = effects[0]
+
+    def play_round(self) -> None:
+        """Recursive function looking for solutions and records the best solution in MIN_MANA_SPENT."""
+        # If hardmode, on wizards turn, reduce HP with 1
+        if self.__hardmode and self.__turncount % 2 == 0:
+            self.__wizard_hp -= 1
+            if self.__wizard_hp <= 0:
+                return
+        if GameState.MIN_MANA_SPENT and self.__manaspent >= GameState.MIN_MANA_SPENT:
+            return
+        self.__effects_tick()
+        if self.__boss_hp <= 0:
+            if not GameState.MIN_MANA_SPENT:
+                GameState.MIN_MANA_SPENT = self.__manaspent
+            else:
+                GameState.MIN_MANA_SPENT = min(GameState.MIN_MANA_SPENT, self.__manaspent)
+            return
+        if self.__turncount % 2 == 0:
+            # Wizards turn
+            self.__turncount += 1
+            for spell in Spells:
+                if spell in self.__active_effects or GameState.SPELLS[spell][0] > self.__wizard_mana:
+                    continue
+                ns = deepcopy(self)
+                ns.__cast_spell(spell)
+                if ns.__boss_hp <= 0:
+                    if not GameState.MIN_MANA_SPENT:
+                        GameState.MIN_MANA_SPENT = ns.__manaspent
+                    else:
+                        GameState.MIN_MANA_SPENT = min(GameState.MIN_MANA_SPENT, ns.__manaspent)
+                    return
+                ns.play_round()
+        else:
+            # Boss's turn
+            self.__turncount += 1
+            armor = 0 if Spells.SHIELD not in self.__active_effects else self.__active_effects[Spells.SHIELD].value
+            self.__wizard_hp -= max(1, self.__boss_dmg - armor)
+            if self.__wizard_hp > 0:
+                self.play_round()
+
+
+class WizardSim:
+    """Wrapper class to interface between main and gamestate and hold the initial game data."""
+    def __init__(self, bosshp: int, bossdmg: int, wizardhp: int = 50, wizardmana: int = 500) -> None:
+        self.__boss_hp = bosshp
+        self.__boss_dmg = bossdmg
+        self.__wizard_hp = wizardhp
+        self.__wizard_mana = wizardmana
+
+    def get_cheapest_win(self, hardmode: bool = False) -> int:
+        state = GameState(self.__boss_hp, self.__boss_dmg, self.__wizard_hp, self.__wizard_mana, hardmode)
+        state.play_round()
+        result = GameState.MIN_MANA_SPENT
+        GameState.MIN_MANA_SPENT = None
+        return result
+
+
+def main() -> int:
+    game = WizardSim(51, 9)
+    print(f"Part 1: {game.get_cheapest_win()}")
+    print(f"Part 2: {game.get_cheapest_win(True)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
