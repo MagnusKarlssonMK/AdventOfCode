@@ -26,17 +26,24 @@ class Computer:
         while 0 <= sp < len(self.__program):
             match self.__program[sp].instr:
                 case 'cpy':
-                    if self.__program[sp].arg1.isdigit():
-                        regs[self.__program[sp].arg2] = int(self.__program[sp].arg1)
-                    else:
-                        regs[self.__program[sp].arg2] = regs[self.__program[sp].arg1]
+                    if self.__program[sp].arg2 in regs:
+                        if self.__program[sp].arg1 in regs:
+                            regs[self.__program[sp].arg2] = regs[self.__program[sp].arg1]
+                        else:
+                            regs[self.__program[sp].arg2] = int(self.__program[sp].arg1)
                 case 'inc':
-                    regs[self.__program[sp].arg1] += 1
+                    if self.__program[sp].arg1 in regs:
+                        regs[self.__program[sp].arg1] += 1
                 case 'dec':
-                    regs[self.__program[sp].arg1] -= 1
+                    if self.__program[sp].arg1 in regs:
+                        regs[self.__program[sp].arg1] -= 1
                 case 'jnz':
-                    if self.__program[sp].arg1.isdigit() or regs[self.__program[sp].arg1] != 0:
-                        sp += int(self.__program[sp].arg2)
+                    a1 = (regs[self.__program[sp].arg1] if self.__program[sp].arg1 in regs
+                          else int(self.__program[sp].arg1))
+                    a2 = (regs[self.__program[sp].arg2] if self.__program[sp].arg2 in regs
+                          else int(self.__program[sp].arg2))
+                    if a1 != 0:
+                        sp += a2
                         continue
             sp += 1
         return regs['a']
