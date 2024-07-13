@@ -1,6 +1,13 @@
 """
-* In the PQ, somehow work in the manhattan distance to target and add that as minimum extra cost to the priority,
-to avoid getting a lot of states moving too far away from the target.
+Generates the map dynamically as needed in a dictionary, sort of like a cache.
+For part 1 the answer is then simply the sum of the values of the region types of each location in the square defined
+by the start and target nodes.
+For part 2, find the shortest path with a Dijkstra algorithm, using a combination of point + equipped tool as nodes.
+Attempt to limit the state space by keeping track of the 'worst case', i.e. having to swap gears every remaining
+square for the manhattan distance from current point to target.
+Also using a weighted time for the pq, adding 'best case scenario' to the remaining squares from manhattan distance
+to the time used for queue prioritization only, to try to steer the states towards the target node. At least with this
+in place, it performs decently, but still room for improvement.
 """
 import sys
 from dataclasses import dataclass
@@ -90,11 +97,11 @@ class Cave:
     def get_shortest_path(self) -> int:
         toolnotallowed = {Type.ROCKY: Tool.NEITHER, Type.WET: Tool.TORCH, Type.NARROW: Tool.GEAR}
         pqueue = []
-        heappush(pqueue, (0, Node(self.__start, Tool.TORCH), Node(Point(-1, -1), Tool.TORCH)))
+        heappush(pqueue, (0, 0, Node(self.__start, Tool.TORCH), Node(Point(-1, -1), Tool.TORCH)))
         target = Node(self.__target, Tool.TORCH)
         visited: dict[Node: int] = {target: self.__get_worstcase(self.__start)}
         while pqueue:
-            timespent, current, previous = heappop(pqueue)
+            weight, timespent, current, previous = heappop(pqueue)
             if current == target:
                 visited[current] = timespent
                 break
@@ -107,14 +114,16 @@ class Cave:
             if current.point != previous.point:  # Add the option to swap tools unless that's what we came from doing
                 newtool = [t for t in Tool
                            if t not in (current.tool, toolnotallowed[self.__get_region_type(current.point)])][0]
-                heappush(pqueue, (timespent + Cave.__SWAP_COST,
+                heappush(pqueue, (timespent + Cave.__SWAP_COST + self.__get_bestcase(current.point),
+                                  timespent + Cave.__SWAP_COST,
                                   Node(current.point, newtool),
                                   Node(current.point, current.tool)))
             for np in current.point.get_adjacent():
                 if (np, current.tool) == previous:
                     continue
                 if current.tool != toolnotallowed[self.__get_region_type(np)]:
-                    heappush(pqueue, (timespent + Cave.__STEP_COST,
+                    heappush(pqueue, (timespent + Cave.__STEP_COST + self.__get_bestcase(np),
+                                      timespent + Cave.__STEP_COST,
                                       Node(np, current.tool),
                                       Node(current.point, current.tool)))
         return visited[target]
@@ -130,6 +139,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-# Part 1: 6256
-# Part 2: 973
