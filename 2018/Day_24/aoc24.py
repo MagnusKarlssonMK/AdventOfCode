@@ -1,8 +1,5 @@
 """
 Oh boy, just when I assumed that day 15 was done dealt with, we get another one just like it...
-
---- Safety commit, NOT WORKING YET - and I have absolutely no idea why... ---
-
 """
 import sys
 from dataclasses import dataclass
@@ -95,43 +92,63 @@ class ImmuneSystemSimulator:
                                 traits.append(Trait(TraitType(words[0]), DmgType(t.strip(', '))))
                     self.__groups[uid] = Group(uid, team, units, hp, ap, at, init, traits)
                     uid += 1
-        [print(g, self.__groups[g]) for g in self.__groups]
 
-    def get_winning_units(self) -> int:
+    def __get_winner_and_units(self, boost: int) -> tuple[Team, int]:
         groups = deepcopy(self.__groups)
+        for g in groups:
+            if groups[g].team == Team.IMMUNESYSTEM:
+                groups[g].attackpower += boost
 
-        # While no winner
         while len(set([g.team for g in list(groups.values()) if g.units > 0])) > 1:
             # Target selection
             targets: dict[int: int] = {}
             attackerlist = sorted([g for g in groups.values() if g.units > 0],
                                   key=lambda x: (x.effective_power, x.initiative), reverse=True)
             for attacker in attackerlist:
-                targetlist = sorted([t for t in attackerlist if t.team != attacker.team and t.units > 0
-                                     and t.uid not in targets.values()],
+                targetlist = sorted([t for t in attackerlist
+                                     if t.team != attacker.team and t.uid not in targets.values()],
                                     key=lambda x: (x.get_dmgtaken(attacker.effective_power, attacker.attacktype),
-                                                   x.effective_power, x.initiative),
-                                    reverse=True)
-                if targetlist:
-                    targets[attacker.uid] = targetlist[0].uid
+                                                   x.effective_power, x.initiative), reverse=True)
+                for target in targetlist:
+                    # So this is NOT obvious, but we should apparently skip over immune targets, and somehow that
+                    # impacts the result.
+                    if groups[target.uid].get_dmgtaken(attacker.effective_power, attacker.attacktype) > 0:
+                        targets[attacker.uid] = target.uid
+                        break
             if not targets:
-                return -1
+                return Team.INFECTION, -1
 
             # Combat
             totaldmg = 0
             for attacker in sorted(list(groups.values()), key=lambda x: x.initiative, reverse=True):
-                if attacker.units > 0 and attacker.uid in targets:
+                if groups[attacker.uid].units > 0 and attacker.uid in targets:
                     totaldmg += groups[targets[attacker.uid]].receive_dmg(attacker.effective_power, attacker.attacktype)
             if totaldmg == 0:
                 # In case of deadlock of nothing mut immune dmg
-                return -1
-        return sum([g.units for g in groups.values() if g.units > 0])
+                return Team.INFECTION, -1
+        winner = None
+        for g in groups:
+            if groups[g].units > 0:
+                winner = groups[g].team
+                break
+        return winner, sum([g.units for g in groups.values() if g.units > 0])
+
+    def get_winning_units(self) -> tuple[int, int]:
+        boost = 0
+        p2 = -1
+        winner, p1 = self.__get_winner_and_units(boost)
+        while winner == Team.INFECTION:
+            boost += 1
+            winner, p2 = self.__get_winner_and_units(boost)
+        return p1, p2
 
 
 def main() -> int:
     with open('../Inputfiles/aoc24.txt', 'r') as file:
         iss = ImmuneSystemSimulator(file.read().strip('\n'))
-    print(f"Part 1: {iss.get_winning_units()}")
+    p1, p2 = iss.get_winning_units()
+    print(f"Part 1: {p1}")
+    print(f"Part 2: {p2}")
     return 0
 
 
