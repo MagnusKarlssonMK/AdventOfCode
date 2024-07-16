@@ -6,8 +6,8 @@ For part 2, find the shortest path with a Dijkstra algorithm, using a combinatio
 Attempt to limit the state space by keeping track of the 'worst case', i.e. having to swap gears every remaining
 square for the manhattan distance from current point to target.
 Also using a weighted time for the pq, adding 'best case scenario' to the remaining squares from manhattan distance
-to the time used for queue prioritization only, to try to steer the states towards the target node. At least with this
-in place, it performs decently, but still room for improvement.
+to the time used for queue prioritization only, to try to steer the states towards the target node. This basically
+turns the algorithm into A*, since the added weight acts as heuristic.
 """
 import sys
 from dataclasses import dataclass
@@ -97,11 +97,14 @@ class Cave:
     def get_shortest_path(self) -> int:
         toolnotallowed = {Type.ROCKY: Tool.NEITHER, Type.WET: Tool.TORCH, Type.NARROW: Tool.GEAR}
         pqueue = []
-        heappush(pqueue, (0, 0, Node(self.__start, Tool.TORCH), Node(Point(-1, -1), Tool.TORCH)))
+        heappush(pqueue, (self.__get_bestcase(self.__start),
+                          0,
+                          Node(self.__start, Tool.TORCH),
+                          Node(Point(-1, -1), Tool.TORCH)))
         target = Node(self.__target, Tool.TORCH)
         visited: dict[Node: int] = {target: self.__get_worstcase(self.__start)}
         while pqueue:
-            weight, timespent, current, previous = heappop(pqueue)
+            _, timespent, current, previous = heappop(pqueue)
             if current == target:
                 visited[current] = timespent
                 break
