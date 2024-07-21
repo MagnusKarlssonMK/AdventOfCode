@@ -17,31 +17,43 @@ def validatenumber(preamble: list[int], nbr: int) -> bool:
     return False
 
 
+class XMAS:
+    __PREAMBLE_LENGTH = 25  # Change to 5 if running the example input
+
+    def __init__(self, rawstr: str) -> None:
+        self.__nbrs = list(map(int, rawstr.splitlines()))
+        self.__invalid_nbr = -1
+
+    def get_invalid_nbr(self) -> int:
+        preamble = [self.__nbrs[i] for i in range(XMAS.__PREAMBLE_LENGTH)]
+        for i in range(XMAS.__PREAMBLE_LENGTH, len(self.__nbrs)):
+            if not validatenumber(preamble, self.__nbrs[i]):
+                self.__invalid_nbr = self.__nbrs[i]
+                break
+            preamble.pop(0)
+            preamble.append(self.__nbrs[i])
+        return self.__invalid_nbr
+
+    def get_encryption_weakness(self) -> int:
+        window = [self.__nbrs[0]]
+        idx = 0
+        while idx < len(self.__nbrs):
+            if (wsum := sum(window)) == self.__invalid_nbr:
+                windowsort = sorted(window)
+                return windowsort[0] + windowsort[-1]
+            if wsum > self.__invalid_nbr:
+                window.pop(0)
+            else:
+                idx += 1
+                window.append(self.__nbrs[idx])
+        return -1
+
+
 def main() -> int:
     with open('../Inputfiles/aoc9.txt', 'r') as file:
-        nbrs = list(map(int, file.read().strip('\n').splitlines()))
-    preamble_len = 25  # Change to 5 if running the example input
-    preamble = [nbrs[i] for i in range(preamble_len)]
-    invalid_nbr = -1
-    for i in range(preamble_len, len(nbrs)):
-        if not validatenumber(preamble, nbrs[i]):
-            invalid_nbr = nbrs[i]
-            break
-        preamble.pop(0)
-        preamble.append(nbrs[i])
-    print("Part 1:", invalid_nbr)
-    window = [nbrs[0]]
-    idx = 0
-    while idx < len(nbrs):
-        if (wsum := sum(window)) == invalid_nbr:
-            windowsort = sorted(window)
-            print("Part 2:", windowsort[0] + windowsort[-1])
-            break
-        if wsum > invalid_nbr:
-            window.pop(0)
-        else:
-            idx += 1
-            window.append(nbrs[idx])
+        xmas = XMAS(file.read().strip('\n'))
+    print(f"Part 1: {xmas.get_invalid_nbr()}")
+    print(f"Part 2: {xmas.get_encryption_weakness()}")
     return 0
 
 
