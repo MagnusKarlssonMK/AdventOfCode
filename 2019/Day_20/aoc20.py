@@ -1,5 +1,14 @@
 """
-
+Quite similar to day 18.
+- Step 1. Parse the input, which is a major headache here, particularly getting the portal names right. Store the path
+in a coordinate dict, and also build a dict of portal locations, also containing indicators for 'inner' and 'outer'
+portals which we need for Part 2.
+- Step 2: Build a map of how the portals are connected and with how many steps. Corresponding 'inner' and 'outer'
+portals (i.e. same name) have a cost of 1 step.
+- Step 3: Dijkstra search to find the shortest path from 'AA' to 'ZZ'. This is the answer to Part 1.
+- Step 4: Modify the Dijkstra search to also contain level information, and prevent using outer portals on level 0
+except start and target node, and preventing use of start and target node on levels deeper than 0. This gives the
+answer to Part 2.
 """
 import sys
 from dataclasses import dataclass
@@ -125,6 +134,27 @@ class DonutMaze:
         return -1
 
     def get_recursion_steps_aa_to_zz(self) -> int:
+        visited = {}
+        pqueue = []
+        start = Portal('AA', PortalType.OUTER)
+        target = Portal('ZZ', PortalType.OUTER)
+        heappush(pqueue, (0, 0, start, start))
+        while pqueue:
+            steps, level, current, previous = heappop(pqueue)
+            if current == target:
+                return steps
+            if (current, level) in visited and visited[(current, level)] <= steps:
+                continue
+            visited[(current, level)] = steps
+            for n, n_steps in self.__portalmap[current]:
+                if n != previous:
+                    dd = 0
+                    if n.name == current.name:  # Change level if we step through a portal
+                        dd = 1 if n.ptype == PortalType.OUTER else -1  # note: n is outer if we step deeper
+                    if n.ptype == PortalType.OUTER and ((level + dd <= 0 and n not in (start, target)) or
+                                                        (level + dd > 0 and n in (start, target))):
+                        continue
+                    heappush(pqueue, (steps + n_steps, level + dd, n, current))
         return -1
 
 
