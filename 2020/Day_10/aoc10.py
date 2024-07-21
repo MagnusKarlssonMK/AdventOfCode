@@ -8,24 +8,29 @@ import sys
 from collections import Counter
 
 
-def part1(ratings: list[int]) -> int:
-    diff = Counter()
-    for i in range(len(ratings) - 1):
-        diff[ratings[i+1] - ratings[i]] += 1
-    return diff[1] * diff[3]
+class Device:
+    def __init__(self, rawstr: str) -> None:
+        self.__ratings = sorted(list(map(int, rawstr.splitlines())))
+        self.__ratings.append(self.__ratings[-1] + 3)
+        self.__ratings.insert(0, 0)
 
+    def get_jolt_differences(self) -> int:
+        diff = Counter()
+        for i in range(len(self.__ratings) - 1):
+            diff[self.__ratings[i+1] - self.__ratings[i]] += 1
+        return diff[1] * diff[3]
 
-def part2(ratings: list[int]) -> int:
-    adj = {}
-    for i in range(len(ratings) - 1):
-        adj[ratings[i]] = []
-        for j in range(i + 1, i + 4):
-            if j >= len(ratings) or ratings[j] - ratings[i] > 3:
-                break
-            else:
-                adj[ratings[i]].append(ratings[j])
-    start = ratings[0]
-    return pathcount(adj, start, {})
+    def get_nbr_adapter_arrangements(self) -> int:
+        adj = {}
+        for i in range(len(self.__ratings) - 1):
+            adj[self.__ratings[i]] = []
+            for j in range(i + 1, i + 4):
+                if j >= len(self.__ratings) or self.__ratings[j] - self.__ratings[i] > 3:
+                    break
+                else:
+                    adj[self.__ratings[i]].append(self.__ratings[j])
+        start = self.__ratings[0]
+        return pathcount(adj, start, {})
 
 
 def pathcount(dag, vertex, memo) -> int:
@@ -40,11 +45,9 @@ def pathcount(dag, vertex, memo) -> int:
 
 def main() -> int:
     with open('../Inputfiles/aoc10.txt', 'r') as file:
-        ratings = sorted(list(map(int, file.read().strip('\n').splitlines())))
-    ratings.append(ratings[-1] + 3)
-    ratings.insert(0, 0)
-    print("Part 1:", part1(ratings))
-    print("Part 2:", part2(ratings))
+        device = Device(file.read().strip('\n'))
+    print(f"Part 1: {device.get_jolt_differences()}")
+    print(f"Part 2: {device.get_nbr_adapter_arrangements()}")
     return 0
 
 
