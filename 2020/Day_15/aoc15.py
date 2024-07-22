@@ -6,8 +6,8 @@ import sys
 
 
 class MemoryGame:
-    def __init__(self, nbrs: list[int]):
-        self.__startlist = list(nbrs)
+    def __init__(self, rawstr: str):
+        self.__startlist = [int(i) for i in rawstr.split(',')]
 
     def playrounds(self, rounds: int) -> int:
         nbrs: dict[int:int] = {}
@@ -27,7 +27,7 @@ class MemoryGame:
 
 def main() -> int:
     with open('../Inputfiles/aoc15.txt', 'r') as file:
-        mygame = MemoryGame([int(i) for i in file.read().strip('\n').split(',')])
+        mygame = MemoryGame(file.read().strip('\n'))
     print("Part 1:", mygame.playrounds(2020))
     print("Part 2:", mygame.playrounds(30_000_000))
     return 0
