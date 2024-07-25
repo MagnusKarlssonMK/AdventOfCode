@@ -71,6 +71,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-# Part 1: 46978532
-# Part 2: 163035127721
