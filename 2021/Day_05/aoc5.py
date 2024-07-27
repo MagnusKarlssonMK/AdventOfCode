@@ -15,6 +15,14 @@ class Coord:
     x: int = 0
     y: int = 0
 
+    def is_diagonal(self, other: "Coord") -> bool:
+        return self.x != other.x and self.y != other.y
+
+    def get_derivate(self, other: "Coord") -> "Coord":
+        dx = (other.x - self.x) // max(abs(other.x - self.x), abs(other.y - self.y), 1)
+        dy = (other.y - self.y) // max(abs(other.x - self.x), abs(other.y - self.y), 1)
+        return Coord(dx, dy)
+
     def __add__(self, other: "Coord") -> "Coord":
         return Coord(self.x + other.x, self.y + other.y)
 
@@ -23,20 +31,16 @@ class Line:
     max_x = 0
     max_y = 0
 
-    def __init__(self, x1: int, y1: int, x2: int, y2: int):
+    def __init__(self, x1: int, y1: int, x2: int, y2: int) -> None:
         self.__points = [Coord(x1, y1), Coord(x2, y2)] if x1 >= x2 else [Coord(x2, y2), Coord(x1, y1)]
         Line.max_x = max(Line.max_x, x1, x2)
         Line.max_y = max(Line.max_y, y1, y2)
 
     def is_diagonal(self) -> bool:
-        return self.__points[0].x != self.__points[1].x and self.__points[0].y != self.__points[1].y
+        return self.__points[0].is_diagonal(self.__points[1])
 
     def get_points(self) -> iter:
-        dx = (self.__points[1].x - self.__points[0].x) // max(abs(self.__points[1].x - self.__points[0].x),
-                                                              abs(self.__points[1].y - self.__points[0].y), 1)
-        dy = (self.__points[1].y - self.__points[0].y) // max(abs(self.__points[1].x - self.__points[0].x),
-                                                              abs(self.__points[1].y - self.__points[0].y), 1)
-        dxdy = Coord(dx, dy)
+        dxdy = self.__points[0].get_derivate(self.__points[1])
         point = self.__points[0]
         while True:
             yield point
@@ -58,12 +62,7 @@ class Seabottom:
             if line.is_diagonal() == use_diagonal:
                 for p in line.get_points():
                     self.__grid[p.y][p.x] += 1
-        retval = 0
-        for y in self.__grid:
-            for x in y:
-                if x > 1:
-                    retval += 1
-        return retval
+        return sum([1 for y in self.__grid for x in y if x > 1])
 
 
 def main() -> int:
