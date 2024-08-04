@@ -4,7 +4,11 @@ that will be a supernet, while the second segment and every other after that wil
 From there on it's mostly just string parsing, with a sliding window over the strings to scan them for the patterns.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day07.txt')
 
 
 def contains_abba(word: str) -> bool:
@@ -69,7 +73,7 @@ class IpDatabase:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         iplist = IpDatabase(file.read().strip('\n'))
     print(f"Part 1: {iplist.get_tls_support_count()}")
     print(f"Part 2: {iplist.get_ssl_support_count()}")

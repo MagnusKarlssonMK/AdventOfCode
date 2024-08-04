@@ -3,7 +3,11 @@ Do most of the heavy lifting in a Room class, which will hold the input values a
 the checksum and decodes the string.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day04.txt')
 
 
 class Room:
@@ -68,7 +72,7 @@ class Kiosk:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         kiosk = Kiosk(file.read().strip('\n'))
     print(f"Part 1: {kiosk.get_real_rooms_sector_sum()}")
     print(f"Part 2: {kiosk.get_north_pole_sectorid()}")

@@ -16,8 +16,12 @@ This optimization could potentially also be back-ported to the solution for Day-
 as well, probably for the same reasons.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day23.txt')
 
 
 @dataclass
@@ -113,7 +117,7 @@ class Computer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Computer(file.read().strip('\n'))
     print(f"Part 1: {computer.get_a_register()}")
     print(f"Part 2: {computer.get_a_register(True)}")

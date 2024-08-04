@@ -3,9 +3,13 @@ Pretty much just do the pixel transformations according to the instructions, use
 a bit easier.
 """
 import sys
+from pathlib import Path
 import re
 import numpy as np
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day08.txt')
 
 
 @dataclass(frozen=True)
@@ -58,7 +62,7 @@ class Display:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         display = Display(file.read().strip('\n'))
     print(f"Part 1: {display.get_lit_pixel_count()}")
     print("Part 2:")

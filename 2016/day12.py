@@ -3,7 +3,11 @@ Straightforward, simply store the program in a computer class, and then run the 
 of the instructions. For Part 2, simply change the initial value for register C to 1 instead of 0.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day12.txt')
 
 
 @dataclass(frozen=True)
@@ -50,7 +54,7 @@ class Computer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Computer(file.read().strip('\n'))
     print(f"Part 1: {computer.get_a_register()}")
     print(f"Part 2: {computer.get_a_register(True)}")

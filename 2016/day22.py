@@ -15,9 +15,13 @@ nodes.
 2. Add the row length multiplied by 5 for the cost of moving G to the top left.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day22.txt')
 
 
 @dataclass
@@ -76,7 +80,7 @@ class Cluster:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cluster = Cluster(file.read().strip('\n'))
     print(f"Part 1: {cluster.get_viable_pairs_count()}")
     print(f"Part 2: {cluster.get_fewest_steps_count()}")

@@ -3,7 +3,11 @@ Iterate with an increasing index value and use hashlib to calculate the md5 chec
 Takes a lot of iterations, i.e. doorbreaking is NOT fast.
 """
 import sys
+from pathlib import Path
 import hashlib
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day05.txt')
 
 
 class Door:
@@ -37,7 +41,7 @@ class Door:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         door = Door(file.read().strip('\n'))
     print(f"Part 1: {door.get_password()}")
     print(f"Part 2: {door.get_advanced_password()}")

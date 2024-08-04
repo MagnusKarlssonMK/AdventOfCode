@@ -6,8 +6,12 @@ manhattan distance of that point. Note that unlike part 1, this means that we ne
 at a time, and not directly jump the number of steps in the instruction in one giant step.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum, auto
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day01.txt')
 
 
 class Rotation(Enum):
@@ -65,7 +69,7 @@ class WalkingSimulator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         sim = WalkingSimulator(file.read().strip('\n'))
     print(f"Part 1: {sim.get_shortest_distance()}")
     print(f"Part 2: {sim.get_shortest_distance(True)}")

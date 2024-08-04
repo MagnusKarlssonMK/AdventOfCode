@@ -9,9 +9,13 @@ Use a hasher with a cache for at least some chance of reducing time for the ridi
 Part 2. It's still really quite slow though, Part 2 takes around a minute to complete.
 """
 import sys
+from pathlib import Path
 import hashlib
 import re
 from functools import lru_cache
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day14.txt')
 
 
 @lru_cache(None)
@@ -53,7 +57,7 @@ class KeyGenerator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         keygen = KeyGenerator(file.read().strip('\n'))
     print(f"Part 1: {keygen.get_64th_index()}")
     print(f"Part 2: {keygen.get_64th_index(2016)}")

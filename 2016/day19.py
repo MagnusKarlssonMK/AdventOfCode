@@ -9,6 +9,10 @@ with 1 as winner on every 'new' / added digit in the base-3 representation (4, 1
 those numbers, the winning number is incremented by 1, while in the second half the winning number is incremented by 2.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day19.txt')
 
 
 def get_winning_elf(nbr_elfs: int) -> int:
@@ -33,7 +37,7 @@ def get_winning_elf_opposite(nbr_elfs: int) -> int:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         nbr = int(file.read().strip('\n'))
     print(f"Part 1: {get_winning_elf(nbr)}")
     print(f"Part 2: {get_winning_elf_opposite(nbr)}")

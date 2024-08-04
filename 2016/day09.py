@@ -5,7 +5,11 @@ and try again.
 For Part 2, instead of just calculating the length, use a recursive call again instead.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day09.txt')
 
 
 def get_decompressed_len(compressed: str, version2: bool = False) -> int:
@@ -29,7 +33,7 @@ def get_decompressed_len(compressed: str, version2: bool = False) -> int:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
+    with open(INPUT_FILE) as file:
         decompr = file.read().strip('\n')
     print(f"Part 1: {get_decompressed_len(decompr)}")
     print(f"Part 2: {get_decompressed_len(decompr, True)}")

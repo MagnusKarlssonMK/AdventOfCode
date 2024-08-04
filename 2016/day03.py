@@ -4,6 +4,10 @@ down to just checking the sum of the two smallest sides agains the largest side;
 combinations.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day03.txt')
 
 
 class Triangle:
@@ -38,7 +42,7 @@ class DesignOffice:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         office = DesignOffice(file.read().strip('\n'))
     print(f"Part 1: {office.get_valid_row_count()}")
     print(f"Part 2: {office.get_valid_col_count()}")

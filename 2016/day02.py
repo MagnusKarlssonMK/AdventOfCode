@@ -6,7 +6,11 @@ description and then having a parsing function to convert it to the layouts, but
 mappings.
 """
 import sys
+from pathlib import Path
 from enum import Enum, auto
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day02.txt')
 
 
 class Directions(Enum):
@@ -60,7 +64,7 @@ class KeyPad:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         keypad = KeyPad(file.read().strip('\n'))
     print(f"Part 1: {keypad.get_bathroom_code()}")
     print(f"Part 2: {keypad.get_bathroom_code(True)}")

@@ -4,7 +4,11 @@ The only difference between Part 1 & 2 is in the stop condition for the search f
 for a specific target node, while for part 2 we want to walk 50 steps and then check number of seen nodes.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -49,7 +53,7 @@ class CubicleMaze:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         maze = CubicleMaze(int(file.read().strip('\n')))
     print(f"Part 1: {maze.get_count()}")
     print(f"Part 2: {maze.get_count(Point(0, 0), 50)}")

@@ -2,9 +2,13 @@
 All divisors (nbr of positions for each disc) are pairwise coprime -> yep, it's Chinese remainder time.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 import math
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day15.txt')
 
 
 def chinese_remainder(num: list[int], rem: list[int]) -> int:
@@ -51,7 +55,7 @@ class Sculpture:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         sculpture = Sculpture(file.read().strip('\n'))
     print(f"Part 1: {sculpture.get_buttonpress_time()}")
     print(f"Part 2: {sculpture.get_buttonpress_time(True)}")

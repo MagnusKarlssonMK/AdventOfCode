@@ -6,8 +6,12 @@ and from the found paths the answer to part 1 is the first entry (the actual pat
 length of the last entry.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 import hashlib
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day17.txt')
 
 
 GRID_SIZE = 4
@@ -46,7 +50,7 @@ class Vault:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         vault = Vault(file.read().strip('\n'))
     p1, p2 = vault.get_shortestpath()
     print(f"Part 1: {p1}")

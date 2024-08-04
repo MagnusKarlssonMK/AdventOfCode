@@ -3,6 +3,10 @@ Super simple, but also not superfast for part 2.
 Gets the job done in 5 seconds or so, but I can't help but wonder if there is some hidden trick to optimize it...
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day18.txt')
 
 
 class TrapRoom:
@@ -25,7 +29,7 @@ class TrapRoom:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         room = TrapRoom(file.read().strip('\n'))
     print(f"Part 1: {room.get_safetile_count(40)}")
     print(f"Part 2: {room.get_safetile_count(400000)}")

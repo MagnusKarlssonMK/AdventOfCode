@@ -8,8 +8,12 @@ would result in the correct result, and that way we will eventually find the ori
 result from calling this operation.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day21.txt')
 
 
 class Instr(Enum):
@@ -135,7 +139,7 @@ class Scrambler:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         scrambler = Scrambler(file.read().strip('\n'))
     print(f"Part 1: {scrambler.get_scrambled_string('abcdefgh')}")
     print(f"Part 2: {scrambler.get_descrambled_string('fbgdceah')}")

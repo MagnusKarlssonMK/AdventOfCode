@@ -5,6 +5,10 @@ Just to make up for the time-consuming problem the previous day, make an unneces
 calculation and generate the answers for both parts in one step.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day06.txt')
 
 
 class Signal:
@@ -28,7 +32,7 @@ class Signal:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         signal = Signal(file.read().strip('\n'))
     p1, p2 = signal.decode_signal()
     print(f"Part 1: {p1}")

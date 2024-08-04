@@ -6,10 +6,14 @@ different permutations of isotopes in the same overall state, just different nam
 For part 2, simply add 2 isotopes with both generators and microchips on the first floor and run again.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day11.txt')
 
 
 @dataclass(frozen=True)
@@ -109,7 +113,7 @@ class Facility:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         facility = Facility(file.read().strip('\n'))
     print(f"Part 1: {facility.get_min_steps()}")
     print(f"Part 2: {facility.get_min_steps(True)}")

@@ -7,8 +7,12 @@ answer to Part 1. Once the queue is emptied, the answer to part 2 is found by mu
 the first three outputs.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day10.txt')
 
 
 class Node(Enum):
@@ -84,7 +88,7 @@ class Factory:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         factory = Factory(file.read().strip('\n'))
     print(f"Part 1: {factory.get_comparing_bot_id()}")
     print(f"Part 2: {factory.get_output_prod()}")

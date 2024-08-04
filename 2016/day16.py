@@ -3,6 +3,10 @@ Basically a brute-force solution, gets part 2 done in a second or so.
 There are some fancier solutions out there, I might return to check those out some rainy day...
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day16.txt')
 
 
 def dragon_curve(a: str) -> str:
@@ -35,7 +39,7 @@ class Disk:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         disk = Disk(file.read().strip('\n'))
     print(f"Part 1: {disk.get_checksum(272)}")
     print(f"Part 2: {disk.get_checksum(35651584)}")

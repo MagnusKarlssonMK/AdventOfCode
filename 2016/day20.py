@@ -8,6 +8,10 @@ Similar deal for part 2, making use of the sorted list and keeping track of the 
 numbers while counting numbers not covered by blocked intervals.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day20.txt')
 
 
 class Firewall:
@@ -34,7 +38,7 @@ class Firewall:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         firewall = Firewall(file.read().strip('\n'))
     print(f"Part 1: {firewall.get_lowest_ip()}")
     print(f"Part 2: {firewall.get_allowed_ip_count()}")

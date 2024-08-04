@@ -12,8 +12,12 @@ now, it doesn't seem to make any major performance difference with this program.
 I will need to come back and debug it later. **
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2016/day25.txt')
 
 
 @dataclass
@@ -118,7 +122,7 @@ class Computer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Computer(file.read().strip('\n'))
     print(f"Part 1: {computer.get_a_register()}")
     return 0
