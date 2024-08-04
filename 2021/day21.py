@@ -3,8 +3,12 @@ Recursive solution, using pre-computed values for part 2 to generate possible ro
 combinations yielding that roll. Also uses memo from functools to get the recursion done in decent time.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from functools import lru_cache
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day21.txt')
 
 
 @dataclass(frozen=True)
@@ -54,7 +58,7 @@ class Game:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         game = Game(file.read().strip('\n'))
     print(f"Part 1: {game.get_finalscore()}")
     print(f"Part 2: {game.get_finalscore(False)}")

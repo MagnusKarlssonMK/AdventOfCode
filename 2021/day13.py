@@ -3,6 +3,10 @@ Solution: store the parsed coordinates in a Paper class, in a set rather than a 
 points when folding the paper later.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day13.txt')
 
 
 class Paper:
@@ -46,7 +50,7 @@ class Paper:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mypaper = Paper(file.read().strip('\n'))
     print(f"Part 1: {mypaper.fold_and_get_dots()}")
     print(f"Part 2: \n{mypaper}")

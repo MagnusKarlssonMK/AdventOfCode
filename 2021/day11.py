@@ -5,6 +5,10 @@ they already flashed this step), and if a node flashes, increment all adjacent n
 recursively.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day11.txt')
 
 
 class Cavern:
@@ -61,7 +65,7 @@ class Cavern:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cavern = Cavern(file.read().strip('\n'))
     p1, p2 = cavern.get_flashcounts()
     print(f"Part 1: {p1}")

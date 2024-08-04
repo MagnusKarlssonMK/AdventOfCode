@@ -2,8 +2,12 @@
 Straightforward, just go through the instructions and update the position according to the rules.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day02.txt')
 
 
 class Direction(Enum):
@@ -53,7 +57,7 @@ class Submarine:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         submarine = Submarine(file.read().strip('\n'))
     print(f"Part 1: {submarine.get_move_result()}")
     print(f"Part 2: {submarine.get_aimed_move_result()}")

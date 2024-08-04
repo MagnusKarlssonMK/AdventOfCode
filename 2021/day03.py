@@ -1,8 +1,12 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day03.txt')
 
 
 class Diagnostics:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__lines = rawstr.splitlines()
         self.__nbrbits = len(self.__lines[0])
 
@@ -34,7 +38,7 @@ class Diagnostics:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mydiag = Diagnostics(file.read().strip('\n'))
     print(f"Part 1: {mydiag.getpowerconsumption()}")
     print(f"Part 2: {mydiag.getlifesupportrating()}")

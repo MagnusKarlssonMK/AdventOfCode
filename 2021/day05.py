@@ -6,8 +6,12 @@ best. The first alternative is noticably slower, and the second alternative is s
 complicated implementation and scales badly with increased number of lines.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day05.txt')
 
 
 @dataclass(frozen=True)
@@ -53,7 +57,7 @@ class Line:
 
 
 class Seabottom:
-    def __init__(self, inputlines: list[str]):
+    def __init__(self, inputlines: list[str]) -> None:
         self.__lines = [Line(*list(map(int, re.findall(r"\d+", line)))) for line in inputlines]
         self.__grid = [[0 for _ in range(Line.max_x + 1)] for _ in range(Line.max_y + 1)]
 
@@ -66,7 +70,7 @@ class Seabottom:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         seabottom = Seabottom(file.read().strip('\n').splitlines())
     print(f"Part 1: {seabottom.get_score()}")
     print(f"Part 2: {seabottom.get_score(True)}")

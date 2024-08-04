@@ -7,9 +7,13 @@ Also - unlike the example input, the real input toggles the void at each enhance
 of the state of the void and use that for creating the outer buffer to get the correct result at the boundaries.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day20.txt')
 
 
-class ImageV2:
+class Image:
     def __init__(self, rawstr: str) -> None:
         algo, img_input = rawstr.split('\n\n')
         self.__voidvalue = '0'
@@ -52,8 +56,8 @@ class ImageV2:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
-        myimg = ImageV2(file.read().strip('\n'))
+    with open(INPUT_FILE, 'r') as file:
+        myimg = Image(file.read().strip('\n'))
     print(f"Part 1: {myimg.get_enhancement_count(2)}")
     print(f"Part 2: {myimg.get_enhancement_count(48)}")
     # Note: The state of the image is stored after the first two rounds, so we only need to do another 48 to get to 50.

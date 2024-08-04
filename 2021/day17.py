@@ -44,8 +44,12 @@ Y-axis:
     evaluating the corresponding negative value -1 and just add that extra offset.
 """
 import sys
+from pathlib import Path
 import re
 import math
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day17.txt')
 
 
 class Steps:
@@ -126,7 +130,7 @@ class ProbeLauncer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mylauncher = ProbeLauncer(file.read().strip('\n'))
     print(f"Part 1: {mylauncher.get_max_height()}")
     print(f"Part 2: {mylauncher.get_combination_count()}")

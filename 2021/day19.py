@@ -1,9 +1,13 @@
 """
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from collections import Counter
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day19.txt')
 
 
 @dataclass(frozen=True)
@@ -77,7 +81,7 @@ class Probe:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myprobe = Probe(file.read().strip('\n'))
     print(f"Part 1: {myprobe.get_nbr_beacons()}")
     print(f"Part 2: {myprobe.get_biggest_distance()}")

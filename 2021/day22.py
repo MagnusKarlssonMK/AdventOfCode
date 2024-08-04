@@ -5,8 +5,12 @@ Basically run through the cuboids and find intersections and create 'negative' c
 and then calculate the total volume from that.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day22.txt')
 
 
 @dataclass
@@ -81,7 +85,7 @@ class Reactor:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myreactor = Reactor(file.read().strip('\n'))
     print(f"Part 1: {myreactor.get_reboot_cubes()}")
     print(f"Part 2: {myreactor.get_reboot_cubes(False)}")

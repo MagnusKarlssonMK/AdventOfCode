@@ -6,10 +6,14 @@ going until there is only one board left to get the score for Part 2.
 
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day04.txt')
 
 
 class BingoBoard:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__nbrs = []
         [self.__nbrs.append(list(map(int, row.split()))) for row in rawstr.splitlines()]
         self.__rowtotals = [0 for _, _ in enumerate(self.__nbrs)]
@@ -38,7 +42,7 @@ class BingoBoard:
 
 
 class BingoModule:
-    def __init__(self, rawinput: str):
+    def __init__(self, rawinput: str) -> None:
         blocks = rawinput.split('\n\n')
         self.__nbrs = list(map(int, blocks[0].split(',')))
         self.__boards = [BingoBoard(blocks[b_idx]) for b_idx in range(1, len(blocks))]
@@ -58,7 +62,7 @@ class BingoModule:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         bingo = BingoModule(file.read().strip('\n'))
     p1_score, p2_score = bingo.get_scores()
     print(f"Part 1: {p1_score}")

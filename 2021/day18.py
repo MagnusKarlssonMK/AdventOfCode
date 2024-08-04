@@ -5,7 +5,11 @@ levels of adjacent entries when scanning the tuples from left to right. That way
 and split numbers, compared to how it would have been in a tree.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day18.txt')
 
 
 @dataclass
@@ -113,7 +117,7 @@ class Calculator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         lines = Calculator(file.read().strip('\n'))
     print(f"Part 1: {lines.get_finalsum()}")
     print(f"Part 2: {lines.get_maximum_magnitude()}")

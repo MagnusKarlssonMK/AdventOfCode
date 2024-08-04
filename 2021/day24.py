@@ -5,8 +5,12 @@ of instructions with slightly different numbers as arguments, i.e. each chunk re
 the model number.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day24.txt')
 
 
 class Op(Enum):
@@ -53,7 +57,7 @@ class ALU:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc24.txt", 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         alu = ALU(file.read().strip('\n'))
     print(f"Part 1: {alu.get_model_nbr()}")
     print(f"Part 2: {alu.get_model_nbr(True)}")

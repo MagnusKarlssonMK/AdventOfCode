@@ -5,8 +5,12 @@ to the last (outer) package, but the description makes it sound like it applies 
 also not clear what 'its' is referring to - the value or the (sub)package? Or the entire bitstream from the start?
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from math import prod
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day16.txt')
 
 
 class PacketType(Enum):
@@ -111,7 +115,7 @@ class BitsDecoder:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         decoder = BitsDecoder(file.read().strip('\n'))
     mypacket = decoder.decodestream()
     print(f"Part 1: {decoder.versionsum}")

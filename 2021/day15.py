@@ -8,7 +8,11 @@ As a small potential optimization, both parts could be kept in the same 'expande
 to the 'get' function could set the limits on which parts of the grid can be used.
 """
 import sys
+from pathlib import Path
 from heapq import heappop, heappush
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day15.txt')
 
 
 class Cavegrid:
@@ -55,7 +59,7 @@ class Cavegrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         indata = file.read().strip('\n')
         cave = Cavegrid(indata)
         largecave = Cavegrid(indata, True)

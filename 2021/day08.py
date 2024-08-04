@@ -9,13 +9,17 @@ rest of the numbers and mappings.
 Store the signals in sets to be able to use the '-' operator to find the difference between numbers.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day08.txt')
 
 
 class Display:
     NumSegMap: dict[int: str] = {0: set('abcefg'), 1: set('cf'), 2: set('acdeg'), 3: set('acdfg'), 4: set('bcdf'),
                                  5: set('abdfg'), 6: set('abdefg'), 7: set('acf'), 8: set('abcdefg'), 9: set('abcdfg')}
 
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__lines = [(row[0].split(), row[1].split()) for row in
                         [line.split(' | ') for line in rawstr.splitlines()]]
 
@@ -63,7 +67,7 @@ class Display:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         display = Display(file.read().strip('\n'))
     print(f"Part 1: {display.get_1478_count()}")
     print(f"Part 2: {display.get_output_sum()}")

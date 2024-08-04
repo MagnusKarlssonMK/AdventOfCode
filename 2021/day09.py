@@ -6,13 +6,18 @@ stated in the problem description) that all low points will be surrounded by 9:s
 low point.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day09.txt')
+
 
 Point = tuple[int, int]
 
 
 class Grid:
-    def __init__(self, inputlines: list[str]):
-        self.__grid = [[int(c) for c in line] for line in inputlines]
+    def __init__(self, rawstr: str) -> None:
+        self.__grid = [[int(c) for c in line] for line in rawstr.splitlines()]
         self.__height = len(self.__grid)
         self.__width = len(self.__grid[0])
         self.__lowpoints = [p for p in self.__findlowpoints()]
@@ -60,8 +65,8 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
-        mygrid = Grid(file.read().strip('\n').splitlines())
+    with open(INPUT_FILE, 'r') as file:
+        mygrid = Grid(file.read().strip('\n'))
     print(f"Part 1: {mygrid.getlowpointscore()}")
     print(f"Part 2: {mygrid.getbasinscore()}")
     return 0

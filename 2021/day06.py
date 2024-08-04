@@ -4,6 +4,10 @@ Solution - rather than storing each and every lantern fish individually, simply 
 to state-0 and add that number to state-6 and also append that number to state-8.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day06.txt')
 
 
 class Fishies:
@@ -25,7 +29,7 @@ class Fishies:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         fishies = Fishies(file.read().strip('\n'))
     p1, p2 = fishies.get_answers()
     print(f"Part 1: {p1}")

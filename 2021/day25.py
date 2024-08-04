@@ -5,6 +5,10 @@ stores in dictionaries per x/y coordinate rather than dumping it all in giant se
 bit more complicated but seems to speed up the execution quite a bit.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day25.txt')
 
 
 class Seabottom:
@@ -61,7 +65,7 @@ class Seabottom:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         bottom = Seabottom(file.read().strip('\n'))
     print(f"Part 1: {bottom.get_rounds_stop_moving()}")
     return 0

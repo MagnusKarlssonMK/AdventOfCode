@@ -6,7 +6,11 @@ something readable, but right now I feel like leaving it like this for the comed
 to decipher this in the future (myself included...).
 """
 import sys
+from pathlib import Path
 from heapq import heappop, heappush
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day23.txt')
 
 
 class Burrow:
@@ -120,7 +124,7 @@ class Burrow:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         burrow = Burrow(file.read().strip('\n'))
     print(f"Part 1: {burrow.get_energycost()}")
     print(f"Part 2: {burrow.get_energycost(True)}")

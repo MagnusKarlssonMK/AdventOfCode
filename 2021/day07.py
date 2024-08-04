@@ -5,11 +5,15 @@ For part 2, the optimal distance will rather be on the mean value, so similar ap
 the surrounding values to be safe against rounding errors.
 """
 import sys
+from pathlib import Path
 import statistics
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day07.txt')
 
 
 class CrabArmy:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__crabs = sorted(list(map(int, rawstr.split(','))))
 
     def get_calibration_cost(self, scaling_fuel_rate: bool = False) -> int:
@@ -30,7 +34,7 @@ class CrabArmy:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         crabs = CrabArmy(file.read().strip('\n'))
     print(f"Part 1: {crabs.get_calibration_cost()}")
     print(f"Part 2: {crabs.get_calibration_cost(True)}")

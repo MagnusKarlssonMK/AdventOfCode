@@ -8,6 +8,10 @@ closing brackets left, and the answer is found simply by reversing the order of 
 converting to their corresponding closing brackets.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day10.txt')
 
 
 def getsyntaxscore(char: str) -> int:
@@ -108,7 +112,7 @@ class NavigationSubsystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mysystem = NavigationSubsystem(file.read().strip('\n'))
     print(f"Part 1: {mysystem.get_corrupted_score()}")
     print(f"Part 2: {mysystem.get_middle_score()}")

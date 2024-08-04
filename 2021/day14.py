@@ -3,7 +3,11 @@ Solution: rather than storing the actual string, store the developed polymer as 
 For every step, expand each pair into two new pairs and inherit the counter value for both.
 """
 import sys
+from pathlib import Path
 from collections import Counter
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day14.txt')
 
 
 class Polymer:
@@ -46,7 +50,7 @@ class Polymer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         poly = Polymer(file.read().strip('\n'))
     poly.takesteps(10)
     print(f"Part 1: {poly.getscore()}")

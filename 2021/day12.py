@@ -5,6 +5,10 @@ path is stored and finally counted once the queue is emptied. For Part 2, just a
 be visited one extra time, and add that flag to the queue.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2021/day12.txt')
 
 
 class Cavesystem:
@@ -54,7 +58,7 @@ class Cavesystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cave = Cavesystem(file.read().strip('\n'))
     print("Part 1:", cave.findallpaths())
     print("Part 2:", cave.findallpaths(1))
