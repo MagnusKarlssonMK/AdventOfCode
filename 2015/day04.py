@@ -4,7 +4,11 @@ Could perhaps shave off some ms by merging p1 and p2 without restarting from zer
 some extra checks to execute in the loop.
 """
 import sys
+from pathlib import Path
 from hashlib import md5
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day04.txt')
 
 
 class MD5Miner:
@@ -21,7 +25,7 @@ class MD5Miner:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         miner = MD5Miner(file.read().strip('\n'))
     print(f"Part 1: {miner.get_lowest_nbr()}")
     print(f"Part 2: {miner.get_lowest_nbr(6)}")

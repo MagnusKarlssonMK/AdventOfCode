@@ -2,7 +2,11 @@
 Some regex juggling and a recursive function to step the password.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day11.txt')
 
 
 class Password:
@@ -37,7 +41,7 @@ class Password:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         pwd = Password(file.read().strip('\n'))
     pwd = pwd.get_new_password()
     print(f"Part 1: {pwd}")

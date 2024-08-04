@@ -6,9 +6,13 @@ Basically keep game data in a state class which recursively tries different sequ
 most mana efficient one.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum, auto
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day22.txt')
 
 
 class Spells(Enum):
@@ -122,9 +126,10 @@ class GameState:
 
 class WizardSim:
     """Wrapper class to interface between main and gamestate and hold the initial game data."""
-    def __init__(self, bosshp: int, bossdmg: int, wizardhp: int = 50, wizardmana: int = 500) -> None:
-        self.__boss_hp = bosshp
-        self.__boss_dmg = bossdmg
+    def __init__(self, rawstr: str, wizardhp: int = 50, wizardmana: int = 500) -> None:
+        lines = rawstr.splitlines()
+        self.__boss_hp = int(lines[0].split()[-1])
+        self.__boss_dmg = int(lines[1].split()[-1])
         self.__wizard_hp = wizardhp
         self.__wizard_mana = wizardmana
 
@@ -137,7 +142,8 @@ class WizardSim:
 
 
 def main() -> int:
-    game = WizardSim(51, 9)
+    with open(INPUT_FILE, 'r') as file:
+        game = WizardSim(file.read().strip('\n'))
     print(f"Part 1: {game.get_cheapest_win()}")
     print(f"Part 2: {game.get_cheapest_win(True)}")
     return 0

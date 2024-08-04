@@ -5,6 +5,10 @@ of the lowest house found yet reaching the target to avoid iterating further ove
 winning.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day20.txt')
 
 
 def get_lowest_house(target: int) -> int:
@@ -37,7 +41,8 @@ def get_lowest_house_lazy_elf(target: int) -> int:
 
 
 def main() -> int:
-    target = 36_000_000
+    with open(INPUT_FILE, 'r') as file:
+        target = int(file.read().strip('\n'))
     print(f"Part 1: {get_lowest_house(target)}")
     print(f"Part 2: {get_lowest_house_lazy_elf(target)}")
     return 0

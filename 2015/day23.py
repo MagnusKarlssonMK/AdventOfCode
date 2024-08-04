@@ -3,7 +3,11 @@ Quite straightforward, basically just store the program and then run it by havin
 the program according to the instructions.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day23.txt')
 
 
 @dataclass(frozen=True)
@@ -53,7 +57,7 @@ class Computer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Computer(file.read().strip('\n'))
     print(f"Part 1: {computer.get_b_reg()}")
     print(f"Part 2: {computer.get_b_reg(1)}")

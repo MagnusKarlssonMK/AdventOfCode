@@ -4,6 +4,10 @@ fast but part 2 takes a couple of seconds. Might need to investigate further in 
 ways to approach this, such as grouping by repeating patterns of sub-numbers or similar.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day10.txt')
 
 
 class LookAndSay:
@@ -27,12 +31,11 @@ class LookAndSay:
             if count > 0:
                 new_seq += str(count) + currentchar
             sequence = new_seq
-        # print(sequence)
         return len(sequence)
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         game = LookAndSay(file.read().strip('\n'))
     print(f"Part 1: {game.get_generated_length(40)}")
     print(f"Part 2: {game.get_generated_length(50)}")

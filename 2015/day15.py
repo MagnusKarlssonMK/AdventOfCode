@@ -5,11 +5,15 @@ Takes a couple of seconds to run, could possibly be optimized to run part 1 and 
 much just adds a calorie filter to the scoring.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day15.txt')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Ingredient:
     capacity: int = 0
     durability: int = 0
@@ -65,14 +69,12 @@ class Kitchen:
         return total.get_score()
 
     def get_top_score(self, cal_limited: bool = False) -> int:
-        top_score = 0
-        for mix in amounts_generator(len(self.__ingredients), Kitchen.__TOTAL_INGREDIENTS):
-            top_score = max(top_score, self.__get_cookie_score(mix, cal_limited))
-        return top_score
+        return max([self.__get_cookie_score(mix, cal_limited)
+                   for mix in amounts_generator(len(self.__ingredients), Kitchen.__TOTAL_INGREDIENTS)])
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         kitchen = Kitchen(file.read().strip('\n'))
     print(f"Part 1: {kitchen.get_top_score()}")
     print(f"Part 2: {kitchen.get_top_score(True)}")

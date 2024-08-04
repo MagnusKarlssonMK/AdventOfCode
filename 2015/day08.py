@@ -1,10 +1,14 @@
 """
-Trying to avoid using literal eval to find a solution that can be transferred to other languages.
+Trying to avoid using literal eval.
 So pretty much scan the lines for special characters and;
 - For part 1, count number of positions that does not represent an actual character.
 - For part 2, count the characters that needs to be escaped.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day08.txt')
 
 
 class SantaList:
@@ -38,7 +42,7 @@ class SantaList:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         santalist = SantaList(file.read().strip('\n'))
     print(f"Part 1: {santalist.get_unchar_count()}")
     print(f"Part 2: {santalist.get_encoded_diff()}")

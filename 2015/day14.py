@@ -6,11 +6,15 @@ to keep in mind is that the time loop needs to start at 1 to avoid awarding poin
 until 2503+1 to compensate for python's range not including the last value.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day14.txt')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Reindeer:
     speed: int
     time: int
@@ -52,7 +56,7 @@ class Olympics:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         olympics = Olympics(file.read().strip('\n'))
     print(f"Part 1: {olympics.get_winner_distance()}")
     print(f"Part 2: {olympics.get_winner_distance(True)}")

@@ -4,7 +4,11 @@ description text. This is then used to determine how many times to re-calculate 
 the answer.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day25.txt')
 
 
 class CodeGenerator:
@@ -34,7 +38,7 @@ class CodeGenerator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         code = CodeGenerator(file.read().strip('\n'))
     print(f"Part 1: {code.get_code()}")
     return 0

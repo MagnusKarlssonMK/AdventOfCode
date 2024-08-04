@@ -7,6 +7,10 @@ the ones coming from 'e' until there are no more replacements, then do the repla
 of replacements performed.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day19.txt')
 
 
 class NuclearPlant:
@@ -54,7 +58,7 @@ class NuclearPlant:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         plant = NuclearPlant(file.read().strip('\n'))
     print(f"Part 1: {plant.get_molecule_count()}")
     print(f"Part 2: {plant.get_min_generation_time()}")

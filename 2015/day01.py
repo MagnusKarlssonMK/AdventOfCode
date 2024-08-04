@@ -1,4 +1,8 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day01.txt')
 
 
 class Directions:
@@ -18,7 +22,7 @@ class Directions:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         directions = Directions(file.read().strip('\n'))
     print(f"Part 1: {directions.get_final_floor()}")
     print(f"Part 2: {directions.get_basement_step()}")

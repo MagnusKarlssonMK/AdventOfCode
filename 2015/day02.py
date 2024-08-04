@@ -1,5 +1,9 @@
 import sys
+from pathlib import Path
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day02.txt')
 
 
 class PresentList:
@@ -22,7 +26,7 @@ class PresentList:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         presents = PresentList(file.read().strip('\n'))
     print(f"Part 1: {presents.get_paper_total()}")
     print(f"Part 2: {presents.get_ribbon_total()}")

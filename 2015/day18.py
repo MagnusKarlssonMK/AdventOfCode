@@ -3,10 +3,14 @@ Pretty basic game of life. Not a very efficient solution, but gets the job done 
 Would probably be much improved just by using numpy instead.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day18.txt')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Coord:
     row: int
     col: int
@@ -70,7 +74,7 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         grid = Grid(file.read().strip('\n'))
     print(f"Part 1: {grid.get_lights_after_steps()}")
     print(f"Part 2: {grid.get_lights_after_steps(True)}")

@@ -8,6 +8,10 @@ This works quite well and blazingly fast compared to brute-forcing with permutat
 would benefit from some restructuring.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day13.txt')
 
 
 class SeatPlanner:
@@ -90,7 +94,7 @@ class SeatPlanner:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         planner = SeatPlanner(file.read().strip('\n'))
     print(f"Part 1: {planner.get_max_happiness()}")
     print(f"Part 2: {planner.get_max_happiness(True)}")

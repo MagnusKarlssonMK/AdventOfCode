@@ -4,6 +4,10 @@ Part 2: First search each string to check the second rule for repeated with one 
 continue to check the first rule by using the python 'count' function which counts non-overlapping occurrences.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day05.txt')
 
 
 class SantaString:
@@ -47,7 +51,7 @@ class SantaText:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         textfile = SantaText(file.read().strip('\n'))
     print(f"Part 1: {textfile.get_nice_count()}")
     print(f"Part 1: {textfile.get_nice_count(True)}")

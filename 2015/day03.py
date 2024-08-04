@@ -1,5 +1,9 @@
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -29,7 +33,7 @@ class Santa:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         santa = Santa(file.read().strip('\n'))
     print(f"Part 1: {santa.get_uniquehouses_count()}")
     print(f"Part 2: {santa.get_uniquehouses_count(True)}")

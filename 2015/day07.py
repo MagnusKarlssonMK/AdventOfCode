@@ -2,8 +2,12 @@
 Store the wires in a dict and use operator class to represent gates, then get the answer recursively.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 import operator
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day07.txt')
 
 
 @dataclass
@@ -58,7 +62,7 @@ class Circuit:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mycircuit = Circuit(file.read().strip('\n'))
     print(f"Part 1: {mycircuit.get_a_wire_value()}")
     print(f"Part 2: {mycircuit.get_a_wire_value(True)}")

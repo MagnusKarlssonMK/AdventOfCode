@@ -2,10 +2,14 @@
 A bit of numpy exercise to make things run decently fast.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 import re
 import numpy as np
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day06.txt')
 
 
 class Action(Enum):
@@ -14,7 +18,7 @@ class Action(Enum):
     TURN_OFF = 2
 
 
-@dataclass
+@dataclass(frozen=True)
 class Instruction:
     action: Action
     x1: int
@@ -62,7 +66,7 @@ class LightGrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         grid = LightGrid(file.read().strip('\n'))
     print(f"Part 1: {grid.get_lights_count()}")
     print(f"Part 2: {grid.get_correct_lights_count()}")

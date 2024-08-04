@@ -4,7 +4,11 @@ ones matching the volume. Also store the length of the matches in a list to use 
 sorted, and we then count number of entries for that length.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day17.txt')
 
 
 class ContainerList:
@@ -27,7 +31,7 @@ class ContainerList:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         containers = ContainerList(file.read().strip('\n'))
     print(f"Part 1: {containers.get_combination_count()}")
     print(f"Part 2: {containers.get_min_combination_count()}")

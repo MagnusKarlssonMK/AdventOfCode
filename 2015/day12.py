@@ -1,8 +1,12 @@
 """
-Uses the json module to load the data and then traverses it recursevly to count the content.
+Uses the json module to load the data and then traverses it recursivly to count the content.
 """
 import sys
+from pathlib import Path
 import json
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day12.txt')
 
 
 class JSON:
@@ -27,7 +31,7 @@ class JSON:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         json_data = JSON(file.read().strip('\n'))
     print(f"Part 1: {json_data.get_number_sum()}")
     print(f"Part 2: {json_data.get_number_sum('red')}")

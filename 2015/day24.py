@@ -6,8 +6,12 @@ the list of the shortest combinations for the first crate, and then find the one
 is the smallest.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
 from math import prod
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day24.txt')
 
 
 class Packages:
@@ -28,7 +32,7 @@ class Packages:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         packages = Packages(file.read().strip('\n'))
     print(f"Part 1: {packages.get_first_qe()}")
     print(f"Part 2: {packages.get_first_qe(4)}")

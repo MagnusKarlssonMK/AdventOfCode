@@ -4,8 +4,12 @@ Basically just parse a list of Sue data and match it with the scanned answer.
 For part 2, store an operator with every item in the scanned answer and use that for the comparison.
 """
 import sys
+from pathlib import Path
 import re
 import operator as op
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day16.txt')
 
 
 class SueList:
@@ -41,7 +45,7 @@ class SueList:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         aunts = SueList(file.read().strip('\n'))
     print(f"Part 1: {aunts.get_correct_sue()}")
     print(f"Part 2: {aunts.get_real_correct_sue()}")

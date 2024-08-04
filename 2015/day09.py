@@ -3,7 +3,11 @@ Generate all permutations of and find the one yielding the shortest total distan
 a brute force approach, which works decently fast due to the somewhat limited number of nodes.
 """
 import sys
+from pathlib import Path
 from itertools import permutations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2015/day09.txt')
 
 
 class LocationMap:
@@ -33,7 +37,7 @@ class LocationMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         locations = LocationMap(file.read().strip('\n'))
     shortest, longest = locations.get_route_lengths()
     print(f"Part 1: {shortest}")
