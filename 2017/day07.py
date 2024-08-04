@@ -5,7 +5,11 @@ For Part 2, make a recursive weight calculation of the tree, where each program 
 and calculates and reports the required correction if discovered.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day07.txt')
 
 
 @dataclass
@@ -74,7 +78,7 @@ class Tower:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         tower = Tower(file.read().strip('\n'))
     print(f"Part 1: {tower.get_bottom_program_name()}")
     print(f"Part 2: {tower.get_correct_weight()}")

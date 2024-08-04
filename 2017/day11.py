@@ -3,6 +3,10 @@ Stores the hexgrid using axial coordinate system, i.e. based on 3d system (q, r,
 truncated, since the sum of all three must be zero, meaning that it can be calculated when necessary.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day11.txt')
 
 
 class HexPoint:
@@ -46,7 +50,7 @@ class Hexgrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         hexgrid = Hexgrid(file.read().strip('\n'))
     p1, p2 = hexgrid.get_distance()
     print(f"Part 1: {p1}")

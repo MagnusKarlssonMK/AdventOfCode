@@ -5,7 +5,11 @@ many rounds are needed until it starts over with the same value. When knowing th
 values to directly calculate what the value will be after 1B rounds.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day16.txt')
 
 
 @dataclass(frozen=True)
@@ -54,7 +58,7 @@ class Dance:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         dance = Dance(file.read().strip('\n'))
     print(f"Part 1: {dance.get_one_round_order()}")
     print(f"Part 2: {dance.get_one_billion_rounds_order()}")

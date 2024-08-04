@@ -5,6 +5,10 @@ For part 2, simply traverse through the graph with a simple BFS to identify the 
 day 12.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day14.txt')
 
 
 class KnotHasher:
@@ -84,7 +88,7 @@ class Disk:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         disk = Disk(file.read().strip('\n'))
     print(f"Part 1: {disk.get_squares_count()}")
     print(f"Part 2: {disk.get_groups_count()}")

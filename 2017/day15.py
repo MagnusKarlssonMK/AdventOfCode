@@ -3,6 +3,10 @@ Just making a simple iterator and compare the generated values. Takes a fair amo
 I couldn't help but wonder if there was some kind of cycle detection to figure out, but couldn't find any.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day15.txt')
 
 
 class Duel:
@@ -31,7 +35,7 @@ class Duel:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         duel = Duel(file.read().strip('\n'))
     print(f"Part 1: {duel.get_final_count()}")
     print(f"Part 2: {duel.get_modified_final_count()}")

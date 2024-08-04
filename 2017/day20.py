@@ -7,9 +7,13 @@ So in lack of better ideas at the moment, I'll just stick with a bit of trial an
 of number of steps to run the simulation before it seems to stabilize.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day20.txt')
 
 
 @dataclass(frozen=True)
@@ -74,7 +78,7 @@ class GPU:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         gpu = GPU(file.read().strip('\n'))
     print(f"Part 1: {gpu.get_closest_particle()}")
     print(f"Part 2: {gpu.get_remaining_particle_count()}")

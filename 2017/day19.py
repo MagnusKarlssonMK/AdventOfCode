@@ -4,7 +4,11 @@ otherwise keep walking in current direction and record the character if it is no
 to get to the end.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day19.txt')
 
 
 @dataclass(frozen=True)
@@ -59,7 +63,7 @@ class Diagram:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         diagram = Diagram(file.read().strip('\n'))
     path, steps = diagram.get_path()
     print(f"Part 1: {path}")

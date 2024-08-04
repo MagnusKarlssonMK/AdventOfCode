@@ -4,8 +4,12 @@ two programs running in parallel and communcicating with messages. Mostly just a
 everything, keeping track of the progam states and toggling the 'running' program.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -129,7 +133,7 @@ class Duet:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         duet = Duet(file.read().strip())
     print(f"Part 1: {duet.get_recovered_freq()}")
     print(f"Part 2: {duet.get_duet_send_count()}")

@@ -5,6 +5,10 @@ for the number in index 1 after 50M iterations. So all we need to do is to keep 
 update the current value of index 1 whenever it ends up there.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day17.txt')
 
 
 class Spinlock:
@@ -30,7 +34,7 @@ class Spinlock:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         spinlock = Spinlock(file.read().strip('\n'))
     print(f"Part 1: {spinlock.get_2017_insert()}")
     print(f"Part 2: {spinlock.get_50m_pos1()}")

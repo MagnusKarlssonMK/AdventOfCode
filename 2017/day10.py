@@ -3,6 +3,10 @@ So we're basically building a hasher. I probably spent 98% of the time on this p
 description, but the actual coding of it is mostly straightforward.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day10.txt')
 
 
 class KnotHasher:
@@ -63,7 +67,7 @@ def parse_input(rawstr: str, use_ascii: bool = False) -> list[int]:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         rawstr = file.read().strip('\n')
     knot = KnotHasher()
     print(f"Part 1: {knot.get_test_multiple(parse_input(rawstr))}")

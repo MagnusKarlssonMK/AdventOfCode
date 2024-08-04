@@ -6,8 +6,12 @@ For part 2, simply keep track of the max value during the execution of the progr
 one runthrough of the program.
 """
 import sys
+from pathlib import Path
 import operator as op
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day08.txt')
 
 
 @dataclass(frozen=True)
@@ -43,7 +47,7 @@ class CPU:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cpu = CPU(file.read().strip('\n'))
     p1, p2 = cpu.get_largest_reg_value()
     print(f"Part 1: {p1}")

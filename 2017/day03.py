@@ -9,7 +9,11 @@ Part 2: Pretty much the same thing, just with a small modification for how to ke
 building the spiral.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -77,7 +81,7 @@ class Memory:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         memory = Memory(file.read().strip('\n'))
     print(f"Part 1: {memory.get_manhattan_distance()}")
     print(f"Part 2: {memory.get_larger_number()}")

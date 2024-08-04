@@ -4,7 +4,11 @@ but resisting the temptation and using a bit of simple regex instead...
 Then just keep track of the cursor position and store the positions set to 1 in a set.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day25.txt')
 
 
 class TuringMachine:
@@ -36,7 +40,7 @@ class TuringMachine:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         machine = TuringMachine(file.read().strip('\n'))
     print(f"Part 1: {machine.get_checksum()}")
     return 0

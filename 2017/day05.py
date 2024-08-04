@@ -4,6 +4,10 @@ described in the instructions. The only difference between part 1 and 2 is the s
 each jump.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day05.txt')
 
 
 class CPU:
@@ -24,7 +28,7 @@ class CPU:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cpu = CPU(file.read().strip('\n'))
     print(f"Part 1: {cpu.get_exit_step_count()}")
     print(f"Part 1: {cpu.get_exit_step_count(True)}")

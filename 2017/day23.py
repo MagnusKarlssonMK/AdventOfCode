@@ -7,7 +7,11 @@ writing that calculation directly instead, trying to extract the numbers from th
 it. But since I don't know if all inputs are structured exactly like this, it might not work for other inputs.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day23.txt')
 
 
 @dataclass(frozen=True)
@@ -99,7 +103,7 @@ class Coprocessor:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cpu = Coprocessor(file.read().strip())
     print(f"Part 1: {cpu.get_mul_count()}")
     print(f"Part 2: {cpu.get_h_reg()}")

@@ -5,6 +5,10 @@ Part 2: We saved the state of the memory banks after part 1, so simply run the c
 next cycle.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day06.txt')
 
 
 class Memory:
@@ -31,7 +35,7 @@ class Memory:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         memory = Memory(file.read().strip('\n'))
     print(f"Part 1: {memory.get_cycles_count()}")
     print(f"Part 2: {memory.get_cycles_count()}")

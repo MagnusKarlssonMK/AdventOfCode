@@ -2,6 +2,10 @@
 Recursive solution to break down the string into smaller parts.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day09.txt')
 
 
 class Stream:
@@ -46,7 +50,7 @@ class Stream:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         stream = Stream(file.read().strip('\n'))
     print(f"Part 1: {stream.get_total_score()}")
     print(f"Part 2: {stream.get_total_garbage()}")

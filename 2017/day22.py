@@ -4,9 +4,13 @@ the bursts, add the point or update its state if the point the virus is on is no
 dict if it becomes clean.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day22.txt')
 
 
 class NodeState(Enum):
@@ -95,7 +99,7 @@ class Cluster:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cluster = Cluster(file.read().strip('\n'))
     print(f"Part 1: {cluster.get_infected_count(10_000)}")
     print(f"Part 2: {cluster.get_infected_count(10_000_000, True)}")

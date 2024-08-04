@@ -10,6 +10,10 @@ For part 2, keep track of the longest bridge found (use strength as secondary se
 The answer to both parts can be obtained in one go.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day24.txt')
 
 
 class Bridge:
@@ -64,7 +68,7 @@ class Bridge:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         bridge = Bridge(file.read().strip('\n'))
     p1, p2 = bridge.get_max_strength()
     print(f"Part 1: {p1}")

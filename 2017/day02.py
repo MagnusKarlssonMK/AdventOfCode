@@ -5,7 +5,11 @@ For part 2, instead use itertools to find the combination of numbers in each lis
 accumulate the sum of the result of those divisions.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day02.txt')
 
 
 class Spreadsheet:
@@ -26,7 +30,7 @@ class Spreadsheet:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         sheet = Spreadsheet(file.read().strip('\n'))
     print(f"Part 1: {sheet.get_checksum()}")
     print(f"Part 2: {sheet.get_checksum(True)}")

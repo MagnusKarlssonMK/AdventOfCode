@@ -7,7 +7,11 @@ something with knowing the layer delay and the modulo factor for each layer), bu
 it isn't too bad.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -44,7 +48,7 @@ class Firewall:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         firewall = Firewall(file.read().strip('\n'))
     print(f"Part 1: {firewall.get_trip_severity()}")
     print(f"Part 2: {firewall.get_safe_delay()}")

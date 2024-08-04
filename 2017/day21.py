@@ -7,6 +7,10 @@ For a rainy day: a bit curious if it could run even faster by using recursion in
 sort of like a memo cache along the way for larger block sizes?
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day21.txt')
 
 
 def flipblock(inblock: tuple[str, ...]) -> tuple[str, ...]:
@@ -56,7 +60,7 @@ class ImageConverter:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         converter = ImageConverter(file.read().strip('\n'))
     print(f"Part 1: {converter.get_pixel_count(5)}")
     print(f"Part 1: {converter.get_pixel_count(18)}")

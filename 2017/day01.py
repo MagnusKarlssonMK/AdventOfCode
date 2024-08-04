@@ -3,6 +3,10 @@ Part 1: Trivial, just apply a mod operation on the peek-ahead index for the wrap
 Part 2: Just change the offset in the peek-ahead from 1 to half the length of the number list.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day01.txt')
 
 
 class Sequence:
@@ -15,7 +19,7 @@ class Sequence:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         seq = Sequence(file.read().strip('\n'))
     print(f"Part 1: {seq.get_captcha()}")
     print(f"Part 2: {seq.get_captcha(True)}")

@@ -3,6 +3,10 @@ Although the description sort of teases with 'travelling salesman', this actuall
 simple BFS's through the map to find out which nodes are connected.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day12.txt')
 
 
 class Village:
@@ -39,7 +43,7 @@ class Village:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         village = Village(file.read().strip('\n'))
     print(f"Part 1: {village.get_group_0_size()}")
     print(f"Part 2: {village.get_groups_count()}")

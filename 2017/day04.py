@@ -6,7 +6,11 @@ Part 2: For each line, make a set of characters for every word, and check all co
 there is any overlap.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2017/day04.txt')
 
 
 class PassphraseList:
@@ -29,7 +33,7 @@ class PassphraseList:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         pwds = PassphraseList(file.read().strip('\n'))
     print(f"Part 1: {pwds.get_valid_count()}")
     print(f"Part 2: {pwds.get_valid_count(True)}")
