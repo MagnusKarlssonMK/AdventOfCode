@@ -2,8 +2,12 @@
 
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day23.txt')
 
 
 class OpCode(Enum):
@@ -187,7 +191,7 @@ class Network:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         net = Network(file.read().strip('\n'))
     p1, p2 = net.get_first_packets_y_value()
     print(f"Part 1: {p1}")

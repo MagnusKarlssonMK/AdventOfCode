@@ -6,8 +6,12 @@ the game, but apparently all we need to do is to steer the x-position of the pad
 sort of an Arkanoid game), e.g. if ball < paddle steer left.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day13.txt')
 
 
 class OpCode(Enum):
@@ -206,7 +210,7 @@ class ArcadeGame:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         arcade = ArcadeGame(file.read().strip('\n'))
     print(f"Part 1: {arcade.get_block_tiles()}")
     print(f"Part 2: {arcade.get_winning_score()}")

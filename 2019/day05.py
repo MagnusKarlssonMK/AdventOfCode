@@ -2,7 +2,11 @@
 Extension of the Intcode computer we started in day 2.
 """
 import sys
+from pathlib import Path
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day05.txt')
 
 
 class OpCode(Enum):
@@ -91,7 +95,7 @@ class Intcode:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Intcode(file.read().strip('\n'))
     print(f"Part 1: {computer.get_diagnostic_code(1)}")
     print(f"Part 2: {computer.get_diagnostic_code(5)}")

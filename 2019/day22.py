@@ -1,8 +1,12 @@
 """
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day22.txt')
 
 
 class Techniques(Enum):
@@ -62,7 +66,7 @@ class Spacedeck:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         deck = Spacedeck(file.read().strip('\n'))
     print(f"Part 1: {deck.get_card_pos()}")
     print(f"Part 2: {deck.get_giant_deck_card_pos()}")

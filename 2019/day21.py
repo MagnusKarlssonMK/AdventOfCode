@@ -1,7 +1,11 @@
 """
 """
 import sys
+from pathlib import Path
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day21.txt')
 
 
 class OpCode(Enum):
@@ -149,7 +153,7 @@ class Springdroid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         droid = Springdroid(file.read().strip('\n'))
     print(f"Part 1: {droid.get_hull_damage()}")
     print(f"Part 2: {droid.get_hulldamage_increased_range()}")

@@ -13,10 +13,14 @@ instead of just one. This will give the answer to Part 2.
 Note: Quite a bit of duplicated code between Part1 and Part2 functions, can probably be cleaned up a bit.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -170,7 +174,7 @@ class Vault:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         vault = Vault(file.read().strip('\n'))
     print(f"Part 1: {vault.get_steps_all_keys_one_room()}")
     print(f"Part 2: {vault.get_steps_all_keys_four_rooms()}")

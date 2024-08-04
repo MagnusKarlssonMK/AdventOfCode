@@ -2,7 +2,11 @@
 This intcode program halts after each coordinate, so we need to keep rebooting it after every run.
 """
 import sys
+from pathlib import Path
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day19.txt')
 
 
 class OpCode(Enum):
@@ -152,7 +156,7 @@ class TractorBeam:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         tractorbeam = TractorBeam(file.read().strip())
     print(f"Part 1: {tractorbeam.get_nbr_affected_points()}")
     print(f"Part 2: {tractorbeam.get_square_val()}")

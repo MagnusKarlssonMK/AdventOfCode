@@ -3,8 +3,12 @@ Taking the Intcode from day 5, but rewriting it to be persistent.
 Using permutations to generate the combinations of amp settings.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from itertools import permutations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day07.txt')
 
 
 class OpCode(Enum):
@@ -131,7 +135,7 @@ class AmplifierArray:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         amps = AmplifierArray(file.read().strip('\n'))
     print(f"Part 1: {amps.get_max_thruster_signal()}")
     print(f"Part 2: {amps.get_max_feedback_loop_signal()}")

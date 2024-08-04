@@ -9,8 +9,12 @@ answer to part 1.
 the answer to part 2.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day15.txt')
 
 
 class OpCode(Enum):
@@ -259,7 +263,7 @@ class RepairDroid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         droid = RepairDroid(file.read().strip('\n'))
     print(f"Part 1: {droid.get_min_movement_cmds()}")
     print(f"Part 2: {droid.get_oxygen_fill_time()}")

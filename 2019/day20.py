@@ -11,9 +11,13 @@ except start and target node, and preventing use of start and target node on lev
 answer to Part 2.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day20.txt')
 
 
 @dataclass(frozen=True)
@@ -159,7 +163,7 @@ class DonutMaze:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         maze = DonutMaze(file.read().strip('\n'))
     print(f"Part 1: {maze.get_steps_aa_to_zz()}")
     print(f"Part 2: {maze.get_recursion_steps_aa_to_zz()}")

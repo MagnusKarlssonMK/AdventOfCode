@@ -10,9 +10,13 @@ Also, some room for improvement in the juggling between string and list formats 
 representations.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day17.txt')
 
 
 class OpCode(Enum):
@@ -311,7 +315,7 @@ class Scaffold:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         scaffold = Scaffold(file.read().strip('\n'))
     print(f"Part 1: {scaffold.get_alignment_sum()}")
     print(f"Part 2: {scaffold.get_dust_collected()}")

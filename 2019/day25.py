@@ -3,7 +3,11 @@ I can't be bothered to try to parse and automate this, and besides it feels like
 play the game!
 """
 import sys
+from pathlib import Path
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day25.txt')
 
 
 class OpCode(Enum):
@@ -140,7 +144,7 @@ class AsciiComputer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = AsciiComputer(file.read().strip('\n'))
     computer.rescue_santa()
     return 0

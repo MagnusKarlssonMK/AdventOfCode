@@ -5,6 +5,10 @@ to get the answer for Part 1. For Part 2, recurse through the second dict to get
 SAN -> COM, then find where those two paths meet and get the answer from the remaining length of both paths.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day06.txt')
 
 
 class OrbitMap:
@@ -49,7 +53,7 @@ class OrbitMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mymap = OrbitMap(file.read().strip('\n').splitlines())
     print(f"Part 1: {mymap.get_orbitcount()}")
     print(f"Part 2: {mymap.get_santadistance()}")

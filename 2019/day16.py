@@ -2,7 +2,11 @@
 
 """
 import sys
+from pathlib import Path
 import numpy as np
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day16.txt')
 
 
 class Signal:
@@ -32,7 +36,7 @@ class Signal:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         sig = Signal(file.read().strip('\n'))
     print(f"Part 1: {sig.get_first_eight_digits()}")
     print(f"Part 2: {sig.apply_fft()}")

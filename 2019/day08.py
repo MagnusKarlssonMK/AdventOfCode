@@ -3,7 +3,11 @@ Store each layer as an array of numbers, don't convert it to 2D until building t
 part 1, having it as simple lists is easier.
 """
 import sys
+from pathlib import Path
 from collections import Counter
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day08.txt')
 
 
 class Image:
@@ -39,7 +43,7 @@ class Image:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         img = Image(file.read().strip('\n'))
     print(f"Part 1: {img.get_checksum()}")
     print(f"Part 2:\n{img.decode_image()}")
@@ -48,5 +52,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-# P1: 1320

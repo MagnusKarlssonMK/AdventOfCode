@@ -3,8 +3,12 @@ Use atan2 to calculate angles between asteroids, with some extra trickery to com
 coordinate system.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from math import atan2, degrees
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day10.txt')
 
 
 @dataclass(frozen=True)
@@ -56,7 +60,7 @@ class AsteriodMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         asteroids = AsteriodMap(file.read().strip('\n'))
     print(f"Part 1: {asteroids.get_best_asteroid_count()}")
     print(f"Part 2: {asteroids.get_winning_asteroid()}")

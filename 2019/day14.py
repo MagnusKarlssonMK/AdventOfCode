@@ -6,9 +6,13 @@ For part 2, re-use the function from part 1 by gradually increasing the fuel amo
 has reached the goal.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from math import ceil
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day14.txt')
 
 
 @dataclass(frozen=True)
@@ -52,7 +56,7 @@ class NanoFactory:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         factory = NanoFactory(file.read().strip('\n'))
     print(f"Part 1: {factory.get_minimum_ore_req()}")
     print(f"Part 2: {factory.get_maximum_fuel()}")

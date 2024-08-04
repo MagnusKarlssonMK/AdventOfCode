@@ -4,7 +4,11 @@ points. Then the answer is given by the smallest manhattan distance from origin 
 For Part 2, we can get the distances by finding the index of each intersection's coordinate in the wire lists.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -50,7 +54,7 @@ class FuelSystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         system = FuelSystem(file.read().strip('\n'))
     print(f"Part 1: {system.get_closest_intersection_mh()}")
     print(f"Part 2: {system.get_closest_intersection_steps()}")

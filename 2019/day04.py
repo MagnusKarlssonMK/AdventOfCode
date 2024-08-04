@@ -4,6 +4,10 @@ the lowest valid password and then for each increment, adjust to follow the rule
 the loop.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day04.txt')
 
 
 class PasswordGenerator:
@@ -54,7 +58,7 @@ class PasswordGenerator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         pwdgen = PasswordGenerator(file.read().strip('\n'))
     print(f"Part 1: {pwdgen.get_password_count()}")
     print(f"Part 2: {pwdgen.get_password_count(True)}")

@@ -2,6 +2,10 @@
 Very basic calculation for Part 1. Include a bit of recursion for Part 2.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day01.txt')
 
 
 def calc_mass(mass: int, countfuel: bool = False) -> int:
@@ -12,7 +16,7 @@ def calc_mass(mass: int, countfuel: bool = False) -> int:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc1.txt", 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         nbrs = list(map(int, file.read().strip('\n').splitlines()))
     print("Part 1:", sum([calc_mass(nbr) for nbr in nbrs]))
     print("Part 2:", sum([calc_mass(nbr, True) for nbr in nbrs]))

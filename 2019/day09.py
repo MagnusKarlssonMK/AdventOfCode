@@ -4,7 +4,11 @@ memory to go beyond the length of the initial program. Since the maximum size of
 the memory as a dict {address: value} instead of as a list [value].
 """
 import sys
+from pathlib import Path
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day09.txt')
 
 
 class OpCode(Enum):
@@ -134,7 +138,7 @@ class Boost:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         boost = Boost(file.read().strip('\n'))
     print(f"Part 1: {boost.get_keycode()}")
     print(f"Part 2: {boost.get_keycode(2)}")

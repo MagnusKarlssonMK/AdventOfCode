@@ -2,6 +2,10 @@
 Build a computer class to hold the data and run the program, taking the first two values as input.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day02.txt')
 
 
 class Intcode:
@@ -39,7 +43,7 @@ class Intcode:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Intcode(file.read().strip('\n'))
     print(f"Part 1: {computer.get_alarmstate()}")
     print(f"Part 2: {computer.find_correct_inputs()}")

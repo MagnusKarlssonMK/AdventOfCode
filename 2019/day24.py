@@ -5,6 +5,10 @@ For future cleanup: I started out the parsing and neighbor relation mapping aimi
 size of the input, but when filling in the bits for other levels for part 2 I just assumed a 5x5 grid.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day24.txt')
 
 
 class Eris:
@@ -106,7 +110,7 @@ class Eris:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         eris = Eris(file.read().strip('\n'))
     print(f"Part 1: {eris.get_first_repetition_diveristy()}")
     print(f"Part 2: {eris.get_recursive_bugs_count()}")

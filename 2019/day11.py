@@ -5,8 +5,12 @@ A bit unclear from the description for part 1 hether it counts as painting a til
 input, but it seems like it should be counted.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2019/day11.txt')
 
 
 class OpCode(Enum):
@@ -180,7 +184,7 @@ class PaintingRobot:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         robot = PaintingRobot(file.read().strip('\n'))
     print(f"Part 1: {robot.get_painted_panels_count()}")
     print(f"Part 2: {robot.get_registration_id()}")
