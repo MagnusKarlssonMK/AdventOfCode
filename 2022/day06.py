@@ -1,21 +1,25 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day06.txt')
+
+
+class Signal:
+    def __init__(self, rawstr: str) -> None:
+        self.__buffer = rawstr
+
+    def get_processed_characters(self, start_len: int = 4) -> int:
+        for idx in range(len(self.__buffer) - (start_len - 1)):
+            if len(set(self.__buffer[idx: idx + start_len])) == start_len:
+                return idx + start_len
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt') as file:
-        line = file.read().strip('\n')
-
-    # Part 1
-    for idx in range(len(line) - 3):
-        if len(set(line[idx:idx+4])) == 4:
-            print(f"Part1: {idx + 4}")
-            break
-
-    # Part 2
-    for idx in range(len(line) - 13):
-        if len(set(line[idx:idx+14])) == 14:
-            print(f"Part2: {idx + 14}")
-            break
+    with open(INPUT_FILE, 'r') as file:
+        signal = Signal(file.read().strip('\n'))
+    print(f"Part 1: {signal.get_processed_characters()}")
+    print(f"Part 2: {signal.get_processed_characters(14)}")
     return 0
 
 

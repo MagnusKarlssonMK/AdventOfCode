@@ -1,5 +1,9 @@
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day13.txt')
 
 
 def get_cbi(inputstr: str) -> int:
@@ -21,7 +25,7 @@ def get_cbi(inputstr: str) -> int:
 class ElfList:
     """Constructor takes the AOC input in string format and parses it into list data. Comparison operators can be used
     to compare different list objects according to the AOC rules."""
-    def __init__(self, strlist: str):
+    def __init__(self, strlist: str) -> None:
         """Assumes that the string has '[' in the first character and ']' in the last."""
         self.list = []
         i = 1
@@ -74,12 +78,12 @@ class ElfList:
 
 def main() -> int:
     pairs: list[tuple[ElfList, ElfList]] = []
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         for pair in file.read().strip('\n').split('\n\n'):
             left, right = pair.split('\n')
             pairs.append((ElfList(left), ElfList(right)))
 
-    print("Part1:", sum([idx + 1 for idx, pair in enumerate(pairs) if pair[0] < pair[1]]))
+    print(f"Part 1: {sum([idx + 1 for idx, pair in enumerate(pairs) if pair[0] < pair[1]])}")
 
     allpacketlist = []
     for packet in pairs:
@@ -91,7 +95,7 @@ def main() -> int:
     allpacketlist.append(divider_six)
     allpacketssorted = sorted(allpacketlist)
 
-    print("Part2:", (allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1))
+    print(f"Part 2: {(allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1)}")
     return 0
 
 

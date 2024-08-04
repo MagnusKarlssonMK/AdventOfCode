@@ -2,6 +2,11 @@
 Maps the input to numbers to more easily calculate the outcomes.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day02.txt')
+
 
 """
 Rock:     0
@@ -38,13 +43,13 @@ def determinehand(left: str, right: str) -> str:
 def main() -> int:
     result_p1 = 0
     result_p2 = 0
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         for line in file.read().strip('\n').splitlines():
             left, right = line.strip('\n').split()
             result_p1 += getscore(handtonum[left], handtonum[right])
             result_p2 += getscore(handtonum[left], handtonum[determinehand(left, right)])
-    print("Part1: ", result_p1)
-    print("Part2: ", result_p2)
+    print(f"Part1: {result_p1}")
+    print(f"Part2: {result_p2}")
     return 0
 
 

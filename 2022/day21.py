@@ -8,15 +8,20 @@ known value on the 'items' side of the dict), then one final round of recursion 
 Note: The implementation for Part 2 is really messy and can likely be cleaned up significantly / add a bit of structure.
 """
 import sys
+from pathlib import Path
 import operator
 
-OPS = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.floordiv}
-REV_OPS = {'+': '-', '-': '+', '*': '/', '/': '*'}
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day21.txt')
 
 
 class MonkeyMath:
-    def __init__(self, lines: list[str]):
-        self.__inputdata: dict[str: str] = {left: right for left, right in [line.split(': ') for line in lines]}
+    __OPS = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.floordiv}
+    __REV_OPS = {'+': '-', '-': '+', '*': '/', '/': '*'}
+
+    def __init__(self, rawstr: str) -> None:
+        self.__inputdata: dict[str: str] = {left: right for left, right in
+                                            [line.split(': ')for line in rawstr.splitlines()]}
         self.__known: dict[str: int] = {}
         self.__unknown: dict[str: tuple[str, str, str]] = {}
         for m in self.__inputdata:
@@ -36,7 +41,7 @@ class MonkeyMath:
                 if n not in known:
                     known[n] = __extractvalue(*unknown[n])
                 nbrs.append(known[n])
-            return OPS[operation](*nbrs)
+            return MonkeyMath.__OPS[operation](*nbrs)
 
         queue = list(unknown.keys())
         while queue:
@@ -63,7 +68,7 @@ class MonkeyMath:
                     else:
                         return False, -1
                 nbrs.append(known[n])
-            return True, OPS[operation](*nbrs)
+            return True, MonkeyMath.__OPS[operation](*nbrs)
 
         # Evaluate the monkeys not dependent on 'humn'
         queue = list(unknown.keys())
@@ -81,7 +86,7 @@ class MonkeyMath:
         for k in unknown:
             l, r, o = unknown[k]
             if l not in known:
-                reverse_unknown[l] = k, r, REV_OPS[o]
+                reverse_unknown[l] = k, r, MonkeyMath.__REV_OPS[o]
             if r not in known:
                 match o:
                     case '+':
@@ -99,7 +104,7 @@ class MonkeyMath:
                 if n not in known:
                     known[n] = __extractvalue(*reverse_unknown[n])
                 nbrs.append(known[n])
-            return OPS[operation](*nbrs)
+            return MonkeyMath.__OPS[operation](*nbrs)
 
         queue = list(reverse_unknown.keys())
         while queue:
@@ -110,8 +115,8 @@ class MonkeyMath:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
-        monkeymath = MonkeyMath(file.read().strip('\n').splitlines())
+    with open(INPUT_FILE, 'r') as file:
+        monkeymath = MonkeyMath(file.read().strip('\n'))
     print(f"Part 1: {monkeymath.get_yellnumber('root')}")
     print(f"Part 2: {monkeymath.get_humn_number()}")
     return 0

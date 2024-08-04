@@ -1,10 +1,14 @@
-import math
 import sys
+from pathlib import Path
+import math
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day11.txt')
 
 
 class Monkey:
-    def __init__(self, rawstr: str, applyrelief: bool):
+    def __init__(self, rawstr: str, applyrelief: bool) -> None:
         lines = rawstr.splitlines()
         self.monkeyid = int(re.findall(r'\d+', lines[0])[0])
         self.items = list(map(int, re.findall(r'\d+', lines[1])))
@@ -38,7 +42,7 @@ class Monkey:
                 yield self.falsemonkey, currentitem
         return retlist
 
-    def catchitem(self, newitem: int):
+    def catchitem(self, newitem: int) -> None:
         self.items.append(newitem)
 
     def __str__(self):
@@ -49,7 +53,7 @@ class Monkey:
 def main() -> int:
     monkeys_p1: list[Monkey] = []
     monkeys_p2: list[Monkey] = []
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         for monk in file.read().strip('\n').split('\n\n'):
             monkeys_p1.append(Monkey(monk, True))
             monkeys_p2.append(Monkey(monk, False))
@@ -60,7 +64,7 @@ def main() -> int:
                 monkeys_p1[item[0]].catchitem(item[1])
 
     countlist = sorted([monkey.inspectioncount for monkey in monkeys_p1], reverse=True)
-    print("Part 1: ", countlist[0] * countlist[1])
+    print(f"Part 1: {countlist[0] * countlist[1]}")
 
     lcm = math.lcm(*[m.testdiv for m in monkeys_p2])
 
@@ -70,7 +74,7 @@ def main() -> int:
                 monkeys_p2[item[0]].catchitem(item[1])
 
     countlist = sorted([monkey.inspectioncount for monkey in monkeys_p2], reverse=True)
-    print("Part 1: ", countlist[0] * countlist[1])
+    print(f"Part 2: {countlist[0] * countlist[1]}")
 
     return 0
 

@@ -11,10 +11,14 @@ used for both anwers. The solution could be optimized to store the result and ge
 and some better structure of the giant drop_rocks function would be welcome.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day17.txt')
 
 
 class Rock:
-    def __init__(self, shape: str, x: int, y: int):
+    def __init__(self, shape: str, x: int, y: int) -> None:
         self.shape = shape
         self.width = 0
         self.x_pos = x
@@ -45,7 +49,7 @@ class Rock:
 
 
 class Cave:
-    def __init__(self, jetstream: str):
+    def __init__(self, jetstream: str) -> None:
         self.__jetstream = jetstream
         self.__cavewidth = 7
         self.__rockqueue: list[str] = ['-', '+', 'J', 'I', 'o']
@@ -139,10 +143,10 @@ class Cave:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mycave = Cave(file.read().strip('\n'))
-    print("Part 1:", mycave.drop_rocks(2022))
-    print("Part 2:", mycave.drop_rocks(1_000_000_000_000))
+    print(f"Part 1: {mycave.drop_rocks(2022)}")
+    print(f"Part 2: {mycave.drop_rocks(1_000_000_000_000)}")
     return 0
 
 

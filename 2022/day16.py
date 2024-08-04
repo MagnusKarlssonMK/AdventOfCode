@@ -4,12 +4,16 @@ with Floyd-Warshall algorithm.
 Then finds the answer with a recursive search using bitmaps.
 """
 import sys
+from pathlib import Path
 import re
 from itertools import permutations
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day16.txt')
+
 
 class ValveNetwork:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__adjlist: dict[str: list[str]] = {}
         self.__valves: dict[str: int] = {}
         for line in rawstr.splitlines():
@@ -51,12 +55,10 @@ class ValveNetwork:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myvalves = ValveNetwork(file.read().strip('\n'))
-    p1 = myvalves.get_maxflow(30)
-    print("Part1:", p1)
-    p2 = myvalves.get_maxflow(26, True)
-    print("Part 2:", p2)
+    print(f"Part 1: {myvalves.get_maxflow(30)}")
+    print(f"Part 2: {myvalves.get_maxflow(26, True)}")
     return 0
 
 

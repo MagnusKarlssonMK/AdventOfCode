@@ -1,8 +1,12 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day10.txt')
 
 
 class CPU:
-    def __init__(self, intervals: list[int]):
+    def __init__(self, intervals: list[int]) -> None:
         self.cyclenbr = 0
         self.x = 1
         self.commandqueue: list[tuple[str, int]] = []
@@ -39,13 +43,13 @@ class CPU:
 def main() -> int:
     mycpu1 = CPU([20, 60, 100, 140, 180, 220])
     mycpu2 = CPU([40, 80, 120, 160, 200, 240])
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         for line in file.read().strip('\n').splitlines():
             mycpu1.addcommand(line)
             mycpu2.addcommand(line)
 
     value_count = sum([i[0] for i in mycpu1.processqueue()])
-    print("Part1:", value_count, '\n')
+    print(f"Part1: {value_count}\n")
     crt = "".join([i[1] for i in mycpu2.processqueue()])
     print(crt)
     return 0

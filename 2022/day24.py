@@ -5,10 +5,14 @@ Use BFS to traverse the map. We need to allow backtracking, but have a check tha
 once at a specific time (it doesn't matter how we got there).
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day24.txt')
 
 
 class Valley:
-    def __init__(self, inputgrid: str):
+    def __init__(self, inputgrid: str) -> None:
         directions = {'>': (0, 1), '<': (0, -1), '^': (-1, 0), 'v': (1, 0)}
         self.__startpoint = -1, -1
         self.__exitpoint = -1, -1
@@ -74,7 +78,7 @@ class Valley:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         valley = Valley(file.read().strip('\n'))
     print(f"Part 1: {valley.get_there()}")
     print(f"Part 2: {valley.get_there_and_back_again()}")

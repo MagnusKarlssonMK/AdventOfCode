@@ -4,8 +4,12 @@ method running the procedures. This is done on a local copy of the crate data to
 of the entire class for Part 2.
 """
 import sys
+from pathlib import Path
 import re
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day05.txt')
 
 
 class Crateship:
@@ -34,7 +38,7 @@ class Crateship:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         ship = Crateship(*file.read().strip('\n').split('\n\n'))
     print(f"Part 1: {ship.run_procedures()}")
     print(f"Part 2: {ship.run_procedures(True)}")

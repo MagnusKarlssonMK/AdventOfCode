@@ -13,12 +13,16 @@ A lot of the coordinate and direction handling would probably have been much smo
 or vector or similar, so there is quite a bit of room for improvement in the details.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day22.txt')
 
 
 class Face:
     def __init__(self, faceid: tuple[int, int], rawgrid: list[str],
-                 startrow: int, endrow: int, startcol: int, endcol: int):
+                 startrow: int, endrow: int, startcol: int, endcol: int) -> None:
         self.id = faceid
         self.gridlines = [''.join([rawgrid[row][col] for col in range(startcol, endcol)])
                           for row in range(startrow, endrow)]
@@ -161,7 +165,7 @@ class MonkeyMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         grid, path = file.read().strip('\n').split('\n\n')
     mymap = MonkeyMap(grid, path)
     print(f"Part 1: {mymap.get_password()}")

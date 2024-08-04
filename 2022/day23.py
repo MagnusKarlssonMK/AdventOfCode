@@ -5,10 +5,14 @@ neighbors.
 NOT a fast solution, but gets the job done (completes in about 10s). Not sure how it can be further optimized.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day23.txt')
 
 
 class MapScan:
-    def __init__(self, gridinput: str):
+    def __init__(self, gridinput: str) -> None:
         self.__elfs: dict[tuple[int, int]: int] = {(x, y): 0 for y, row in enumerate(gridinput.splitlines())
                                                    for x, col in enumerate(row) if col == "#"}
         self.__directionmasks = [int('11100000', 2), int('00000111', 2), int('10010100', 2), int('00101001', 2)]
@@ -41,8 +45,6 @@ class MapScan:
             self.__scoretable[i] = self.__get_currentscore()    # Record the score
             self.__directionmasks.append(self.__directionmasks.pop(0))  # Rotate the prio list
             i += 1
-            # print(self.__elfs.keys())
-        # print(self.__scoretable)
 
     def __play_round(self) -> bool:
         proposed: dict[tuple[int, int]: list[tuple[int, int]]] = {}
@@ -75,7 +77,7 @@ class MapScan:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         elfs = MapScan(file.read().strip('\n'))
     elfs.run_simulation()
     print(f"Part 1: {elfs.get_roundscore(10)}")

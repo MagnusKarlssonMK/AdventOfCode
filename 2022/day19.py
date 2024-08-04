@@ -9,10 +9,14 @@ Gets the job done, but definitely not fast. Attempts to optimize the state branc
   overlap with already seen branches.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
 from collections import deque
 import math
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day19.txt')
 
 
 class Minerals(Enum):
@@ -23,7 +27,7 @@ class Minerals(Enum):
 
 
 class Blueprint:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         bpid, costs = rawstr.split(': ')
         self.id = int(bpid.strip('Blueprint '))
         self.costs: dict[str: list[tuple[int, str]]] = {}
@@ -137,7 +141,7 @@ class State:
 
 
 class Factory:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__blueprints = [Blueprint(line) for line in rawstr.splitlines()]
 
     def get_total_bp_qualitylevel(self, timeleft: int) -> int:
@@ -179,7 +183,7 @@ class Factory:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myfactory = Factory(file.read().strip('\n'))
     print(f"Part 1: {myfactory.get_total_bp_qualitylevel(24)}")
     print(f"Part 2: {myfactory.get_topthree_product(32)}")

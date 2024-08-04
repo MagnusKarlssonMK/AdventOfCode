@@ -8,6 +8,10 @@ around 'corners', we need to add some additional air nodes, just not the diagona
 when calculating the number of enclosed nodes.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day18.txt')
 
 
 XYZ = tuple[int, int, int]
@@ -26,7 +30,7 @@ def get_additionalair(point: XYZ) -> iter:
 
 
 class Lavapool:
-    def __init__(self, indata):
+    def __init__(self, indata) -> None:
         self.__adj: dict[XYZ: list[XYZ]] = {}
         start: XYZ = (999, 999, 999)
         air = set()
@@ -68,10 +72,10 @@ class Lavapool:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         pool = Lavapool([tuple(map(int, line.split(','))) for line in file.read().strip('\n').splitlines()])
-    print("Part 1:", pool.get_surfacearea())
-    print("Part 2:", pool.get_surfacearea(True))
+    print(f"Part 1: {pool.get_surfacearea()}")
+    print(f"Part 2: {pool.get_surfacearea(True)}")
     return 0
 
 

@@ -1,4 +1,9 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day09.txt')
+
 
 RowCol = tuple[int, int]
 DirMap = {'U': (1, 0), 'D': (-1, 0), 'L': (0, -1), 'R': (0, 1)}
@@ -31,13 +36,13 @@ class Rope:
 def main() -> int:
     myfirstrope = Rope(2)
     mysecondrope = Rope(10)
-    with open('../Inputfiles/aoc9.txt') as file:
+    with open(INPUT_FILE, 'r') as file:
         for line in file.read().strip('\n').splitlines():
             direction, length = line.strip('\n').split()
             myfirstrope.movehead(DirMap[direction], int(length))
             mysecondrope.movehead(DirMap[direction], int(length))
-    print("Part1:", len(myfirstrope.tailvisited))
-    print("Part2:", len(mysecondrope.tailvisited))
+    print(f"Part1: {len(myfirstrope.tailvisited)}")
+    print(f"Part2: {len(mysecondrope.tailvisited)}")
     return 0
 
 

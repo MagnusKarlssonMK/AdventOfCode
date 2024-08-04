@@ -3,10 +3,14 @@ Part 1: Simply parse the input a store it in a list sorted by total calories, an
 Part 2: From the same list, just take the sum of the top three.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day01.txt')
 
 
 class Elf:
-    def __init__(self, calories: list[int]):
+    def __init__(self, calories: list[int]) -> None:
         self.calories = calories
         self.totalcalories = sum(calories)
 
@@ -28,7 +32,7 @@ class ElfGroup:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         elfgroup = ElfGroup(file.read().strip('\n'))
     print(f"Part1: {elfgroup.get_maxcal()}")
     print(f"Part2: {elfgroup.get_topthree()}")

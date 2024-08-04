@@ -1,8 +1,12 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day14.txt')
 
 
 class Grid:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         lines = [[[int(c) for c in coords.split(',')] for coords in line.split(' -> ')] for line in
                  rawstr.split('\n')]
         self.rocks = set()
@@ -17,7 +21,7 @@ class Grid:
         start_x, start_y = 500, 0
         x, y = start_x, start_y
         max_y = max((y for _, y in self.rocks))
-        count = p1 = p2 = 0
+        count = p1 = 0
         while True:
             if (x, y) in self.rocks:
                 x, y = start_x, start_y
@@ -41,12 +45,11 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
-
     p1, p2 = mygrid.dropsand()
-    print("Part1: ", p1)
-    print("Part2: ", p2)
+    print(f"Part 1: {p1}")
+    print(f"Part 2: {p2}")
     return 0
 
 

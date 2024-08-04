@@ -7,6 +7,11 @@ Possible improvement: the grid class methods for part 1 and 2 can probably be me
 same.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day12.txt')
+
 
 RowCol = tuple[int, int]
 
@@ -72,11 +77,11 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
 
-    print("Part 1:", mygrid.get_minsteps_fromstart())
-    print("Part 2:", mygrid.get_minsteps_fromany())
+    print(f"Part 1: {mygrid.get_minsteps_fromstart()}")
+    print(f"Part 2: {mygrid.get_minsteps_fromany()}")
     return 0
 
 

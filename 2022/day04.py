@@ -1,16 +1,27 @@
 import sys
 import re
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day04.txt')
+
+
+class Assignments:
+    def __init__(self, rawstr: str) -> None:
+        self.__pairs = [tuple(map(int, re.findall(r"\d+", line))) for line in rawstr.splitlines()]
+
+    def get_assignments_contained(self) -> int:
+        return sum([1 for a, b, c, d in self.__pairs if a <= c <= d <= b or c <= a <= b <= d])
+
+    def get_assignments_overlap(self) -> int:
+        return sum([1 for a, b, c, d in self.__pairs if a <= d and c <= b])
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
-        lines = [list(map(int, re.split('[,-]', line))) for line in file.read().strip('\n').splitlines()]
-
-    result_p1 = sum([1 for a, b, c, d in lines if a <= c <= d <= b or c <= a <= b <= d])
-    result_p2 = sum([1 for a, b, c, d in lines if a <= d and c <= b])
-
-    print("Part1:", result_p1)
-    print("Part2:", result_p2)
+    with open(INPUT_FILE, 'r') as file:
+        assignments = Assignments(file.read().strip('\n'))
+    print(f"Part 1: {assignments.get_assignments_contained()}")
+    print(f"Part 2: {assignments.get_assignments_overlap()}")
     return 0
 
 

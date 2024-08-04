@@ -4,10 +4,14 @@ __files and directories. This is initialized while parsing the input, using a 'h
 containing a list of the directory path to where the commands are issues, and calls to directires are done recursively.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2022/day07.txt')
 
 
 class Directory:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
         self.__totalfilesize = 0
         self.__totalsubdirsize = -1
@@ -85,11 +89,11 @@ class FileSystem:
 
 def main() -> int:
     myfs = FileSystem()
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myfs.handlecommands([line.split() for line in file.read().strip('\n').splitlines()])
     needtodelete = myfs.root.gettotalsize() - (70000000 - 30000000)  # Call this first to initialize the internal sizes
-    print("Part 1:", myfs.root.getfilteredsize(100000))
-    print("Part 2:", myfs.root.getsmallest_todelete(needtodelete))
+    print(f"Part 1: {myfs.root.getfilteredsize(100000)}")
+    print(f"Part 2: {myfs.root.getsmallest_todelete(needtodelete)}")
     return 0
 
 
