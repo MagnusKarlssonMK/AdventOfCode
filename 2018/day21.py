@@ -4,6 +4,10 @@ Again, trying to extract the data from the input file, but there is no guarantee
 modifications for other inputs too if there are shifts in the program lines.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day21.txt')
 
 
 class ActivationSystem:
@@ -39,7 +43,7 @@ class ActivationSystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         system = ActivationSystem(file.read().strip('\n'))
     print(f"Part 1: {system.get_lower_bound()}")
     print(f"Part 2: {system.get_upper_bound()}")

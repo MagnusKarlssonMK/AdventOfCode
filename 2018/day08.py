@@ -2,6 +2,10 @@
 Recursive solution for both parts.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day08.txt')
 
 
 class NavigationSystem:
@@ -40,7 +44,7 @@ class NavigationSystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         navigationsystem = NavigationSystem(file.read().strip('\n'))
     print(f"Part 1: {navigationsystem.get_metadata_sum()}")
     print(f"Part 2: {navigationsystem.get_root_value()}")

@@ -2,7 +2,11 @@
 Using deque with rotations to get some decent performance.
 """
 import sys
+from pathlib import Path
 from collections import deque
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day09.txt')
 
 
 class MarbleGame:
@@ -31,7 +35,7 @@ class MarbleGame:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc9.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         game = MarbleGame(file.read().strip('\n'))
     print(f"Part 1: {game.get_winning_score()}")
     print(f"Part 2: {game.get_winning_score(100)}")

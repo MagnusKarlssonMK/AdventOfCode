@@ -10,6 +10,10 @@ The same optimization can be used in the common function for both parts, and see
 boost also for part 1.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day19.txt')
 
 
 OP_CODES = {
@@ -64,7 +68,7 @@ class Device:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         device = Device(file.read().strip('\n'))
     print(f"Part 1: {device.get_reg_zero_val()}")
     print(f"Part 2: {device.get_reg_zero_val(1)}")

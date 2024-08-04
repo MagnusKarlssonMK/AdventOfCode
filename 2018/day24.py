@@ -2,10 +2,14 @@
 Oh boy, just when I assumed that day 15 was done dealt with, we get another one just like it...
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 import re
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day24.txt')
 
 
 class Team(Enum):
@@ -144,7 +148,7 @@ class ImmuneSystemSimulator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         iss = ImmuneSystemSimulator(file.read().strip('\n'))
     p1, p2 = iss.get_winning_units()
     print(f"Part 1: {p1}")

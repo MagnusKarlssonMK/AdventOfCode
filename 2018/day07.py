@@ -3,6 +3,10 @@ Store the step rules in a dict, then keep track of which steps are done (and wor
 which steps are available.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day07.txt')
 
 
 class SleighKit:
@@ -66,7 +70,7 @@ class SleighKit:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         sleigh = SleighKit(file.read().strip('\n'))
     print(f"Part 1: {sleigh.get_step_order()}")
     print(f"Part 2: {sleigh.get_step_count()}")

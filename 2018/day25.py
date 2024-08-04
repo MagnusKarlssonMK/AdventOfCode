@@ -6,7 +6,11 @@ Arrange the fixed points in a neighbor adjacency list, then:
 - repeat until the list is empty
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day25.txt')
 
 
 @dataclass(frozen=True)
@@ -48,7 +52,7 @@ class Spacetime:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         spacetime = Spacetime(file.read().strip('\n'))
     print(f"Part 1: {spacetime.get_constellations_count()}")
     return 0

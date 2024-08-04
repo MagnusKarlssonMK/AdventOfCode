@@ -5,9 +5,13 @@ After the queue is exhausted, the answers can be found by counting the number of
 for part 1, 'resting' for part 2.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from enum import Enum, auto
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day17.txt')
 
 
 class Tile(Enum):
@@ -88,7 +92,7 @@ class Ground:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc17.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         ground = Ground(file.read().strip('\n'))
     p1, p2 = ground.get_water_tile_count()
     print(f"Part 1: {p1}")

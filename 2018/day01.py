@@ -4,6 +4,10 @@ Part 2: Iterate through the numbers, updating the frequency and storing it in a 
 repetition.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day01.txt')
 
 
 class Device:
@@ -27,7 +31,7 @@ class Device:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         device = Device(file.read().strip('\n'))
     print(f"Part 1: {device.get_frequency()}")
     print(f"Part 2: {device.get_calibration_value()}")

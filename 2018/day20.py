@@ -4,7 +4,11 @@ From that we can get the answer to part1 just by finding the maximum distance va
 part 2 by counting the number of keys with a distance value of at least 1000.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day20.txt')
 
 
 DIRMAP = {'N': (0, -1), 'E': (1, 0), 'S': (0, 1), 'W': (-1, 0)}
@@ -52,7 +56,7 @@ class Building:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         building = Building(file.read().strip('\n'))
     p1, p2 = building.get_fewest_doors()
     print(f"Part 1: {p1}")

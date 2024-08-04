@@ -4,8 +4,12 @@ The key point is to know when to break, which will be when the points are the mo
 box containing the points is the smallest.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day10.txt')
 
 
 @dataclass(frozen=True)
@@ -66,7 +70,7 @@ class SkyGrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         grid = SkyGrid(file.read().strip('\n'))
     print(f"Part 1:")
     p2 = grid.get_message()

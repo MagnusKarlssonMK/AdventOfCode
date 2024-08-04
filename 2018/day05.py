@@ -2,6 +2,10 @@
 Mainly (ab)using the ord() function to compare characters while generating reacted values or removing units.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day05.txt')
 
 
 class Polymer:
@@ -38,7 +42,7 @@ class Polymer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         polymer = Polymer(file.read().strip('\n'))
     print(f"Part 1: {polymer.get_full_reacted_units()}")
     print(f"Part 2: {polymer.get_shortest_poly()}")

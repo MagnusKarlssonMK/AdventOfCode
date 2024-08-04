@@ -3,9 +3,13 @@ Parsing, parsing, parsing... and then some sorting.
 Not much else to say, just some dict trickery to extract the corresponding values / keys from the records.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day04.txt')
 
 
 class Event(Enum):
@@ -80,7 +84,7 @@ class Record:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc4.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         record = Record(file.read().strip('\n'))
     p1, p2 = record.get_guard_id()
     print(f"Part 1: {p1}")

@@ -3,6 +3,10 @@ Brute force, kinda slow part 2. Not sure if there is some kind of repeating patt
 exploited, couldn't really find any after some quick experimentation.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day14.txt')
 
 
 class RecipeGenerator:
@@ -52,7 +56,7 @@ class RecipeGenerator:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         generator = RecipeGenerator(int(file.read().strip('\n')))
     print(f"Part 1: {generator.get_scores()}")
     print(f"Part 2: {generator.get_scores_left_side()}")

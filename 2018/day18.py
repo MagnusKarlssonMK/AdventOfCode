@@ -6,9 +6,13 @@ seems to be unique enough to hash the seen states and look for repetitions based
 be consistent over two consequtive minutes to be sure it's not just a coincidental match.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from collections import Counter
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day18.txt')
 
 
 class State(Enum):
@@ -89,7 +93,7 @@ class LumberArea:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         area = LumberArea(file.read().strip('\n'))
     p1, p2 = area.get_total_resource_value()
     print(f"Part 1: {p1}")

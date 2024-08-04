@@ -2,6 +2,10 @@
 Using 'summed-area table' algorithm. (https://en.wikipedia.org/wiki/Summed-area_table)
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day11.txt')
 
 
 class FuelCellGrid:
@@ -48,7 +52,7 @@ class FuelCellGrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         grid = FuelCellGrid(int(file.read().strip('\n')))
     print(f"Part 1: {grid.get_maxpower_coord()}")
     print(f"Part 2: {grid.get_advanced_maxpower_coord()}")

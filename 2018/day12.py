@@ -8,6 +8,10 @@ generations and checking the increase, and once it seems to have settled (using 
 calculate the final value.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day12.txt')
 
 
 class Tunnel:
@@ -49,7 +53,7 @@ class Tunnel:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         tunnel = Tunnel(file.read().strip('\n'))
     print(f"Part 1: {tunnel.get_pot_sum_small()}")
     print(f"Part 2: {tunnel.get_pot_sum_large()}")

@@ -5,7 +5,11 @@ Part 2: Go through the combinations of strings and generate a string of the matc
 exactly 1 smaller, we found the match.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day02.txt')
 
 
 class Warehouse:
@@ -33,7 +37,7 @@ class Warehouse:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc2.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         warehouse = Warehouse(file.read().strip('\n'))
     print(f"Part 1: {warehouse.get_checksum()}")
     print(f"Part 2: {warehouse.get_common_letters()}")

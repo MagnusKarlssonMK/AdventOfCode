@@ -6,9 +6,13 @@ Certainly not a fast solution, I just can't be bothered to try to improve it rig
 kill fewer elfs in the simulation, which wouldn't feel like much of a win.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from heapq import heappop, heappush
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day15.txt')
 
 
 @dataclass(frozen=True)
@@ -165,7 +169,7 @@ class Cavern:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cavern = Cavern(file.read().strip('\n'))
     print(f"Part 1: {cavern.get_combat_outcome()[0]}")
     print(f"Part 2: {cavern.get_boosted_elfs_outcome()}")

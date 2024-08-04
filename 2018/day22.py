@@ -10,9 +10,13 @@ to the time used for queue prioritization only, to try to steer the states towar
 turns the algorithm into A*, since the added weight acts as heuristic.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day22.txt')
 
 
 class Tool(Enum):
@@ -133,7 +137,7 @@ class Cave:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         cave = Cave(file.read().strip('\n'))
     print(f"Part 1: {cave.get_total_risk_level()}")
     print(f"Part 2: {cave.get_shortest_path()}")

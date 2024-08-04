@@ -4,7 +4,11 @@ extend to infinity. I.e. any coordinate having a location as 'closest' on or out
 area.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day06.txt')
 
 
 @dataclass(frozen=True)
@@ -58,7 +62,7 @@ class ChronalMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc6.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         c_map = ChronalMap(file.read().strip('\n'))
     print(f"Part 1: {c_map.get_largest_area_size()}")
     print(f"Part 2: {c_map.get_most_surrounded_size()}")

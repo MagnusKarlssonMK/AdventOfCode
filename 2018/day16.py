@@ -5,8 +5,12 @@ answer to part 1. For part 2, play a bit of sudoku to generate the mapping betwe
 test program to find the value of register 0.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day16.txt')
 
 
 OP_CODES = {
@@ -88,7 +92,7 @@ class Device:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         device = Device(file.read().strip('\n'))
     print(f"Part 1: {device.get_samples_count()}")
     print(f"Part 2: {device.get_reg_zero_value()}")

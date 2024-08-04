@@ -5,8 +5,12 @@ For part 1, keep moving step-by-step until first collision is registered.
 For part 2, keep going until there is only one cart left.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -114,7 +118,7 @@ class TrackSystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc13.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         tracks = TrackSystem(file.read().strip('\n'))
     print(f"Part 1: {tracks.get_first_crash_location()}")
     print(f"Part 2: {tracks.get_last_cart_location()}")

@@ -8,8 +8,12 @@ While doing that, mark up the claims that don't have overlap just to prune what 
 go over those once more and find which one still doesn't have overlap after the entire dict has been built.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2018/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -56,7 +60,7 @@ class Fabric:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         fabric = Fabric(file.read().strip('\n'))
     p1, p2 = fabric.get_overlap_and_id()
     print(f"Part 1: {p1}")
