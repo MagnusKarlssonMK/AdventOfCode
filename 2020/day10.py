@@ -5,7 +5,11 @@ Part 2: create an adjacency list / DAG out of the possible other adapters that o
 memoized DFS to count the number of paths.
 """
 import sys
+from pathlib import Path
 from collections import Counter
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day10.txt')
 
 
 class Device:
@@ -44,7 +48,7 @@ def pathcount(dag, vertex, memo) -> int:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         device = Device(file.read().strip('\n'))
     print(f"Part 1: {device.get_jolt_differences()}")
     print(f"Part 2: {device.get_nbr_adapter_arrangements()}")

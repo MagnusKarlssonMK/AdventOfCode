@@ -13,7 +13,11 @@ whether to flip it to white, and also store any white neigbors and check them af
 black.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day24.txt')
 
 
 STR_TO_POINT = {'ne': (1, -1), 'e': (1, 0), 'se': (0, 1), 'sw': (-1, 1), 'w': (-1, 0), 'nw': (0, -1)}
@@ -83,7 +87,7 @@ class Hexgrid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         hexgrid = Hexgrid(file.read().strip('\n'))
     print(f"Part 1: {hexgrid.get_nbr_black_tiles()}")
     print(f"Part 2: {hexgrid.flip_and_get_nbr_black_tiles()}")

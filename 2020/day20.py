@@ -7,10 +7,14 @@ This solution also assumes that all edges are unique, i.e. that all tiles have e
 directions that a neighbor exists, and none on the border edges.
 """
 import sys
+from pathlib import Path
 from itertools import combinations
 from math import prod
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day20.txt')
 
 
 class Directions(Enum):
@@ -184,7 +188,7 @@ class Image:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         img = Image(file.read().strip('\n'))
     print(f"Part 1: {img.get_corner_checksum()}")
     print(f"Part 2: {img.get_water_roughness()}")

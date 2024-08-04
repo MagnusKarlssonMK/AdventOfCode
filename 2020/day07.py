@@ -6,12 +6,17 @@ I added a memo cache for the recursion just in case, since I suspected that ther
 calls for the same bag, but it doesn't seem to make much of a performance difference.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day07.txt')
 
 
 class BagRules:
-    def __init__(self, rawdata):
+    def __init__(self, rawstr: str) -> None:
+        lines = [[i[0], i[1].split(', ')] for i in [line.split(' bags contain ') for line in rawstr.splitlines()]]
         self.__rules: dict[str: list[tuple[str, int]]] = {}
-        for line in rawdata:
+        for line in lines:
             self.__rules[line[0]] = []
             for content in line[1]:
                 if 'no other' in content:
@@ -47,13 +52,10 @@ class BagRules:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc7.txt', 'r') as file:
-        lines = [[i[0], i[1].split(', ')] for i in [line.split(' bags contain ')
-                                                    for line in file.read().strip('\n').splitlines()]]
-    rules = BagRules(lines)
-
-    print("Part 1:", rules.countcontainedin("shiny gold"))
-    print("Part 2:", rules.countbagscontainedin("shiny gold"))
+    with open(INPUT_FILE, 'r') as file:
+        rules = BagRules(file.read().strip('\n'))
+    print(f"Part 1: {rules.countcontainedin("shiny gold")}")
+    print(f"Part 2: {rules.countbagscontainedin("shiny gold")}")
     return 0
 
 

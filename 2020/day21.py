@@ -1,6 +1,10 @@
 """
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day21.txt')
 
 
 class FoodInfo:
@@ -49,7 +53,7 @@ class FoodInfo:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         food = FoodInfo(file.read().strip('\n'))
     print(f"Part 1: {food.get_non_allergens_count()}")
     print(f"Part 2: {food.get_dangerous_list()}")

@@ -3,7 +3,11 @@ Using the shunting yard algorithm. For part 2, the only difference is to check w
 stack has higher precedence before popping it and putting it on the output stack.
 """
 import sys
+from pathlib import Path
 import operator
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day18.txt')
 
 
 OPMAP = {'+': operator.add, '*': operator.mul}
@@ -54,7 +58,7 @@ class Homework:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         homework = Homework(file.read().strip('\n'))
     print(f"Part 1: {homework.get_value_sum()}")
     print(f"Part 2: {homework.get_value_sum(True)}")

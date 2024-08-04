@@ -4,14 +4,18 @@ to run the program, which stops either when a loop is encountered or when termin
 last row directly after the last instruction in the program.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day08.txt')
 
 
 class Console:
-    def __init__(self, instructions: list[tuple[str, int]]):
-        self.accumulator = 0
-        self.instructions = instructions
+    def __init__(self, rawstr: str) -> None:
+        self.__accumulator = 0
+        self.__instructions = [(left, int(right)) for left, right in [line.split() for line in rawstr.splitlines()]]
 
-    def runprogramtoloop(self) -> bool:
+    def __runprogramtoloop(self) -> bool:
         """Returns True if run to completion (reaching the first index after the last row),
         False if loop encountered."""
         seen = set()
@@ -20,39 +24,41 @@ class Console:
             if idx in seen:
                 return False
             seen.add(idx)
-            cmd, value = self.instructions[idx]
+            cmd, value = self.__instructions[idx]
             if cmd == "jmp":
                 idx = idx + value
             else:
                 if cmd == "acc":
-                    self.accumulator += value
+                    self.__accumulator += value
                 idx += 1
-            if idx == len(self.instructions):
+            if idx == len(self.__instructions):
                 return True
-            idx = idx % len(self.instructions)
+            idx = idx % len(self.__instructions)
+
+    def get_boot_accumulator_value(self) -> int:
+        self.__runprogramtoloop()
+        return self.__accumulator
 
     def repair(self) -> int:
         """Tries swapping all nop<->jmp until the program completes and returns the accumulator value once
         successful. Returns -1 if no solution found."""
         swap = {'nop': 'jmp', 'jmp': 'nop'}
-        for idx in range(len(self.instructions)):
-            if self.instructions[idx][0] != "acc":
-                self.instructions[idx] = (swap[self.instructions[idx][0]], self.instructions[idx][1])
-                if self.runprogramtoloop():
-                    return self.accumulator
+        for idx in range(len(self.__instructions)):
+            if self.__instructions[idx][0] != "acc":
+                self.__instructions[idx] = (swap[self.__instructions[idx][0]], self.__instructions[idx][1])
+                if self.__runprogramtoloop():
+                    return self.__accumulator
                 # else - not successful, reset
-                self.accumulator = 0
-                self.instructions[idx] = (swap[self.instructions[idx][0]], self.instructions[idx][1])
+                self.__accumulator = 0
+                self.__instructions[idx] = (swap[self.__instructions[idx][0]], self.__instructions[idx][1])
         return -1
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
-        myconsole = Console([(left, int(right)) for left, right in
-                             [line.split() for line in file.read().strip('\n').splitlines()]])
-    myconsole.runprogramtoloop()
-    print("Part 1:", myconsole.accumulator)
-    print("Part 2:", myconsole.repair())
+    with open(INPUT_FILE, 'r') as file:
+        myconsole = Console(file.read().strip('\n'))
+    print(f"Part 1: {myconsole.get_boot_accumulator_value()}")
+    print(f"Part 2: {myconsole.repair()}")
     return 0
 
 

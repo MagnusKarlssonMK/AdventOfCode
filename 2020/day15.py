@@ -3,10 +3,14 @@ Dictionary based solution, same for both Part 1 and Part 2.
 P1 zips by fast, but P2 takes a handful of seconds.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day15.txt')
 
 
 class MemoryGame:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         self.__startlist = [int(i) for i in rawstr.split(',')]
 
     def playrounds(self, rounds: int) -> int:
@@ -26,10 +30,10 @@ class MemoryGame:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygame = MemoryGame(file.read().strip('\n'))
-    print("Part 1:", mygame.playrounds(2020))
-    print("Part 2:", mygame.playrounds(30_000_000))
+    print(f"Part 1: {mygame.playrounds(2020)}")
+    print(f"Part 2: {mygame.playrounds(30_000_000)}")
     return 0
 
 

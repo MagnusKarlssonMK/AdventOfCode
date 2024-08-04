@@ -5,27 +5,35 @@ From there on it's sudoku time sort of. There's probably more elegant ways of so
 this mess.
 """
 import sys
+from pathlib import Path
 import re
 import math
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day16.txt')
+
 
 class Field:
-    def __init__(self, name: str, nbrstring: str):
+    def __init__(self, name: str, nbrstring: str) -> None:
         self.name = name
         nbrs = list(map(int, re.findall(r'\d+', nbrstring)))
-        self.ranges: tuple[range, range] = range(nbrs[0], nbrs[1] + 1), range(nbrs[2], nbrs[3] + 1)
+        self.__ranges: tuple[range, range] = range(nbrs[0], nbrs[1] + 1), range(nbrs[2], nbrs[3] + 1)
 
     def is_inrange(self, nbr: int) -> bool:
-        return any([nbr in r for r in self.ranges])
+        return any([nbr in r for r in self.__ranges])
 
 
 class Ticket:
-    def __init__(self, nbrs: list[int]):
+    def __init__(self, nbrs: list[int]) -> None:
         self.nbrs = list(nbrs)
 
 
 class TicketData:
-    def __init__(self, fields: list[str], your: list[int], nearby: list[str]):
+    def __init__(self, rawstr: str) -> None:
+        fields, your, nearby = rawstr.split('\n\n')
+        fields = fields.splitlines()
+        your = list(map(int, your.splitlines()[1].split(',')))
+        nearby = nearby.splitlines()
         self.__fields: list[Field] = [Field(*line.split(': ')) for line in fields]
         self.__your: Ticket = Ticket(your)
         self.__nearby: list[Ticket] = [Ticket(list(map(int, nearby[i].split(',')))) for i in range(1, len(nearby))]
@@ -76,9 +84,8 @@ class TicketData:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
-        fields, your, nearby = file.read().strip('\n').split('\n\n')
-    mydata = TicketData(fields.splitlines(), list(map(int, your.splitlines()[1].split(','))), nearby.splitlines())
+    with open(INPUT_FILE, 'r') as file:
+        mydata = TicketData(file.read().strip('\n'))
     print(f"Part 1: {mydata.get_invalidnearby()}")
     print(f"Part 2: {mydata.get_departurescore()}")
     return 0

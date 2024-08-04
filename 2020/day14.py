@@ -2,8 +2,12 @@
 Bitmask stuff and write into emulated memory. Not much to say.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day14.txt')
 
 
 class Action(Enum):
@@ -78,7 +82,7 @@ class Computer:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc14.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         computer = Computer(file.read().strip('\n'))
     print(f"Part 1: {computer.get_memorysum()}")
     print(f"Part 2: {computer.get_memorysum_v2()}")

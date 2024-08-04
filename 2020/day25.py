@@ -3,6 +3,10 @@ Step 1: Determine the loop size from the public card key
 Step 2: Use the loop size to transform the public door key into the encryption key
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day25.txt')
 
 
 class HotelDoor:
@@ -27,7 +31,7 @@ class HotelDoor:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc25.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         door = HotelDoor(file.read().strip('\n'))
     print(f"Part 1: {door.get_encryption_key()}")
     return 0

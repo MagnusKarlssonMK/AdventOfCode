@@ -4,7 +4,11 @@ pattern. When checking the columns, take the column coordinate of the location m
 in order to handle the expanding grid sideways.
 """
 import sys
+from pathlib import Path
 import math
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day03.txt')
 
 
 class TreeMap:
@@ -31,7 +35,7 @@ class TreeMap:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         treemap = TreeMap(file.read().strip('\n'))
     print(f"Part 1: {treemap.get_treecount_simple()}")
     print(f"Part 2: {treemap.get_treecount_full()}")

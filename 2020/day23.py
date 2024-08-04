@@ -3,7 +3,11 @@ Storing the cup list as a singly linked list in an array, to avoid slow list ope
 of moves for part 2.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day23.txt')
 
 
 @dataclass
@@ -62,7 +66,7 @@ class Crabcups:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         game = Crabcups(file.read().strip('\n'))
     print(f"Part 1: {game.play_moves()}")
     print(f"Part 2: {game.play_extended_moves()}")

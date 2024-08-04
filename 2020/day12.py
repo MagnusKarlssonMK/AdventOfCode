@@ -3,8 +3,12 @@ Use a point class to simplify coordinate handling, then it's mostly just a matte
 and moving the ship accordingly.
 """
 import sys
+from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day12.txt')
 
 
 class Action(Enum):
@@ -69,7 +73,7 @@ class Ship:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc12.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myship = Ship(file.read().strip('\n'))
     print(f"Part 1: {myship.get_distance()}")
     print(f"Part 2: {myship.get_distance(True)}")

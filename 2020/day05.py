@@ -3,6 +3,10 @@ Basically just decode the data as specified and store in a sorted list. The last
 the answer to Part 1, then loop through the list to find a gap in the ID:s which will be the answer to Part 2.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day05.txt')
 
 
 def decode(s: str, up: str, low: str, rng: range) -> int:
@@ -36,7 +40,7 @@ class Scanner:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         passes = Scanner(file.read().strip('\n'))
     print(f"Part 1: {passes.get_highest_seat()}")
     print(f"Part 2: {passes.get_seat_id()}")

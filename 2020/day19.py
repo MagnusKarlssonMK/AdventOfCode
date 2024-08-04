@@ -2,7 +2,11 @@
 A bit of regex generation and recursion.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day19.txt')
 
 
 class SatelliteData:
@@ -34,7 +38,7 @@ class SatelliteData:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         data = SatelliteData(file.read().strip('\n'))
     print(f"Part 1: {data.get_matching_0()}")
     print(f"Part 2: {data.update_and_get_matching_0()}")

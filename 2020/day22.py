@@ -3,7 +3,11 @@ Kinda straightforward, just a bit messy with the recursion bit, and somewhat slo
 dequeue instead of the regular pop.
 """
 import sys
+from pathlib import Path
 from copy import deepcopy
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day22.txt')
 
 
 class Combat:
@@ -49,7 +53,7 @@ class Combat:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygame = Combat(file.read().strip('\n'))
     print(f"Part 1: {mygame.play_combat()}")
     print(f"Part 2: {mygame.play_recursive_combat()}")

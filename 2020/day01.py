@@ -2,6 +2,10 @@
 Simply loop through the list of numbers with 2/3 indices to check all combinations until a match is found.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2020/day01.txt')
 
 
 class ExpenseReport:
@@ -28,7 +32,7 @@ class ExpenseReport:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc1.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         report = ExpenseReport(file.read().strip('\n'))
     print(f"Part 1: {report.get_2020_pair()}")
     print(f"Part 2: {report.get_2020_triplet()}")
