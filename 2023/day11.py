@@ -2,52 +2,68 @@
 Stores the coordinates of galaxies in a Space class, and also generates lists of empty rows and columns. For Part 1,
 the distance is then calculated with the manhattan distance between each pair of galaxies, and for each pair also
 checking the number of empty rows/columns between them. Since the grid input doesn't change between Part 1 & 2 other
-than the scaling of empty space, we can store the result from Part 1 as [manhattan distance, nbr of empty spaces] and
-re-use that for a lightning fast Part 2.
+than the scaling of empty space, we can calculate the answers to both part 1 and 2 at the same time by not evaluating
+the value of empty space until the last step everything has been assembled.
 """
 import sys
-import re
+from pathlib import Path
+from dataclasses import dataclass
+from itertools import combinations
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day11.txt')
+
+
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def get_manhattan(self, other: "Point") -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+    def get_x_ranges(self, other: "Point") -> tuple[int, int]:
+        return min(self.x, other.x), max(self.x, other.x)
+
+    def get_y_ranges(self, other: "Point") -> tuple[int, int]:
+        return min(self.y, other.y), max(self.y, other.y)
+
+    def __lt__(self, other: "Point") -> bool:
+        return self.y < other.y if self.y != other.y else self.x < other.x
 
 
 class Space:
-    def __init__(self, spaceinput: list[str], e_rate: int = 2):
-        self.galaxies: list[tuple[int, int]] = []  # Row, Col
-        self.__expansionrate = e_rate
-        for idx, line in enumerate(spaceinput):
-            [self.galaxies.append((idx, g.start())) for g in re.finditer(r"#", line)]
-        rows = set([c[0] for c in self.galaxies])
-        cols = set([c[1] for c in self.galaxies])
-        self.__emptyrows = [r for r in range(max(rows)) if r not in rows]
-        self.__emptycols = [c for c in range(max(rows)) if c not in cols]
-        self.__distancecache = [-1, -1]
+    __SMALL_EXPANSION_RATE = 2
+    __LARGE_EXPANSION_RATE = 1_000_000
 
-    def set_expansionrate(self, newrate: int) -> None:
-        self.__expansionrate = newrate
+    def __init__(self, rawstr: str) -> None:
+        self.__galaxies: list[Point] = [Point(x, y) for y, line in enumerate(rawstr.splitlines())
+                                        for x, c in enumerate(line) if c == "#"]
 
-    def get_distancesum(self) -> int:
-        retval = 0
-        emptyspace = 0
-        if self.__distancecache[0] < 0:
-            for i in range(len(self.galaxies) - 1):
-                for j in range(i + 1, len(self.galaxies)):
-                    rowrange = (min(self.galaxies[i][0], self.galaxies[j][0]),
-                                max(self.galaxies[i][0], self.galaxies[j][0]))
-                    colrange = (min(self.galaxies[i][1], self.galaxies[j][1]),
-                                max(self.galaxies[i][1], self.galaxies[j][1]))
-                    emptyspace += (sum([1 for r in self.__emptyrows if rowrange[0] < r < rowrange[1]]) +
-                                   sum([1 for c in self.__emptycols if colrange[0] < c < colrange[1]]))
-                    retval += rowrange[1] - rowrange[0] + colrange[1] - colrange[0]
-            self.__distancecache[0] = retval
-            self.__distancecache[1] = emptyspace
-        return self.__distancecache[0] + (self.__expansionrate - 1) * self.__distancecache[1]
+    def get_distance_sum(self) -> tuple[int, int]:
+        total_steps = 0
+        total_emptyspace = 0
+        x_occupied = set([g.x for g in self.__galaxies])
+        y_occupied = set([g.y for g in self.__galaxies])
+        x_empty = [x for x in range(max(x_occupied)) if x not in x_occupied]
+        y_empty = [y for y in range(max(y_occupied)) if y not in y_occupied]
+        for g1, g2 in combinations(self.__galaxies, 2):
+            x_range = g1.get_x_ranges(g2)
+            y_range = g1.get_y_ranges(g2)
+            total_emptyspace += (sum([1 for x in x_empty if x_range[0] < x < x_range[1]]) +
+                                 sum([1 for y in y_empty if y_range[0] < y < y_range[1]]))
+            total_steps += g1.get_manhattan(g2)
+        # Note: -1 on the expansion rates since those tiles are already counted once in normal steps
+        return (total_steps + total_emptyspace * (Space.__SMALL_EXPANSION_RATE - 1),
+                total_steps + total_emptyspace * (Space.__LARGE_EXPANSION_RATE - 1))
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc11.txt', 'r') as file:
-        space = Space(file.read().strip('\n').splitlines())
-    print("Part 1:", space.get_distancesum())
-    space.set_expansionrate(1000000)
-    print("Part 2:", space.get_distancesum())
+    with open(INPUT_FILE, 'r') as file:
+        space = Space(file.read().strip('\n'))
+    p1, p2 = space.get_distance_sum()
+    print(f"Part 1: {p1}")
+    print(f"Part 2: {p2}")
     return 0
 
 

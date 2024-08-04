@@ -4,7 +4,11 @@ order of original height, and the highest point for any XY coordinate is stored 
 after every dropped brick.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day22.txt')
 
 
 @dataclass
@@ -112,7 +116,7 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc22.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
     print(f"Part 1: {mygrid.get_safebricks_count()}")
     print(f"Part 2: {mygrid.get_disintegrated_count()}")

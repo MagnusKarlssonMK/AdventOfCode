@@ -3,8 +3,13 @@ Most of the work here is parsing the input, with that done it's mostly down to w
 the specified conditions.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+from enum import Enum
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day02.txt')
 
 
 @dataclass(frozen=True)
@@ -23,18 +28,22 @@ class Hand:
         return Hand(max(self.red, other.red), max(self.blue, other.blue), max(self.green, other.green))
 
 
-class Game:
-    __COLORS = ["red", "blue", "green"]
+class Color(Enum):
+    RED = 'red'
+    BLUE = 'blue'
+    GREEN = 'green'
 
+
+class Game:
     def __init__(self, inputstr: str) -> None:
         gameidstring, handstring = inputstr.split(": ")
         self.gameid = int(gameidstring.split()[1])
         self.__hands = []
         for hand in handstring.split("; "):
-            newhand = {color: 0 for color in Game.__COLORS}
-            for count, color in re.findall(r"(\d+) (\w+)", hand):
-                newhand[color] = int(count)
-            self.__hands.append(Hand(newhand[Game.__COLORS[0]], newhand[Game.__COLORS[1]], newhand[Game.__COLORS[2]]))
+            newhand = {color: 0 for color in Color}
+            for count, colorstr in re.findall(r"(\d+) (\w+)", hand):
+                newhand[Color(colorstr)] = int(count)
+            self.__hands.append(Hand(newhand[Color.RED], newhand[Color.BLUE], newhand[Color.GREEN]))
 
     def is_valid(self) -> bool:
         return all([hand.is_valid() for hand in self.__hands])
@@ -46,19 +55,22 @@ class Game:
         return minimum_required.get_power()
 
 
+class GameRecord:
+    def __init__(self, rawstr: str) -> None:
+        self.__games = [Game(line) for line in rawstr.splitlines()]
+
+    def get_valid_games_value(self) -> int:
+        return sum([game.gameid for game in self.__games if game.is_valid()])
+
+    def get_total_power(self) -> int:
+        return sum([game.get_power() for game in self.__games])
+
+
 def main() -> int:
-    totalsum_part1 = 0
-    totalpower_part2 = 0
-
-    with open("../Inputfiles/aoc2.txt", "r") as file:
-        for line in file.read().strip('\n').splitlines():
-            newgame = Game(line)
-            if newgame.is_valid():
-                totalsum_part1 += newgame.gameid
-            totalpower_part2 += newgame.get_power()
-
-    print(f"Part1: {totalsum_part1}")
-    print(f"Part2: {totalpower_part2}")
+    with open(INPUT_FILE, "r") as file:
+        record = GameRecord(file.read().strip('\n'))
+    print(f"Part 1: {record.get_valid_games_value()}")
+    print(f"Part 2: {record.get_total_power()}")
     return 0
 
 

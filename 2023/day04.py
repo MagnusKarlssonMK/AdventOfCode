@@ -2,7 +2,11 @@
 Basically decodes the input into a Scratchcard class, and then counts the scores according to the rules.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day04.txt')
 
 
 class Scratchcard:
@@ -37,7 +41,7 @@ class Cardpile:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc4.txt", "r") as file:
+    with open(INPUT_FILE, 'r') as file:
         pile = Cardpile(file.read().strip('\n'))
     print(f"Part 1: {pile.get_totalpoints()}")
     print(f"Part 2: {pile.get_cardcount()}")

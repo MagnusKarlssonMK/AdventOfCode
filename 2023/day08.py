@@ -3,8 +3,12 @@ Stores the node input in a dict in a class, which provides methods to calculate 
 and Part 2, with the sequence as input. Uses LCM from the math module to calculate the value for part 2.
 """
 import sys
+from pathlib import Path
 import re
 import math
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day08.txt')
 
 
 class NodeNetwork:
@@ -38,9 +42,8 @@ class NodeNetwork:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc8.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mynodes = NodeNetwork(file.read().strip('\n'))
-
     print(f"Part 1: {mynodes.stepcount_zzz()}")
     print(f"Part 2: {mynodes.stepcount_atoz()}")
     return 0

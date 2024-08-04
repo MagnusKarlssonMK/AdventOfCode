@@ -5,11 +5,15 @@ An argument can be given when building the graph to ignore the slopes for part 2
 significantly more edges and makes Part 2 take well over 10 seconds to complete.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day23.txt')
 
 
 class Island:
-    def __init__(self, griddata: list[str]):
-        self.__grid = list(griddata)
+    def __init__(self, rawstr: str) -> None:
+        self.__grid = rawstr.splitlines()
         self.__height = len(self.__grid)
         self.__width = len(self.__grid[0])
         self.start: tuple[int, int] = 0, self.__grid[0].index('.')
@@ -72,12 +76,12 @@ class Island:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc23.txt', 'r') as file:
-        island = Island(file.read().strip('\n').splitlines())
+    with open(INPUT_FILE, 'r') as file:
+        island = Island(file.read().strip('\n'))
     island.load_tree()
-    print("Part 1:", island.get_maxpathlength())
+    print(f"Part 1: {island.get_maxpathlength()}")
     island.load_tree(True)
-    print("Part 2:", island.get_maxpathlength())
+    print(f"Part 2: {island.get_maxpathlength()}")
     return 0
 
 

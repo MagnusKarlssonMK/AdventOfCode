@@ -5,7 +5,11 @@ For part 2 however it gets a lot more messy when the seeds are ranges themselves
 ranges as they travel through the map filters, which means a bit of recursion when evaluating the filter translations.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day05.txt')
 
 
 @dataclass(frozen=True)
@@ -81,7 +85,7 @@ class Almanac:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc5.txt') as file:
+    with open(INPUT_FILE, 'r') as file:
         myalmanac = Almanac(file.read().strip('\n'))
     print(f"Part 1: {myalmanac.get_lowest_location()}")
     print(f"Part 2: {myalmanac.get_lowest_ranged_location()}")

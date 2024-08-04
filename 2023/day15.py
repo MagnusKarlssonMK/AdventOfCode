@@ -1,6 +1,10 @@
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day15.txt')
 
 
 def algo(mystring: str) -> int:
@@ -46,14 +50,12 @@ class Lightmachine:
         return sum([algo(word) for word in self.__words])
 
     def get_lenspower(self) -> int:
-        retval = 0
-        for hash_val in self.__boxes:
-            retval += sum(box.focuslen * (i + 1) * (hash_val + 1) for i, box in enumerate(self.__boxes[hash_val]))
-        return retval
+        return sum([box.focuslen * (i + 1) * (hash_val + 1) for hash_val in self.__boxes
+                    for i, box in enumerate(self.__boxes[hash_val])])
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc15.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mymachine = Lightmachine(file.read().strip('\n'))
     print(f"Part 1: {mymachine.get_initialization_sum()}")
     print(f"Part 2: {mymachine.get_lenspower()}")

@@ -4,14 +4,19 @@ challenges was to round them off in the right direction, to also account for the
 exactly the same value as the old record.
 """
 import sys
+from pathlib import Path
+from dataclasses import dataclass
 import math
 import re
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day06.txt')
 
+
+@dataclass(frozen=True)
 class Race:
-    def __init__(self, t: int, d: int) -> None:
-        self.time = t
-        self.distance = d
+    time: int
+    distance: int
 
     def get_score(self) -> int:
         minvelocity = math.floor((self.time - math.sqrt(self.time**2 - (4 * self.distance))) / 2) + 1
@@ -37,7 +42,7 @@ class Competition:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc6.txt", "r") as file:
+    with open(INPUT_FILE, 'r') as file:
         myrace = Competition(file.read().strip('\n'))
     print(f"Part 1: {myrace.get_race_product()}")
     print(f"Part 2: {myrace.get_megarace_score()}")

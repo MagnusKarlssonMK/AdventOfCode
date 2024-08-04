@@ -7,62 +7,69 @@ For part 2, instead iterate over the symbols and find the gears, and then iterat
 that are adjacent for each gear.
 """
 import sys
+from pathlib import Path
 import re
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day03.txt')
+
+
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
 
 
 @dataclass(frozen=True)
 class Part:
-    row: int
-    col: int
+    point: Point
     length: int
     value: int
 
-
-@dataclass(frozen=True)
-class Symbol:
-    row: int
-    col: int
+    def get_adjacent_points(self) -> iter:
+        for y in range(self.point.y - 1, self.point.y + 2):
+            for x in range(self.point.x - 1, self.point.x + self.length + 1):
+                yield Point(x, y)
 
 
 class Schematic:
     def __init__(self, rawstr: str) -> None:
-        self.__parts: dict[Part: list[Symbol]] = {}
-        self.__symbols: dict[Symbol: str] = {}
-        # Parse input
-        for rowidx, row in enumerate(rawstr.splitlines()):
+        self.__parts: dict[Part: set[Point]] = {}
+        self.__symbols: dict[Point: str] = {}
+        for y, row in enumerate(rawstr.splitlines()):
             nbrs = re.finditer(r"(\d+)", row)
             symbs = re.finditer(r"[^.\d]", row)
             for nbr in nbrs:
-                self.__parts[Part(rowidx, nbr.start(), nbr.end() - nbr.start(), int(row[nbr.start():nbr.end()]))] = []
+                self.__parts[Part(Point(nbr.start(), y),
+                                  nbr.end() - nbr.start(),
+                                  int(row[nbr.start():nbr.end()]))] = set()
             for symb in symbs:
-                self.__symbols[Symbol(rowidx, symb.start())] = row[symb.start()]
+                self.__symbols[Point(symb.start(), y)] = row[symb.start()]
         # Connect symbols to parts
         for part in self.__parts:
-            for rowidx in range(part.row - 1, part.row + 2):
-                for colidx in range(part.col - 1, part.col + part.length + 1):
-                    if (adj_symb := Symbol(rowidx, colidx)) in self.__symbols:
-                        self.__parts[part].append(adj_symb)
+            for adj in part.get_adjacent_points():
+                if adj in self.__symbols:
+                    self.__parts[part].add(adj)
 
     def get_partnumber_sum(self) -> int:
         return sum([part.value for part in self.__parts if len(self.__parts[part]) > 0])
 
     def get_gearratio_sum(self) -> int:
-        retval = 0
+        result = 0
         for symbol, symbtype in self.__symbols.items():
             if symbtype == "*":
                 adj_parts = [part.value for part in self.__parts if symbol in self.__parts[part]]
                 if len(adj_parts) == 2:
-                    retval += adj_parts[0] * adj_parts[1]
-        return retval
+                    result += adj_parts[0] * adj_parts[1]
+        return result
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc3.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         myschematic = Schematic(file.read().strip('\n'))
-
-    print(f"Part 1 redux: {myschematic.get_partnumber_sum()}")
-    print(f"Part 2 redux: {myschematic.get_gearratio_sum()}")
+    print(f"Part 1: {myschematic.get_partnumber_sum()}")
+    print(f"Part 2: {myschematic.get_gearratio_sum()}")
     return 0
 
 

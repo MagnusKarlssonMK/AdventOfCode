@@ -5,77 +5,89 @@ this way the different hands can be sorted according to the rules. The power cal
 one basic for Part 1 and one using jokers for Part 2.
 """
 import sys
+from pathlib import Path
+from enum import Enum
 from collections import Counter
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day07.txt')
+
+
+class HandResults(Enum):
+    HIGH_CARD = 1
+    ONE_PAIR = 2
+    TWO_PAIR = 3
+    THREE_OF_A_KIND = 4
+    FULL_HOUSE = 5
+    FOUR_OF_A_KIND = 6
+    FIVE_OF_A_KIND = 7
 
 
 class Hand:
     __CARDLIST = {"2": '2', "3": '3', "4": '4', "5": '5', "6": '6', "7": '7', "8": '8', "9": '9',
                   "T": 'A', "J": 'B', "Q": 'C', "K": 'D', "A": 'E'}
 
-    __HANDRESULTS = {"High card": 1, "One pair": 2, "Two pair": 3, "Three of a kind": 4,
-                     "Full house": 5, "Four of a kind": 6, "Five of a kind": 7}
-
     def __init__(self, newcardstring: str, newbid: int):
         self.bid = newbid
-        self.cards = [c for c in newcardstring]
+        self.__cards = [c for c in newcardstring]
 
     def gethandpower(self) -> int:
         """Returns the input to Part 1 for this hand."""
-        result = 0
-        cardcount = sorted(Counter(self.cards).values(), reverse=True)
+        result = HandResults.HIGH_CARD
+        cardcount = sorted(Counter(self.__cards).values(), reverse=True)
         match cardcount[0]:
             case 5:
-                result = Hand.__HANDRESULTS["Five of a kind"]
+                result = HandResults.FIVE_OF_A_KIND
             case 4:
-                result = Hand.__HANDRESULTS["Four of a kind"]
+                result = HandResults.FOUR_OF_A_KIND
             case 3:
                 if cardcount[1] == 2:
-                    result = Hand.__HANDRESULTS["Full house"]
+                    result = HandResults.FULL_HOUSE
                 else:
-                    result = Hand.__HANDRESULTS["Three of a kind"]
+                    result = HandResults.THREE_OF_A_KIND
             case 2:
                 if cardcount[1] == 2:
-                    result = Hand.__HANDRESULTS["Two pair"]
+                    result = HandResults.TWO_PAIR
                 else:
-                    result = Hand.__HANDRESULTS["One pair"]
+                    result = HandResults.ONE_PAIR
             case 1:
-                result = Hand.__HANDRESULTS["High card"]
-        cardstring = ''.join([Hand.__CARDLIST[c] for c in self.cards])
-        return int(str(result) + cardstring, 16)
+                result = HandResults.HIGH_CARD
+        cardstring = ''.join([Hand.__CARDLIST[c] for c in self.__cards])
+        return int(str(result.value) + cardstring, 16)
 
     def gethandpower_jokers(self) -> int:
         """Returns the input to Part 2 for this hand."""
-        result = 0
-        if (jokercount := self.cards.count('J')) >= 4:
-            result = Hand.__HANDRESULTS["Five of a kind"]
+        result = HandResults.HIGH_CARD
+        if (jokercount := self.__cards.count('J')) >= 4:
+            result = HandResults.FIVE_OF_A_KIND
         else:
-            nonjokercards = [c for c in self.cards if c != 'J']
+            nonjokercards = [c for c in self.__cards if c != 'J']
             cardcount = sorted(Counter(nonjokercards).values(), reverse=True)
 
             match cardcount[0] + jokercount:
                 case 5:
-                    result = Hand.__HANDRESULTS["Five of a kind"]
+                    result = HandResults.FIVE_OF_A_KIND
                 case 4:
-                    result = Hand.__HANDRESULTS["Four of a kind"]
+                    result = HandResults.FOUR_OF_A_KIND
                 case 3:
                     if cardcount[1] == 2:
-                        result = Hand.__HANDRESULTS["Full house"]
+                        result = HandResults.FULL_HOUSE
                     else:
-                        result = Hand.__HANDRESULTS["Three of a kind"]
+                        result = HandResults.THREE_OF_A_KIND
                 case 2:
                     if cardcount[1] == 2:
-                        result = Hand.__HANDRESULTS["Two pair"]
+                        result = HandResults.TWO_PAIR
                     else:
-                        result = Hand.__HANDRESULTS["One pair"]
+                        result = HandResults.ONE_PAIR
                 case 1:
-                    result = Hand.__HANDRESULTS["High card"]
+                    result = HandResults.HIGH_CARD
         cardstring = ''
-        for card in self.cards:
+        for card in self.__cards:
             if card == 'J':
                 cardstring += '1'
             else:
                 cardstring += Hand.__CARDLIST[card]
-        return int(str(result) + cardstring, 16)
+        return int(str(result.value) + cardstring, 16)
 
 
 class CamelCards:
@@ -94,7 +106,7 @@ class CamelCards:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc7.txt", "r") as file:
+    with open(INPUT_FILE, 'r') as file:
         mygame = CamelCards(file.read().strip('\n'))
     print(f"Part 1: {mygame.get_winnings()}")
     print(f"Part 2: {mygame.get_winnings(True)}")

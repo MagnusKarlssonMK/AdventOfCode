@@ -4,16 +4,20 @@ For part 2, first pre-process the string by replacing spelled out digits with th
 inserted in the middle, in a place where it won't destroy the string in case numbers are overlapping (e.g. 'threeight').
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day01.txt')
 
 
 class Calibrationstring:
-    def __init__(self, inputstr: str):
-        self.calstring = inputstr
+    def __init__(self, inputstr: str) -> None:
+        self.__calstring = inputstr
 
-    def getcalibrationvalue(self, spelled_out: bool = False) -> int:
+    def getcalibrationvalue(self, spelled_out: bool) -> int:
         digits = {'one': 'o1ne', 'two': 't2wo', 'three': 'th3ree', 'four': 'fo4ur', 'five': 'fi5ve',
                   'six': 'si6x', 'seven': 'se7ven', 'eight': 'eig8th', 'nine': 'ni9ne'}
-        strcopy = self.calstring
+        strcopy = self.__calstring
         if spelled_out:
             for digit in digits:
                 strcopy = strcopy.replace(digit, digits[digit])
@@ -21,18 +25,19 @@ class Calibrationstring:
         return 0 if len(digits) == 0 else int(digits[0] + digits[-1])
 
 
+class Document:
+    def __init__(self, rawstr: str) -> None:
+        self.__values = [Calibrationstring(line) for line in rawstr.splitlines()]
+
+    def get_calibration_sum(self, spelled_out: bool = False) -> int:
+        return sum([v.getcalibrationvalue(spelled_out) for v in self.__values])
+
+
 def main() -> int:
-    calibrationsum_part1 = 0
-    calibrationsum_part2 = 0
-
-    with open("../Inputfiles/aoc1.txt", "r") as file:
-        for line in file.read().strip('\n').splitlines():
-            newcal = Calibrationstring(line)
-            calibrationsum_part1 += newcal.getcalibrationvalue()
-            calibrationsum_part2 += newcal.getcalibrationvalue(True)
-
-    print("Part1:", calibrationsum_part1)
-    print("Part2:", calibrationsum_part2)
+    with open(INPUT_FILE, "r") as file:
+        document = Document(file.read().strip('\n'))
+    print(f"Part 1: {document.get_calibration_sum()}")
+    print(f"Part 2: {document.get_calibration_sum(True)}")
     return 0
 
 

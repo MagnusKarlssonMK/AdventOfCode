@@ -6,7 +6,11 @@ a stripped down BFS is used to traverse the bouncers and record the movement on 
 Building the adjacency list takes some minor extra time for Part 1, but makes up for it for Part 2.
 """
 import sys
+from pathlib import Path
 import re
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day16.txt')
 
 
 RowCol = tuple[int, int]
@@ -64,13 +68,13 @@ class Grid:
             grid.append(line)
             for c in re.finditer(r"[^.]", line):
                 self.__bouncers[(row, int(c.start()))] = Bouncer(c.group(0))
-                try:
+                if row in self.__bouncersperrow:
                     self.__bouncersperrow[row].append(int(c.start()))
-                except KeyError:
+                else:
                     self.__bouncersperrow[row] = [int(c.start())]
-                try:
+                if int(c.start()) in self.__bouncerspercol:
                     self.__bouncerspercol[int(c.start())].append(row)
-                except KeyError:
+                else:
                     self.__bouncerspercol[int(c.start())] = [row]
         self.width = len(grid[0])
         self.height = len(grid)
@@ -157,10 +161,10 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc16.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
     p1 = mygrid.insertlight((0, 0), Directions['r'])
-    print("Part1: ", p1)
+    print(f"Part 1: {p1}")
 
     # Part 2
     p2 = 0
@@ -170,7 +174,7 @@ def main() -> int:
     for col in range(mygrid.width):
         p2 = max(p2, mygrid.insertlight((0, col), Directions['d']))
         p2 = max(p2, mygrid.insertlight((mygrid.height - 1, col), Directions['u']))
-    print("Part2: ", p2)
+    print(f"Part 2: {p2}")
     return 0
 
 

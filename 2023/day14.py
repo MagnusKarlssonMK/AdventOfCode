@@ -6,6 +6,11 @@ unnecessarily. It gets the job done but very slow Part 2, so it would probably b
 regular grid matrix, possibly combined with row / column dictionaries for faster lookups of available positions.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day14.txt')
+
 
 tiltdirections = {"None": 0, "North": 1, "East": 2, "South": 3, "West": 4}
 
@@ -124,12 +129,11 @@ class Board:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc14.txt", "r") as file:
+    with open(INPUT_FILE, 'r') as file:
         myboard = Board(file.read().strip('\n'))
 
     myboard.settilt(tiltdirections["North"])
-    print("Part 1:", myboard.getload())
-    # print(myboard)
+    print(f"Part 1: {myboard.getload()}")
 
     cycles = 1000000000
     count = 0
@@ -153,8 +157,7 @@ def main() -> int:
         seen.add(thiscycle)
         seenlist.append(thiscycle)
 
-    print("Part 2:", myboard.getload())
-
+    print(f"Part 2: {myboard.getload()}")
     return 0
 
 

@@ -5,9 +5,13 @@ Part 2 - Yet another challenge in handling splitting ranges, mainly a headache t
 dicts, ranges, lists etc.
 """
 import sys
+from pathlib import Path
 import re
 import operator
 from math import prod
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day19.txt')
 
 
 Partrating = dict[str: int]   # Parts = ['x', 'm', 'a', 's']
@@ -102,13 +106,13 @@ class System:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc19.txt') as file:
+    with open(INPUT_FILE, 'r') as file:
         wf, rt = file.read().strip('\n').split('\n\n')
     system = System(wf)
     ratings: list[Partrating] = [{part: int(count) for part, count in re.findall(r"(.)=(\d+)", rating)}
                                  for rating in rt.splitlines()]
-    print("Part 1:", sum([system.process_workflow(rating) for rating in ratings]))
-    print("Part 2:", system.get_combinationcount())
+    print(f"Part 1: {sum([system.process_workflow(rating) for rating in ratings])}")
+    print(f"Part 2: {system.get_combinationcount()}")
     return 0
 
 

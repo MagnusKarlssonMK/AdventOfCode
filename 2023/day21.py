@@ -5,6 +5,10 @@ Part 2: Solves it with three-point-formula to determine the coefficients in a qu
 answer from that.
 """
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day21.txt')
 
 
 RowCol = tuple[int, int]
@@ -58,10 +62,10 @@ class Grid:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc21.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
-    print("Part 1:", mygrid.get_reachablecount(64))
-    print("Part 2:", mygrid.get_reachablecount_infinite(26501365))
+    print(f"Part 1: {mygrid.get_reachablecount(64)}")
+    print(f"Part 2: {mygrid.get_reachablecount_infinite(26501365)}")
     return 0
 
 

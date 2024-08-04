@@ -4,7 +4,11 @@ After the dig commands have been carried out, the results are calculated with sh
 For part 2, simply convert the instructions before running the command.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -65,7 +69,7 @@ class Trench:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc18.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mytrench = Trench(file.read().strip('\n'))
     print(f"Part 1: {mytrench.get_areapoints()}")
     print(f"Part 2: {mytrench.get_areapoints(True)}")

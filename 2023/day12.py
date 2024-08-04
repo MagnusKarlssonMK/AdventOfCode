@@ -2,7 +2,11 @@
 Memoized recursive solution, using the functools cache.
 """
 import sys
+from pathlib import Path
 from functools import lru_cache
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day12.txt')
 
 
 @lru_cache()
@@ -43,7 +47,7 @@ class SpringRecord:
 
 
 def main() -> int:
-    with open("../Inputfiles/aoc12.txt", "r") as file:
+    with open(INPUT_FILE, 'r') as file:
         myrecord = SpringRecord(file.read().strip('\n'))
     print(f"Part 1: {myrecord.get_arrangement_sum()}")
     print(f"Part 2: {myrecord.get_arrangement_sum(5)}")

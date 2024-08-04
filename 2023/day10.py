@@ -4,7 +4,11 @@ the answer by dividing the number of steps taken by 2. For part 2, calculate the
 with the shoelace formula and then use that with Pick's theorem.
 """
 import sys
+from pathlib import Path
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day10.txt')
 
 
 @dataclass(frozen=True)
@@ -79,7 +83,7 @@ class Maze:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc10.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         mymaze = Maze(file.read().strip('\n'))
     print(f"Part 1: {mymaze.get_farpoint_length()}")
     print(f"Part 2: {mymaze.get_enclosed_count()}")

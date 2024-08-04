@@ -6,12 +6,16 @@ Part 2: Uses the sympy equation solver to find the answer. I may have borrowed t
 people smarter than me...
 """
 import sys
+from pathlib import Path
 from itertools import combinations
 import sympy as sp
 
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day24.txt')
+
 
 class Hailstone:
-    def __init__(self, rawstr: str):
+    def __init__(self, rawstr: str) -> None:
         left, right = rawstr.split(' @ ')
         self.x, self.y, self.z = list(map(int, left.split(', ')))
         self.dx, self.dy, self.dz = list(map(int, right.split(', ')))
@@ -41,7 +45,7 @@ class Hailstone:
 
 
 class Air:
-    def __init__(self):
+    def __init__(self) -> None:
         self.hailstones: list[Hailstone] = []
         self.xy_intersection_range = (200000000000000, 400000000000000)
 
@@ -73,11 +77,11 @@ class Air:
 
 def main() -> int:
     myair = Air()
-    with open('../Inputfiles/aoc24.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         for line in file.read().strip('\n').splitlines():
             myair.add_hailstone(line)
-    print("Part 1:", myair.get_2d_intersectioncount())
-    print("Part 2:", myair.get_3d_silverbullet())
+    print(f"Part 1: {myair.get_2d_intersectioncount()}")
+    print(f"Part 2: {myair.get_3d_silverbullet()}")
     return 0
 
 

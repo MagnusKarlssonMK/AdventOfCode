@@ -3,9 +3,13 @@ Uses classes and inheritance to implement the different module types, and an ove
 and provide an interface for pushing the button.
 """
 import sys
+from pathlib import Path
 import math
 from enum import Enum
 from dataclasses import dataclass
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day20.txt')
 
 
 class Pulse(Enum):
@@ -135,7 +139,7 @@ class CommunicationSystem:
 
 
 def main() -> int:
-    with open('../Inputfiles/aoc20.txt', 'r') as file:
+    with open(INPUT_FILE, 'r') as file:
         comsys = CommunicationSystem(file.read().strip('\n'))
     print(f"Part 1: {comsys.get_push_1000()}")
     print(f"Part 2: {comsys.get_rx_mincount()}")

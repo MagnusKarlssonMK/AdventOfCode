@@ -1,4 +1,8 @@
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
+INPUT_FILE = Path(ROOT_DIR, '2023/day13.txt')
 
 
 def ismirror(patternlist, candidate, wildcardused):
@@ -22,44 +26,40 @@ def getmirrorscore(patternlist, usewildcard: bool):
 
 
 class Pattern:
-    def __init__(self, lineinput: list[str]):
+    def __init__(self, rawstr: str) -> None:
         rows = []
-        self.binrows = []
-        self.bincolumns = []
+        self.__binrows = []
+        self.__bincolumns = []
         # Convert input to a string of binary characters '0' and '1'
-        for line in lineinput:
-            convertedstr = ""
-            for char in line:
-                convertedstr += "0" if char == "." else "1"
+        for line in rawstr.splitlines():
+            convertedstr = ''.join(['0' if c == '.' else '1' for c in line])
             rows.append(convertedstr)
-            self.binrows.append(int(convertedstr, 2))
+            self.__binrows.append(int(convertedstr, 2))
 
         for i, _ in enumerate(rows[0]):
-            convertedstr = ""
-            for tmprow in rows:
-                convertedstr += tmprow[i]
-            self.bincolumns.append(int(convertedstr, 2))
+            convertedstr = ''.join([r[i] for r in rows])
+            self.__bincolumns.append(int(convertedstr, 2))
 
     def getscore(self, wildcard: bool) -> int:
         retval = 0
-        retval += 100 * getmirrorscore(self.binrows, wildcard)
-        retval += getmirrorscore(self.bincolumns, wildcard)
+        retval += 100 * getmirrorscore(self.__binrows, wildcard)
+        retval += getmirrorscore(self.__bincolumns, wildcard)
         return retval
 
 
+class PatternList:
+    def __init__(self, rawstr: str) -> None:
+        self.__patterns = [Pattern(block) for block in rawstr.split('\n\n')]
+
+    def get_totalscore(self, wildcardused: bool = True) -> int:
+        return sum([p.getscore(wildcardused) for p in self.__patterns])
+
+
 def main() -> int:
-    with open("../Inputfiles/aoc13.txt", "r") as file:
-        patterns = file.read().strip("\n").split("\n\n")
-
-    totalscore_p1 = 0
-    totalscore_p2 = 0
-
-    for pattern in patterns:
-        newpattern = Pattern(pattern.split('\n'))
-        totalscore_p1 += newpattern.getscore(True)
-        totalscore_p2 += newpattern.getscore(False)
-    print("Part1: ", totalscore_p1)
-    print("Part2: ", totalscore_p2)
+    with open(INPUT_FILE, 'r') as file:
+        patterns = PatternList(file.read().strip('\n'))
+    print(f"Part 1: {patterns.get_totalscore()}")
+    print(f"Part 2: {patterns.get_totalscore(False)}")
     return 0
 
 
