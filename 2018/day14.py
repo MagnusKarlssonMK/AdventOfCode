@@ -13,7 +13,7 @@ class RecipeGenerator:
     __START_POSITIONS = (0, 1)
     __START_RECIPES = (3, 7)
 
-    def __init__(self, nbr: int) -> None:
+    def __init__(self, nbr: str) -> None:
         self.__inputnbr = nbr
         self.__scoreboard = list(RecipeGenerator.__START_RECIPES)
         self.__elfs = list(RecipeGenerator.__START_POSITIONS)
@@ -33,14 +33,15 @@ class RecipeGenerator:
         return newcount
 
     def get_scores(self) -> int:
-        while len(self.__scoreboard) < self.__inputnbr + 10:
+        limit = int(self.__inputnbr)
+        while len(self.__scoreboard) < limit + 10:
             self.__make_recipes()
-        result = int(''.join([str(i) for i in self.__scoreboard[self.__inputnbr: self.__inputnbr + 10]]))
+        result = int(''.join([str(i) for i in self.__scoreboard[limit: limit + 10]]))
         self.__reset()
         return result
 
     def get_scores_left_side(self) -> int:
-        nbrlist = [int(c) for c in str(self.__inputnbr)]
+        nbrlist = [int(c) for c in self.__inputnbr]
         nbrlistlen = len(nbrlist)
         while True:
             if self.__make_recipes() > 1:
@@ -57,7 +58,7 @@ class RecipeGenerator:
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
-        generator = RecipeGenerator(int(file.read().strip('\n')))
+        generator = RecipeGenerator(file.read().strip('\n'))
     print(f"Part 1: {generator.get_scores()}")
     print(f"Part 2: {generator.get_scores_left_side()}")
     return 0
