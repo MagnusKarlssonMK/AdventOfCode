@@ -49,10 +49,15 @@ class NanoFactory:
 
     def get_maximum_fuel(self) -> int:
         ore_amount = 1_000_000_000_000
-        fuel = 2
-        while (ore_needed := self.get_minimum_ore_req(fuel)) < ore_amount:
-            fuel = 1 + max(fuel, fuel * ore_amount // ore_needed)
-        return fuel - 1
+        lower = 1
+        upper = None
+        while lower + 1 != upper:
+            fuel = lower * 2 if not upper else (upper + lower) // 2
+            if self.get_minimum_ore_req(fuel) <= ore_amount:
+                lower = fuel
+            else:
+                upper = fuel
+        return lower
 
 
 def main() -> int:
