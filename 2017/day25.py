@@ -32,7 +32,7 @@ class TuringMachine:
             new_val, cursor_dir, new_state = self.__process[self.__state][value]
             if new_val == 1:
                 ones.add(cursor_pos)
-            else:
+            elif cursor_pos in ones:
                 ones.remove(cursor_pos)
             cursor_pos += cursor_dir
             self.__state = new_state
