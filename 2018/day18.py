@@ -2,8 +2,8 @@
 Game of life with three states instead of two, kind of.
 Store the grid in a dict with the state for each coordinate and update according to the rules for each passing minute.
 For part 2 we obviously don't want to brute force a trillion minutes, so instead try to find a cycle. The grid value
-seems to be unique enough to hash the seen states and look for repetitions based on that, but require a found cycle to
-be consistent over two consequtive minutes to be sure it's not just a coincidental match.
+appears not to be unique enough for all inputs to use as hash for the seen states and look for repetitions based on
+that, so instead generate a sorted tuple of the grid to use as key.
 """
 import sys
 from pathlib import Path
@@ -29,6 +29,9 @@ class Point:
     def get_surrounding(self) -> iter:
         for dx, dy in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             yield Point(self.x + dx, self.y + dy)
+
+    def __lt__(self, other: "Point") -> bool:
+        return self.y < other.y if self.y != other.y else self.x < other.x
 
 
 class LumberArea:
@@ -63,32 +66,31 @@ class LumberArea:
         nbrs = Counter(self.__grid.values())
         return nbrs[State.TREES] * nbrs[State.LUMBERYARD]
 
+    def __get_keyval(self):
+        return tuple(sorted(self.__grid.items()))
+
     def get_total_resource_value(self) -> tuple[int, int]:
         p1 = p2 = 0
         time = 0
         seen = {}
-        previous_cycle = 0
         while True:
             time += 1
             self.__grid = self.__step_minute()
             value = self.__get_value()
+            keyval = self.__get_keyval()
             if time == LumberArea.P1_TIME:
                 p1 = value
-            if value in seen:
-                cycle = time - seen[value]
-                if cycle == previous_cycle:
-                    offset = time - cycle
-                    p2_time = offset + ((LumberArea.P2_TIME - offset) % cycle)
-                    for v in seen:
-                        if seen[v] == p2_time:
-                            p2 = v
-                            break
-                    break
-                else:
-                    previous_cycle = cycle
+            if keyval in seen:
+                cycle = time - seen[keyval][0]
+                offset = time - cycle
+                p2_time = offset + ((LumberArea.P2_TIME - offset) % cycle)
+                for v in seen:
+                    if seen[v][0] == p2_time:
+                        p2 = seen[v][1]
+                        break
+                break
             else:
-                previous_cycle = 0
-                seen[value] = time
+                seen[keyval] = time, value
         return p1, p2
 
 
