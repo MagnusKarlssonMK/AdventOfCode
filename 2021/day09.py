@@ -7,68 +7,68 @@ low point.
 """
 import sys
 from pathlib import Path
+from dataclasses import dataclass
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2021/day09.txt')
 
 
-Point = tuple[int, int]
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def get_neighbors(self) -> iter:
+        for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+            yield self + Point(*d)
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
 
 
 class Grid:
     def __init__(self, rawstr: str) -> None:
-        self.__grid = [[int(c) for c in line] for line in rawstr.splitlines()]
+        self.__grid = [list(map(int, line)) for line in rawstr.splitlines()]
         self.__height = len(self.__grid)
         self.__width = len(self.__grid[0])
-        self.__lowpoints = [p for p in self.__findlowpoints()]
+        self.__lowpoints = set(p for p in self.__find_low_points())
 
-    def __getneighborpoints(self, p: Point) -> iter:
-        row, col = p
-        if row > 0:  # up
-            yield row - 1, col
-        if row < self.__height - 1:  # down
-            yield row + 1, col
-        if col > 0:  # left
-            yield row, col - 1
-        if col < self.__width - 1:  # right
-            yield row, col + 1
-
-    def __findlowpoints(self) -> iter:
-        for row in range(self.__height):
-            for col in range(self.__width):
-                for n_r, n_c in self.__getneighborpoints((row, col)):
-                    if self.__grid[row][col] >= self.__grid[n_r][n_c]:
+    def __find_low_points(self) -> iter:
+        for y, row in enumerate(self.__grid):
+            for x, c in enumerate(row):
+                for n in Point(x, y).get_neighbors():
+                    if (0 <= n.y < self.__height and 0 <= n.x < self.__width and
+                            self.__grid[y][x] >= self.__grid[n.y][n.x]):
                         break
                 else:
-                    yield row, col
+                    yield Point(x, y)
 
-    def __findbasinpoints(self, lowpoint: Point) -> list[Point]:
-        visited = []
-        searchqueue = [lowpoint]
-        while searchqueue:
-            current = searchqueue.pop(0)
-            if current not in visited:
-                for n_r, n_c in self.__getneighborpoints(current):
-                    if (n_r, n_c) not in visited and self.__grid[n_r][n_c] < 9:
-                        searchqueue.append((n_r, n_c))
-                visited.append(current)
-        return visited
+    def __find_basin_points(self, lowpoint: Point) -> set[Point]:
+        seen = set()
+        queue = [lowpoint]
+        while queue:
+            current = queue.pop(0)
+            if current not in seen:
+                seen.add(current)
+                for n in current.get_neighbors():
+                    if n not in seen and (0 <= n.y < self.__height and 0 <= n.x < self.__width and
+                                          self.__grid[n.y][n.x] < 9):
+                        queue.append(n)
+        return seen
 
-    def getlowpointscore(self) -> int:
-        """Gives the answer to Part 1."""
-        return sum([self.__grid[row][col] + 1 for row, col in self.__findlowpoints()])
+    def get_low_point_score(self) -> int:
+        return sum([self.__grid[point.y][point.x] + 1 for point in self.__lowpoints])
 
-    def getbasinscore(self) -> int:
-        """Gives the answer to Part 1."""
-        basinsizelist = sorted([len(self.__findbasinpoints(lp)) for lp in self.__lowpoints], reverse=True)
-        return basinsizelist[0] * basinsizelist[1] * basinsizelist[2]
+    def get_basin_score(self) -> int:
+        basin_sizelist = sorted([len(self.__find_basin_points(p)) for p in self.__lowpoints], reverse=True)
+        return basin_sizelist[0] * basin_sizelist[1] * basin_sizelist[2]
 
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
-        mygrid = Grid(file.read().strip('\n'))
-    print(f"Part 1: {mygrid.getlowpointscore()}")
-    print(f"Part 2: {mygrid.getbasinscore()}")
+        grid = Grid(file.read().strip('\n'))
+    print(f"Part 1: {grid.get_low_point_score()}")
+    print(f"Part 2: {grid.get_basin_score()}")
     return 0
 
 
