@@ -1,55 +1,52 @@
-"""
-Maps the input to numbers to more easily calculate the outcomes.
-"""
 import sys
 from pathlib import Path
+from enum import Enum
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day02.txt')
 
 
-"""
-Rock:     0
-Paper:    1
-Scissors: 2
-"""
+class Hand(Enum):
+    ROCK = 0
+    PAPER = 1
+    SCISSORS = 2
 
-handtonum = {'A': 0, 'B': 1, 'C': 2, 'X': 0, 'Y': 1, 'Z': 2}
-numtohand = {0: 'A', 1: 'B', 2: 'C'}
-scoretable = {0: 1, 1: 2, 2: 3}
+    def get_score(self, other: "Hand") -> int:
+        if self == other:  # Draw
+            return 3 + other.value + 1
+        elif (self.value + 1) % 3 == other.value:  # Other wins
+            return 6 + other.value + 1
+        return other.value + 1
+
+    def determine_response(self, guide: str) -> "Hand":
+        match guide:
+            case 'X':  # Lose
+                return Hand((self.value + 2) % 3)
+            case 'Z':  # Win
+                return Hand((self.value + 1) % 3)
+            case _:  # Draw
+                return self
 
 
-def getscore(left: int, right: int) -> int:
-    retval = scoretable[right]
-    if left == right:  # Draw
-        retval += 3
-    elif (left + 1) % 3 == right:  # right wins
-        retval += 6
-    # else - left wins
-    return retval
+class StrategyBook:
+    def __init__(self, rawstr: str) -> None:
+        left_map = {'A': Hand.ROCK, 'B': Hand.PAPER, 'C': Hand.SCISSORS}
+        self.__rounds: list[tuple[Hand, str]] = [(left_map[left], right) for left, right in
+                                                 [line.split() for line in rawstr.splitlines()]]
 
+    def get_assumed_total_score(self) -> int:
+        right_map = {'X': Hand.ROCK, 'Y': Hand.PAPER, 'Z': Hand.SCISSORS}
+        return sum([opponent.get_score(right_map[you]) for opponent, you in self.__rounds])
 
-def determinehand(left: str, right: str) -> str:
-    match right:
-        case 'Y':  # Draw
-            return left
-        case 'X':  # Lose
-            return numtohand[(handtonum[left] + 2) % 3]
-        case 'Z':  # Win
-            return numtohand[(handtonum[left] + 1) % 3]
-    return ""
+    def get_correct_total_score(self) -> int:
+        return sum([opponent.get_score(opponent.determine_response(you)) for opponent, you in self.__rounds])
 
 
 def main() -> int:
-    result_p1 = 0
-    result_p2 = 0
     with open(INPUT_FILE, 'r') as file:
-        for line in file.read().strip('\n').splitlines():
-            left, right = line.strip('\n').split()
-            result_p1 += getscore(handtonum[left], handtonum[right])
-            result_p2 += getscore(handtonum[left], handtonum[determinehand(left, right)])
-    print(f"Part1: {result_p1}")
-    print(f"Part2: {result_p2}")
+        book = StrategyBook(file.read().strip('\n'))
+    print(f"Part 1: {book.get_assumed_total_score()}")
+    print(f"Part 2: {book.get_correct_total_score()}")
     return 0
 
 
