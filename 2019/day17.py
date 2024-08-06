@@ -3,11 +3,10 @@ Part 1: Run the intcode program to generate the map, then store the scaffold til
 can then be determined by finding the tiles that have more than 2 neighbors.
 
 Part 2: An attempt to make a generic solution, rather than manually creating the functions and program by visually
-inspecting the map. It assumes that the functions always starts with a direction command, and the requirement to stay
-below 20 characters in functions and program are not consistently checked yet. Needs to be tested with more inputs
-to see if it holds up.
+inspecting the map. It assumes that the functions always starts with a direction command, and that we always need all
+three programs. Needs to be tested with more inputs to see if it holds up.
 Also, some room for improvement in the juggling between string and list formats of the scaffold / function
-representations.
+representations, particularly in the functon for generating the A/B/C-functions.
 """
 import sys
 from pathlib import Path
@@ -150,19 +149,36 @@ class Scaffold:
         return sum([p.get_alignment() for p in self.__map if len(self.__map[p]) > 2])
 
     def __build_functions(self) -> tuple[str, str, str]:
-        for a_len in range(1, max(Scaffold.__MAX_PROG_LEN, len(self.__route.steps))):
+        # Note: the step representation is itself 2 characters plus one comma, and multiple steps also need to be comma
+        # separated. So 20 characters means max 5 steps ()
+        max_steps = Scaffold.__MAX_PROG_LEN // 4
+        for a_len in range(1, min(max_steps + 1, len(self.__route.steps))):
             fn_a, a_remainder = self.__route.create_function(a_len)
             a_fragments = a_remainder.split(fn_a)
             # Note: Theoretically, fragments can be empty if we can solve it entirely with a single program
+            # Assume that we always need all three programs
             a_fragments.sort(key=lambda x: len(x.steps))
             for b_len in range(1, len(a_fragments[0].steps) + 1):
                 fn_b, _ = a_fragments[0].create_function(b_len)
-                # For future improvements - add checks to make sure we stay within the 20 character length
+                if b_len > max_steps:
+                    continue
+
                 b_remainder = set()
                 for f in a_fragments:
                     b_remainder.update(set([c.get_string() for c in f.split(fn_b)]))
-                if len(b_remainder) == 1:
-                    fn_c = b_remainder.pop()
+                b_remainder = sorted(list(b_remainder), key=lambda x: len(x))
+                # Reduce the remainder with the shortest (first) entry and see if anything remains
+                c_remainder = []
+                for r in b_remainder:
+                    rest = r.split(b_remainder[0])
+                    for part in rest:
+                        if len(part) > 0:
+                            c_remainder.append(part)
+
+                if not c_remainder:
+                    fn_c = b_remainder.pop(0)
+                    if len(Route.get_from_str(fn_c).steps) > max_steps:
+                        continue
                     fn_a = ''.join([c + ',' for c in re.split(r"(\d+)", fn_a)]).strip(',')
                     fn_b = ''.join([c + ',' for c in re.split(r"(\d+)", fn_b)]).strip(',')
                     fn_c = ''.join([c + ',' for c in re.split(r"(\d+)", fn_c)]).strip(',')
@@ -173,7 +189,6 @@ class Scaffold:
         self.__build_route()
         functions = self.__build_functions()
         prog = self.__route.create_program(*functions)
-
         self.__cpu.override_program(0, 2)
         for c in prog:
             self.__cpu.add_input(ord(c))
