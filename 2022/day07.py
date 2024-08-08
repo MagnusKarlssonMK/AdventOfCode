@@ -66,12 +66,10 @@ class Directory:
 
 
 class FileSystem:
-    def __init__(self):
-        self.root = Directory("/")
+    def __init__(self, rawstr: str):
+        self.__root = Directory("/")
         self.__head = []
-
-    def handlecommands(self, cmdlist: list[list[str]]) -> None:
-        for line in cmdlist:
+        for line in [lines.split() for lines in rawstr.splitlines()]:
             match line[0]:
                 case "$":
                     if line[1] == "cd":
@@ -82,18 +80,23 @@ class FileSystem:
                         else:
                             self.__head.append(line[2])
                 case "dir":
-                    self.root.addsubdir(self.__head, line[1])
+                    self.__root.addsubdir(self.__head, line[1])
                 case _:
-                    self.root.addfile(self.__head, line[1], int(line[0]))
+                    self.__root.addfile(self.__head, line[1], int(line[0]))
+        self.__needtodelete = self.__root.gettotalsize() - (70000000 - 30000000)  # Initialize the internal sizes
+
+    def get_filtered_size(self) -> int:
+        return self.__root.getfilteredsize(100000)
+
+    def get_smallest_to_delete(self) -> int:
+        return self.__root.getsmallest_todelete(self.__needtodelete)
 
 
 def main() -> int:
-    myfs = FileSystem()
     with open(INPUT_FILE, 'r') as file:
-        myfs.handlecommands([line.split() for line in file.read().strip('\n').splitlines()])
-    needtodelete = myfs.root.gettotalsize() - (70000000 - 30000000)  # Call this first to initialize the internal sizes
-    print(f"Part 1: {myfs.root.getfilteredsize(100000)}")
-    print(f"Part 2: {myfs.root.getsmallest_todelete(needtodelete)}")
+        myfs = FileSystem(file.read().strip('\n'))
+    print(f"Part 1: {myfs.get_filtered_size()}")
+    print(f"Part 2: {myfs.get_smallest_to_delete()}")
     return 0
 
 
