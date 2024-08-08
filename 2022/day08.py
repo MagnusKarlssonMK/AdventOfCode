@@ -1,36 +1,48 @@
 import sys
 from pathlib import Path
+from dataclasses import dataclass
+from enum import Enum
 import math
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day08.txt')
 
 
-RowCol = tuple[int, int]
-Directions = {'Up': 0, 'Right': 1, 'Down': 2, 'Left': 3}
-DirToRC = {0: (-1, 0), 1: (0, 1), 2: (1, 0), 3: (0, -1)}
+@dataclass(frozen=True)
+class Coordinate:
+    row: int
+    col: int
+
+
+class Direction(Enum):
+    UP = Coordinate(-1, 0)
+    RIGHT = Coordinate(0, 1)
+    DOWN = Coordinate(1, 0)
+    LEFT = Coordinate(0, -1)
 
 
 class Forest:
     def __init__(self, rawdata: str) -> None:
-        self.grid = [[int(c) for c in line] for line in rawdata.split('\n')]
-        self.gridscores = [[[-1, -1, -1, -1] for _ in range(len(self.grid[0]))] for _ in range(len(self.grid))]
+        self.__grid = [[int(c) for c in line] for line in rawdata.split('\n')]
+        self.__width = len(self.__grid[0])
+        self.__height = len(self.__grid)
+        self.__grid_scores = [[{d: -1 for d in Direction} for _ in range(self.__width)] for _ in range(self.__height)]
 
     def getvisibletreecount(self) -> int:
-        visible: set[RowCol] = set()
-        for r in range(len(self.grid)):
+        visible: set[Coordinate] = set()
+        for r in range(self.__height):
             # From left:
-            [visible.add(tree) for tree in self.generatevisibletrees(r, -1, range(len(self.grid[0])))]
+            [visible.add(tree) for tree in self.__generatevisibletrees(r, -1, range(self.__width))]
             # From right:
-            [visible.add(tree) for tree in self.generatevisibletrees(r, -1, reversed(range(len(self.grid[0]))))]
-        for c in range(len(self.grid[0])):
+            [visible.add(tree) for tree in self.__generatevisibletrees(r, -1, reversed(range(self.__width)))]
+        for c in range(len(self.__grid[0])):
             # From above
-            [visible.add(tree) for tree in self.generatevisibletrees(-1, c, range(len(self.grid)))]
+            [visible.add(tree) for tree in self.__generatevisibletrees(-1, c, range(self.__height))]
             # From below
-            [visible.add(tree) for tree in self.generatevisibletrees(-1, c, reversed(range(len(self.grid))))]
+            [visible.add(tree) for tree in self.__generatevisibletrees(-1, c, reversed(range(self.__height)))]
         return len(visible)
 
-    def generatevisibletrees(self, row, col, iterable) -> iter:
+    def __generatevisibletrees(self, row, col, iterable) -> iter:
         tallest = -1
         for i in iterable:
             if row == -1:
@@ -39,13 +51,13 @@ class Forest:
             else:
                 r = row
                 c = i
-            if self.grid[r][c] > tallest:
-                tallest = self.grid[r][c]
-                yield r, c
+            if self.__grid[r][c] > tallest:
+                tallest = self.__grid[r][c]
+                yield Coordinate(r, c)
                 if tallest == 9:
                     break
 
-    def setdirectionscores(self, row, col, direction: Directions, iterable) -> None:
+    def __setdirectionscores(self, row, col, direction: Direction, iterable) -> None:
         scorelist = [0 for _ in range(10)]
         for i in iterable:
             if row == -1:
@@ -54,25 +66,21 @@ class Forest:
             else:
                 r = row
                 c = i
-            self.gridscores[r][c][direction] = scorelist[self.grid[r][c]]
+            self.__grid_scores[r][c][direction] = scorelist[self.__grid[r][c]]
             for j in range(10):
-                scorelist[j] = (scorelist[j] + 1) if j > self.grid[r][c] else 1
+                scorelist[j] = (scorelist[j] + 1) if j > self.__grid[r][c] else 1
 
     def getmaxscore(self) -> int:
         currentmax = 0
-        for r in range(len(self.grid)):
-            # Left direction
-            self.setdirectionscores(r, -1, Directions["Left"], range(len(self.grid[0])))
-            # Right direction
-            self.setdirectionscores(r, -1, Directions["Right"], reversed(range(len(self.grid[0]))))
-        for c in range(len(self.grid[0])):
-            # Up direction
-            self.setdirectionscores(-1, c, Directions["Up"], range(len(self.grid)))
-            # Down direction
-            self.setdirectionscores(-1, c, Directions["Down"], reversed(range(len(self.grid))))
-        for r in range(len(self.grid)):
-            for c in range(len(self.grid[0])):
-                score = math.prod(self.gridscores[r][c])
+        for r in range(self.__height):
+            self.__setdirectionscores(r, -1, Direction.LEFT, range(len(self.__grid[0])))
+            self.__setdirectionscores(r, -1, Direction.RIGHT, reversed(range(len(self.__grid[0]))))
+        for c in range(self.__width):
+            self.__setdirectionscores(-1, c, Direction.UP, range(len(self.__grid)))
+            self.__setdirectionscores(-1, c, Direction.DOWN, reversed(range(len(self.__grid))))
+        for r in range(self.__height):
+            for c in range(self.__width):
+                score = math.prod(self.__grid_scores[r][c].values())
                 currentmax = max(score, currentmax)
         return currentmax
 
@@ -80,8 +88,8 @@ class Forest:
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
         myforest = Forest(file.read().strip('\n'))
-    print(f"Part1: {myforest.getvisibletreecount()}")
-    print(f"Part2: {myforest.getmaxscore()}")
+    print(f"Part 1: {myforest.getvisibletreecount()}")
+    print(f"Part 2: {myforest.getmaxscore()}")
     return 0
 
 
