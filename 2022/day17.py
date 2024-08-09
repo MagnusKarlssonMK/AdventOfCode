@@ -8,51 +8,53 @@ based on rock index, jet index and current grid for each dropped rock, and then 
 can be derived from the stored information.
 As it turns out, a cycle is found even before getting the answer to Part 1, so the same solution can actually be
 used for both anwers. The solution could be optimized to store the result and get the answer to Part 2 immediately,
-and some better structure of the giant drop_rocks function would be welcome.
+but it's already fast enough that it isn't really worth the effort.
+Breaking the giant drop_rocks function into smaller pieces would be welcome.
 """
 import sys
 from pathlib import Path
+from enum import Enum
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day17.txt')
 
 
+class Shape(Enum):
+    MINUS = 0
+    PLUS = 1
+    HOOK = 2
+    VER_LINE = 3
+    BOX = 4
+
+    def get_binary_shape(self) -> tuple[int, list[int]]:  # width, pattern-mask
+        match self:
+            case Shape.MINUS:
+                return 4, [int('1111', 2)]
+            case Shape.PLUS:
+                return 3, [int('010', 2), int('111', 2), int('010', 2)]
+            case Shape.HOOK:
+                return 3, [int('111', 2), int('001', 2), int('001', 2)]
+            case Shape.VER_LINE:
+                return 1, [int('1', 2) for _ in range(4)]
+            case Shape.BOX:
+                return 2, [int('11', 2) for _ in range(2)]
+
+
 class Rock:
-    def __init__(self, shape: str, x: int, y: int) -> None:
-        self.shape = shape
-        self.width = 0
+    def __init__(self, shape: Shape, x: int, y: int) -> None:
+        self.__shape = shape
+        self.width, self.__pattern = self.__shape.get_binary_shape()
         self.x_pos = x
         self.y_pos = y
-        self.pattern: list[int] = []
-        match self.shape:
-            case '-':
-                self.pattern = [int('1111', 2)]
-                self.width = 4
-            case '+':
-                self.pattern = [int('010', 2), int('111', 2), int('010', 2)]
-                self.width = 3
-            case 'J':
-                self.pattern = [int('111', 2), int('001', 2), int('001', 2)]
-                self.width = 3
-            case 'I':
-                self.pattern = [int('1', 2) for _ in range(4)]
-                self.width = 1
-            case 'o':
-                self.pattern = [int('11', 2) for _ in range(2)]
-                self.width = 2
 
     def get_gridpattern(self, gridwidth: int) -> list[int]:
-        return [val << gridwidth - self.x_pos - self.width for val in self.pattern]
-
-    def __repr__(self):
-        return self.shape
+        return [val << gridwidth - self.x_pos - self.width for val in self.__pattern]
 
 
 class Cave:
     def __init__(self, jetstream: str) -> None:
-        self.__jetstream = jetstream
+        self.__jetstream = [1 if c == '>' else -1 for c in jetstream]
         self.__cavewidth = 7
-        self.__rockqueue: list[str] = ['-', '+', 'J', 'I', 'o']
         self.__grid = []
         self.__trimmedrows = 0
         self.__stepcount = 0
@@ -61,16 +63,15 @@ class Cave:
         self.__grid = []
         self.__trimmedrows = 0
         self.__stepcount = 0
-        xmove = {'>': 1, '<': -1}
         seen_states = []
         seen_trims = []
         maxheight = 0
         for rock_nbr in range(totalrocks):
-            currentrock_idx = rock_nbr % len(self.__rockqueue)
-            currentrock = Rock(self.__rockqueue[currentrock_idx], 2, maxheight + 3)
+            currentrock_idx = rock_nbr % len(Shape)
+            currentrock = Rock(Shape(currentrock_idx), 2, maxheight + 3)
             while True:
                 # Move sideways if possible
-                x_delta = xmove[self.__jetstream[self.__stepcount % len(self.__jetstream)]]
+                x_delta = self.__jetstream[self.__stepcount % len(self.__jetstream)]
                 if 0 <= x_delta + currentrock.x_pos <= self.__cavewidth - currentrock.width:
                     movedrock = []
                     for idx, xval in enumerate(currentrock.get_gridpattern(self.__cavewidth)):
@@ -113,7 +114,6 @@ class Cave:
                 nbr_cycles = (totalrocks - 1 - offset) // cycle_len  # Cached list is zero-indexed, rock counter is not.
                 idx = offset + (totalrocks - 1 - offset) % cycle_len
                 answer = seen_trims[idx][0] + seen_trims[idx][1] + (nbr_cycles * trim_per_cycle)
-                # print("Looped: ", self.__stepcount, len(seen_states), nbr_cycles, answer)
                 return answer
             seen_states.append(state)
             seen_trims.append((self.__trimmedrows, len(self.__grid)))
