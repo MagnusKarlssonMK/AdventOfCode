@@ -14,25 +14,25 @@ INPUT_FILE = Path(ROOT_DIR, '2022/day16.txt')
 
 class ValveNetwork:
     def __init__(self, rawstr: str) -> None:
-        self.__adjlist: dict[str: list[str]] = {}
+        adjlist: dict[str: list[str]] = {}
         self.__valves: dict[str: int] = {}
         for line in rawstr.splitlines():
             valves = re.findall(r'[A-Z]{2}', line.strip('Valve'))
             flow = int(re.findall(r'\d+', line)[0])
-            self.__adjlist[valves[0]] = [v for v in valves[1:]]
+            adjlist[valves[0]] = [v for v in valves[1:]]
             if flow > 0:
                 self.__valves[valves[0]] = flow
         self.__start = 'AA'
         self.__valve_indicies = {valve: 1 << i for i, valve in enumerate(self.__valves)}
         # Create a trimmed version of the adj list with Floyd-Warshall, keep only the nodes with non-zero valves
         self.__distances: dict[tuple[str, str]: int] = {}
-        for valve in self.__adjlist:
-            for tunnel_to in self.__adjlist:
-                if tunnel_to in self.__adjlist[valve]:
+        for valve in adjlist:
+            for tunnel_to in adjlist:
+                if tunnel_to in adjlist[valve]:
                     self.__distances[(valve, tunnel_to)] = 1
                 else:
                     self.__distances[(valve, tunnel_to)] = 1000
-        for a, b, c in permutations(self.__adjlist, 3):
+        for a, b, c in permutations(adjlist, 3):
             self.__distances[b, c] = min(self.__distances[b, c], self.__distances[b, a] + self.__distances[a, c])
 
     def get_maxflow(self, maxtime: int, train_elephant: bool = False) -> int:
