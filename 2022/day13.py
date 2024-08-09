@@ -76,26 +76,34 @@ class ElfList:
         return str(self.list)
 
 
-def main() -> int:
-    pairs: list[tuple[ElfList, ElfList]] = []
-    with open(INPUT_FILE, 'r') as file:
-        for pair in file.read().strip('\n').split('\n\n'):
+class DistressSignal:
+    def __init__(self, rawstr: str) -> None:
+        self.__pairs = []
+        for pair in rawstr.split('\n\n'):
             left, right = pair.split('\n')
-            pairs.append((ElfList(left), ElfList(right)))
+            self.__pairs.append((ElfList(left), ElfList(right)))
 
-    print(f"Part 1: {sum([idx + 1 for idx, pair in enumerate(pairs) if pair[0] < pair[1]])}")
+    def get_correct_order_index_sum(self) -> int:
+        return sum([idx + 1 for idx, pair in enumerate(self.__pairs) if pair[0] < pair[1]])
 
-    allpacketlist = []
-    for packet in pairs:
-        allpacketlist.append(packet[0])
-        allpacketlist.append(packet[1])
-    divider_two = ElfList('[[2]]')
-    divider_six = ElfList('[[6]]')
-    allpacketlist.append(divider_two)
-    allpacketlist.append(divider_six)
-    allpacketssorted = sorted(allpacketlist)
+    def get_decoder_key(self) -> int:
+        all_packet_list = []
+        for p1, p2 in self.__pairs:
+            all_packet_list.append(p1)
+            all_packet_list.append(p2)
+        divider_two = ElfList('[[2]]')
+        divider_six = ElfList('[[6]]')
+        all_packet_list.append(divider_two)
+        all_packet_list.append(divider_six)
+        all_packet_list.sort()
+        return (all_packet_list.index(divider_two) + 1) * (all_packet_list.index(divider_six) + 1)
 
-    print(f"Part 2: {(allpacketssorted.index(divider_two) + 1) * (allpacketssorted.index(divider_six) + 1)}")
+
+def main() -> int:
+    with open(INPUT_FILE, 'r') as file:
+        signal = DistressSignal(file.read().strip('\n'))
+    print(f"Part 1: {signal.get_correct_order_index_sum()}")
+    print(f"Part 2: {signal.get_decoder_key()}")
     return 0
 
 
