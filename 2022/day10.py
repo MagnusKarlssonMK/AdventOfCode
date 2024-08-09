@@ -1,57 +1,77 @@
 import sys
 from pathlib import Path
+from dataclasses import dataclass
+from enum import Enum
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day10.txt')
 
 
+class Instruction(Enum):
+    NOOP = 'noop'
+    ADDX = 'addx'
+
+
+@dataclass(frozen=True)
+class Line:
+    instr: Instruction
+    value: int = -1
+
+
 class CPU:
-    def __init__(self, intervals: list[int]) -> None:
-        self.cyclenbr = 0
-        self.x = 1
-        self.commandqueue: list[tuple[str, int]] = []
-        self.reportintervals = intervals
-
-    def addcommand(self, command: str):
-        if len(cmd := command.split()) > 1:
-            self.commandqueue.append((cmd[0], int(cmd[1])))
-        else:
-            self.commandqueue.append((cmd[0], 0))
-
-    def processqueue(self) -> iter:
-        processcount = 0
-        currentcmd = ('', 0)
-        crt_string = ""
-        while len(self.commandqueue) > 0 or processcount > 0:
-            self.cyclenbr += 1
-            if abs(self.x - ((self.cyclenbr - 1) % 40)) <= 1:
-                crt_string += "#"
+    def __init__(self, rawstr: str) -> None:
+        self.__program = []
+        for line in rawstr.splitlines():
+            s = line.split()
+            if len(s) == 1:
+                self.__program.append(Line(Instruction(s[0])))
             else:
-                crt_string += "."
-            if processcount == 0:
-                if len(self.commandqueue) > 0:
-                    currentcmd = self.commandqueue.pop(0)
-                    processcount = 1 if currentcmd[0] == 'noop' else 2
-            processcount -= 1
-            if self.cyclenbr in self.reportintervals:
-                yield self.x * self.cyclenbr, crt_string + '\n'
-                crt_string = ""
-            if processcount == 0 and currentcmd[0] == 'addx':
-                self.x += currentcmd[1]
+                self.__program.append(Line(Instruction(s[0]), int(s[1])))
+
+    def get_signal_strength_sum(self) -> int:
+        def increment(cycle: int) -> int:
+            intervals = [20, 60, 100, 140, 180, 220]
+            return cycle if cycle in intervals else 0
+        result = 0
+        reg_x = 1
+        cyclenbr = 0
+        for p in self.__program:
+            if p.instr == Instruction.NOOP:
+                cyclenbr += 1
+                result += reg_x * increment(cyclenbr)
+            elif p.instr == Instruction.ADDX:
+                cyclenbr += 1
+                result += reg_x * increment(cyclenbr)
+                cyclenbr += 1
+                result += reg_x * increment(cyclenbr)
+                reg_x += p.value
+        return result
+
+    def get_crt_output(self) -> str:
+        crt = [['' for _ in range(40)] for _ in range(6)]
+
+        def update_crt(cycle: int, x: int) -> None:
+            crt[cycle // 40][cycle % 40] = '#' if abs(x - (cycle % 40)) <= 1 else ' '
+        reg_x = 1
+        cyclenbr = 0
+        for p in self.__program:
+            if p.instr == Instruction.NOOP:
+                update_crt(cyclenbr, reg_x)
+                cyclenbr += 1
+            elif p.instr == Instruction.ADDX:
+                update_crt(cyclenbr, reg_x)
+                cyclenbr += 1
+                update_crt(cyclenbr, reg_x)
+                cyclenbr += 1
+                reg_x += p.value
+        return ''.join([''.join(line + ['\n']) for line in crt])
 
 
 def main() -> int:
-    mycpu1 = CPU([20, 60, 100, 140, 180, 220])
-    mycpu2 = CPU([40, 80, 120, 160, 200, 240])
     with open(INPUT_FILE, 'r') as file:
-        for line in file.read().strip('\n').splitlines():
-            mycpu1.addcommand(line)
-            mycpu2.addcommand(line)
-
-    value_count = sum([i[0] for i in mycpu1.processqueue()])
-    print(f"Part1: {value_count}\n")
-    crt = "".join([i[1] for i in mycpu2.processqueue()])
-    print(crt)
+        cpu = CPU(file.read().strip('\n'))
+    print(f"Part 1: {cpu.get_signal_strength_sum()}")
+    print(f"Part 2:\n{cpu.get_crt_output()}")
     return 0
 
 
