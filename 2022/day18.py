@@ -1,49 +1,47 @@
-"""
-Store the cubes in a dict pointing to a list of surrounding non-cube points. The answer to Part 1 is given by the
-sum of number of such points.
-For Part 2, use BFS to walk the surrounding 'air' points and see which ones are unreachable. Start from a point
-which is guaranteed to be exterior, which can be given by the point with the smallest value in any axis (x-axis is
-used here). Store the enclosed nodes and use as filter for calculating the surface area. BUT - to be able to walk
-around 'corners', we need to add some additional air nodes, just not the diagonal ones, and then ignore them at the end
-when calculating the number of enclosed nodes.
-"""
 import sys
 from pathlib import Path
+from dataclasses import dataclass
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day18.txt')
 
 
-XYZ = tuple[int, int, int]
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+    z: int
 
+    def get_adjacent(self) -> iter:
+        for d in ((0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0)):
+            yield self + Point(*d)
 
-def get_adjacent(point: XYZ) -> iter:
-    for delta in ((0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0)):
-        yield tuple(sum(x) for x in zip(point, delta))
-
-
-def get_additionalair(point: XYZ) -> iter:
-    for delta in ((0, 1, 1), (0, 1, -1), (0, -1, 1), (0, -1, -1),
+    def get_additional_air(self) -> iter:
+        for d in ((0, 1, 1), (0, 1, -1), (0, -1, 1), (0, -1, -1),
                   (1, 0, 1), (-1, 0, 1), (1, 0, -1), (-1, 0, -1),
                   (1, 1, 0), (-1, 1, 0), (1, -1, 0), (-1, -1, 0)):
-        yield tuple(sum(x) for x in zip(point, delta))
+            yield self + Point(*d)
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y, self.z + other.z)
 
 
 class Lavapool:
-    def __init__(self, indata) -> None:
-        self.__adj: dict[XYZ: list[XYZ]] = {}
-        start: XYZ = (999, 999, 999)
-        air = set()
-        for point in indata:
-            self.__adj[point] = []
-            for adj in get_adjacent(point):
-                if adj not in indata:
-                    self.__adj[point].append(adj)
+    def __init__(self, rawstr: str) -> None:
+        self.__adj: dict[Point: set[Point]] = {}
+        for point in [Point(*list(map(int, line.split(',')))) for line in rawstr.splitlines()]:
+            self.__adj[point] = set()
+        start = Point(999, 999, 999)
+        air: set[Point] = set()
+        for point in self.__adj:
+            for adj in point.get_adjacent():
+                if adj not in self.__adj:
+                    self.__adj[point].add(adj)
                     air.add(adj)
-                    if adj[0] < start[0]:
+                    if adj.x < start.x:
                         start = adj
-            for additional_air in get_additionalair(point):
-                if additional_air not in indata:
+            for additional_air in point.get_additional_air():
+                if additional_air not in self.__adj:
                     air.add(additional_air)
         # Use BFS on the air from the start point which is guaranteed to be exterior, and any unreachable points are
         # interior pockets.
@@ -53,29 +51,30 @@ class Lavapool:
             current = queue.pop(0)
             if current in seen:
                 continue
-            for adj_air in get_adjacent(current):
+            seen.add(current)
+            for adj_air in current.get_adjacent():
                 if adj_air in air:
                     queue.append(adj_air)
-            seen.add(current)
             air.remove(current)
-        self.enclosedair = 0
-        for key in self.__adj:
+        # Calculate number of points representing enclosed air
+        self.__enclosed_air = 0
+        for point in self.__adj:
             for a in air:
-                if a in self.__adj[key]:
-                    self.enclosedair += 1
+                if a in self.__adj[point]:
+                    self.__enclosed_air += 1
 
-    def get_surfacearea(self, remove_interior: bool = False) -> int:
+    def get_surface_area(self, remove_interior: bool = False) -> int:
         result = sum([len(adj) for adj in list(self.__adj.values())])
         if remove_interior:
-            result -= self.enclosedair
+            result -= self.__enclosed_air
         return result
 
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
-        pool = Lavapool([tuple(map(int, line.split(','))) for line in file.read().strip('\n').splitlines()])
-    print(f"Part 1: {pool.get_surfacearea()}")
-    print(f"Part 2: {pool.get_surfacearea(True)}")
+        pool = Lavapool(file.read().strip('\n'))
+    print(f"Part 1: {pool.get_surface_area()}")
+    print(f"Part 2: {pool.get_surface_area(True)}")
     return 0
 
 
