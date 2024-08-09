@@ -1,48 +1,56 @@
 import sys
 from pathlib import Path
+from dataclasses import dataclass
+
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2022/day09.txt')
 
 
-RowCol = tuple[int, int]
-DirMap = {'U': (1, 0), 'D': (-1, 0), 'L': (0, -1), 'R': (0, 1)}
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
 
+    def catchup(self, other: "Point") -> "Point":
+        def sign(nbr: int) -> int:
+            if nbr == 0:
+                return 0
+            return 1 if nbr > 0 else -1
+        return Point(self.x + sign(other.x), self.y + sign(other.y))
 
-def sign(nbr: int) -> int:
-    if nbr == 0:
-        return 0
-    return 1 if nbr > 0 else -1
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: "Point") -> "Point":
+        return Point(self.x - other.x, self.y - other.y)
 
 
 class Rope:
-    def __init__(self, nbrknots: int):
-        self.nbrknots = nbrknots
-        self.knotpos: list[RowCol] = [(0, 0) for _ in range(self.nbrknots)]
-        self.tailvisited: set[RowCol] = {self.knotpos[-1]}
+    def __init__(self, rawstr: str) -> None:
+        dirmap = {'U': Point(-1, 0), 'D': Point(1, 0), 'L': Point(0, -1), 'R': Point(0, 1)}
+        self.__motions = [(dirmap[left], int(right)) for left, right in [line.split() for line in rawstr.splitlines()]]
 
-    def movehead(self, direction: DirMap, steps: int) -> None:
-        for _ in range(steps):
-            self.knotpos[0] = self.knotpos[0][0] + direction[0], self.knotpos[0][1] + direction[1]
-            for idx in range(1, self.nbrknots):
-                rowdiff = self.knotpos[idx - 1][0] - self.knotpos[idx][0]
-                coldiff = self.knotpos[idx - 1][1] - self.knotpos[idx][1]
-                if abs(rowdiff) > 1 or abs(coldiff) > 1:
-                    # Tail out of range and needs to catch up
-                    self.knotpos[idx] = self.knotpos[idx][0] + sign(rowdiff), self.knotpos[idx][1] + sign(coldiff)
-            self.tailvisited.add(self.knotpos[-1])
+    def get_nbr_tail_positions(self, nbr_knots: int = 2) -> int:
+        knotpos = [Point(0, 0) for _ in range(nbr_knots)]
+        tail_seen: set[Point] = {Point(0, 0)}
+        for direction, steps in self.__motions:
+            for _ in range(steps):
+                knotpos[0] += direction
+                for i in range(1, nbr_knots):
+                    diff = knotpos[i - 1] - knotpos[i]
+                    if abs(diff.x) > 1 or abs(diff.y) > 1:
+                        # Tail out of range and needs to catch up
+                        knotpos[i] = knotpos[i].catchup(diff)
+                tail_seen.add(knotpos[-1])
+        return len(tail_seen)
 
 
 def main() -> int:
-    myfirstrope = Rope(2)
-    mysecondrope = Rope(10)
     with open(INPUT_FILE, 'r') as file:
-        for line in file.read().strip('\n').splitlines():
-            direction, length = line.strip('\n').split()
-            myfirstrope.movehead(DirMap[direction], int(length))
-            mysecondrope.movehead(DirMap[direction], int(length))
-    print(f"Part1: {len(myfirstrope.tailvisited)}")
-    print(f"Part2: {len(mysecondrope.tailvisited)}")
+        rope = Rope(file.read().strip('\n'))
+    print(f"Part 1: {rope.get_nbr_tail_positions()}")
+    print(f"Part 2: {rope.get_nbr_tail_positions(10)}")
     return 0
 
 
