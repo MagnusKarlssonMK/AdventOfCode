@@ -1,6 +1,6 @@
 """
-Sort of a Dijkstra solution but with a bit more complicated state, since it also needs to track direction.
-Certainly not fast, but gets the job done.
+Sort of an A* solution (using the manhattan distance as heuristic) but with a bit more complicated state, since it also
+needs to track direction. Certainly not fast, but gets the job done.
 """
 import sys
 from pathlib import Path
@@ -21,6 +21,9 @@ class Coord:
 
     def rotate_cw(self) -> "Coord":
         return Coord(self.col, -self.row)
+
+    def manhattan(self, other: "Coord") -> int:
+        return abs(self.row - other.row) + abs(self.col - other.col)
 
     def __add__(self, other: "Coord") -> "Coord":
         return Coord(self.row + other.row, self.col + other.col)
@@ -52,9 +55,9 @@ class CityBoard:
         target = Coord(self.__height - 1, self.__width - 1)
         visited = {}
         queue = []
-        heappush(queue, (0, state))
+        heappush(queue, (0, 0, state))
         while queue:
-            heat, state = heappop(queue)
+            _, heat, state = heappop(queue)
             if state.pos == target and state.steps >= minsteps:
                 return heat
             neighborstates: list[State] = []
@@ -71,7 +74,7 @@ class CityBoard:
                 newheat += heat
                 if ns not in visited or newheat < visited[ns]:
                     visited[ns] = newheat
-                    heappush(queue, (newheat, ns))
+                    heappush(queue, (newheat + ns.pos.manhattan(target), newheat, ns))
         return -1
 
 
