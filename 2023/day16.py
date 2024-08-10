@@ -1,180 +1,194 @@
 """
 Store the bouncers in a Grid class, along with per-row and per-column dicts for faster lookups and filtering when
 looking for the next possible step. Also creates an adjacency list of the bouncers coupled with the incoming direction,
-i.e. every bouncer can exist in up to 4 entries depending on the type of bouncer. Then, when a light source is added,
-a stripped down BFS is used to traverse the bouncers and record the movement on a grid.
-Building the adjacency list takes some minor extra time for Part 1, but makes up for it for Part 2.
+i.e. every bouncer can exist in 2 / 4 entries (depending on the type of bouncer). Then, when a light source is added,
+a stripped down BFS is used to traverse the bouncers and record the movement. This traversal needs to keep track of
+when entering a bouncer in a direction that has already been seen and then not continue that path, since that would
+otherwise likely create an endless loop.
 """
 import sys
 from pathlib import Path
-import re
+from enum import Enum
+from dataclasses import dataclass
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2023/day16.txt')
 
 
-RowCol = tuple[int, int]
-Directions: dict[str: RowCol] = {'u': (-1, 0), 'r': (0, 1), 'd': (1, 0), 'l': (0, -1)}
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def rotate_right(self) -> "Point":
+        return Point(-self.y, self.x)
+
+    def rotate_left(self) -> "Point":
+        return Point(self.y, -self.x)
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
 
 
-class Bouncer:
-    def __init__(self, mchar: str):
-        self.mtype = mchar  # |, -, /, \
+class Direction(Enum):
+    UP = Point(0, -1)
+    RIGHT = Point(1, 0)
+    DOWN = Point(0, 1)
+    LEFT = Point(-1, 0)
 
-    def bouncelight(self, indir: Directions) -> iter:
-        match self.mtype:
-            case '-':
-                if indir == Directions['l'] or indir == Directions['r']:
+
+class BouncerType(Enum):
+    HOR_SPLIT = '-'
+    VER_SPLIT = '|'
+    FWD_BOUNCE = '/'
+    BCK_BOUNCE = '\\'
+
+    def bounce_light(self, indir: Direction) -> iter:
+        match self:
+            case BouncerType.HOR_SPLIT:
+                if indir in (Direction.LEFT, Direction.RIGHT):
                     yield indir
                 else:
-                    yield Directions['l']
-                    yield Directions['r']
-            case '|':
-                if indir == Directions['u'] or indir == Directions['d']:
+                    yield Direction.LEFT
+                    yield Direction.RIGHT
+            case BouncerType.VER_SPLIT:
+                if indir in (Direction.UP, Direction.DOWN):
                     yield indir
                 else:
-                    yield Directions['d']
-                    yield Directions['u']
-            case '/':
-                if indir == Directions['r']:
-                    yield Directions['u']
-                elif indir == Directions['u']:
-                    yield Directions['r']
-                elif indir == Directions['l']:
-                    yield Directions['d']
-                elif indir == Directions['d']:
-                    yield Directions['l']
-            case '\\':
-                if indir == Directions['r']:
-                    yield Directions['d']
-                elif indir == Directions['d']:
-                    yield Directions['r']
-                elif indir == Directions['l']:
-                    yield Directions['u']
-                elif indir == Directions['u']:
-                    yield Directions['l']
-
-    def __repr__(self):
-        return self.mtype
+                    yield Direction.DOWN
+                    yield Direction.UP
+            case BouncerType.FWD_BOUNCE:
+                if indir in (Direction.UP, Direction.DOWN):
+                    yield Direction(indir.value.rotate_right())
+                else:
+                    yield Direction(indir.value.rotate_left())
+            case BouncerType.BCK_BOUNCE:
+                if indir in (Direction.UP, Direction.DOWN):
+                    yield Direction(indir.value.rotate_left())
+                else:
+                    yield Direction(indir.value.rotate_right())
 
 
 class Grid:
-    def __init__(self, rawstr: str):
-        self.__bouncers: dict[RowCol: Bouncer] = {}
+    def __init__(self, rawstr: str) -> None:
+        self.__bouncers: dict[Point: BouncerType] = {}
         self.__bouncersperrow: dict[int: list[int]] = {}
         self.__bouncerspercol: dict[int: list[int]] = {}
         grid = []
-        for row, line in enumerate(rawstr.splitlines()):
+        for y, line in enumerate(rawstr.splitlines()):
             grid.append(line)
-            for c in re.finditer(r"[^.]", line):
-                self.__bouncers[(row, int(c.start()))] = Bouncer(c.group(0))
-                if row in self.__bouncersperrow:
-                    self.__bouncersperrow[row].append(int(c.start()))
+            for x, c in enumerate(line):
+                if c not in BouncerType:
+                    continue
+                self.__bouncers[Point(x, y)] = BouncerType(c)
+                if y in self.__bouncersperrow:
+                    self.__bouncersperrow[y].append(x)
                 else:
-                    self.__bouncersperrow[row] = [int(c.start())]
-                if int(c.start()) in self.__bouncerspercol:
-                    self.__bouncerspercol[int(c.start())].append(row)
+                    self.__bouncersperrow[y] = [x]
+                if x in self.__bouncerspercol:
+                    self.__bouncerspercol[x].append(y)
                 else:
-                    self.__bouncerspercol[int(c.start())] = [row]
-        self.width = len(grid[0])
-        self.height = len(grid)
-        self.__lightgrid: list[list[int]] = [[0 for _ in range(self.width)] for _ in range(self.height)]
-        self.__adj: dict[tuple[RowCol, Directions]: set[tuple[RowCol, Directions]]] = {}
-        for vertex in list(self.__bouncers.keys()):
-            for indir in list(Directions.values()):
-                outdir = [d for d in self.__bouncers[vertex].bouncelight(indir)]
+                    self.__bouncerspercol[x] = [y]
+        self.__width = len(grid[0])
+        self.__height = len(grid)
+        self.__lit_tiles = set()
+        self.__adj: dict[tuple[Point, Direction]: set[tuple[Point, Direction]]] = {}
+        for b in self.__bouncers:
+            for indir in Direction:
+                outdir = [d for d in self.__bouncers[b].bounce_light(indir)]
                 if indir not in outdir:
-                    if (vertex, indir) not in self.__adj:
-                        self.__adj[(vertex, indir)] = set()
+                    if (b, indir) not in self.__adj:
+                        self.__adj[(b, indir)] = set()
                     for out in outdir:
-                        if (nextpos := self.__getnextpos(vertex, out)) != vertex:
-                            self.__adj[(vertex, indir)].add((nextpos, out))
+                        if (nextpos := self.__get_nextpos(b, out)) != b:
+                            self.__adj[(b, indir)].add((nextpos, out))
 
-    def insertlight(self, pos: RowCol, direction: Directions) -> int:
-        """Inserts a light source at the given position and direction, returns the score and resets the grid."""
-        visited: set[tuple[RowCol, Directions]] = set()
-        if pos in list(self.__bouncers.keys()):  # If starting on a bouncer
-            lightqueue = [(pos, direction, 0)]
+    def __insert_light(self, pos: Point, direction: Direction) -> int:
+        """Inserts a light source at the given position and direction and returns the score."""
+        visited: set[tuple[Point, Direction]] = set()
+        if pos in self.__bouncers:  # If starting on a bouncer
+            lightqueue = [(pos, direction)]
         else:
-            nextpos = self.__getnextpos(pos, direction)
-            lightqueue = [(nextpos, direction, 1)]
+            nextpos = self.__get_nextpos(pos, direction)
+            lightqueue = [(nextpos, direction)]
             visited.add((pos, direction))
-            self.__updatelightgrid(pos, nextpos)
+            self.__update_lightgrid(pos, nextpos)
 
-        while len(lightqueue) > 0:
-            headpos, headdir, headdist = lightqueue.pop(0)
+        while lightqueue:
+            headpos, headdir = lightqueue.pop(0)
             if (headpos, headdir) not in visited:
-                try:
-                    for adj in self.__adj[(headpos, headdir)]:
-                        lightqueue.append((adj[0], adj[1], headdist))
-                        self.__updatelightgrid(headpos, adj[0])
-                except KeyError:  # Happens if we run into the grid edge - do nothing
-                    pass
+                if (headpos, headdir) in self.__adj:
+                    for n_p, n_d in self.__adj[(headpos, headdir)]:
+                        lightqueue.append((n_p, n_d))
+                        self.__update_lightgrid(headpos, n_p)
                 visited.add((headpos, headdir))
-        score = self.__getlightscore()
-        self.__resetlightgrid()
+        score = self.__get_lightscore()
+        self.__reset_lightgrid()
         return score
 
-    def __getnextpos(self, pos: RowCol, direction: Directions) -> RowCol:
-        if direction == Directions['r']:
-            cols = sorted(list(filter(lambda x: x > pos[1], self.__bouncersperrow[pos[0]])))
+    def __get_nextpos(self, pos: Point, direction: Direction) -> Point:
+        if direction == Direction.RIGHT:
+            cols = sorted(list(filter(lambda x: x > pos.x, self.__bouncersperrow[pos.y])))
             for i in cols:
-                bounced = [d for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[Point(i, pos.y)].bounce_light(direction)]
                 if direction not in bounced:
-                    return pos[0], i
-            return pos[0], self.width - 1
-        elif direction == Directions['l']:
-            cols = sorted(list(filter(lambda x: x < pos[1], self.__bouncersperrow[pos[0]])), reverse=True)
+                    return Point(i, pos.y)
+            return Point(self.__width - 1, pos.y)
+        elif direction == Direction.LEFT:
+            cols = sorted(list(filter(lambda x: x < pos.x, self.__bouncersperrow[pos.y])), reverse=True)
             for i in cols:
-                bounced = [d for d in self.__bouncers[(pos[0], i)].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[Point(i, pos.y)].bounce_light(direction)]
                 if direction not in bounced:
-                    return pos[0], i
-            return pos[0], 0
-        elif direction == Directions['u']:
-            rows = sorted(list(filter(lambda x: x < pos[0], self.__bouncerspercol[pos[1]])), reverse=True)
+                    return Point(i, pos.y)
+            return Point(0, pos.y)
+        elif direction == Direction.UP:
+            rows = sorted(list(filter(lambda x: x < pos.y, self.__bouncerspercol[pos.x])), reverse=True)
             for i in rows:
-                bounced = [d for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[Point(pos.x, i)].bounce_light(direction)]
                 if direction not in bounced:
-                    return i, pos[1]
-            return 0, pos[1]
-        elif direction == Directions['d']:
-            rows = sorted(list(filter(lambda x: x > pos[0], self.__bouncerspercol[pos[1]])))
+                    return Point(pos.x, i)
+            return Point(pos.x, 0)
+        elif direction == Direction.DOWN:
+            rows = sorted(list(filter(lambda x: x > pos.y, self.__bouncerspercol[pos.x])))
             for i in rows:
-                bounced = [d for d in self.__bouncers[(i, pos[1])].bouncelight(direction)]
+                bounced = [d for d in self.__bouncers[Point(pos.x, i)].bounce_light(direction)]
                 if direction not in bounced:
-                    return i, pos[1]
-            return self.height - 1, pos[1]
-        return -1, -1
+                    return Point(pos.x, i)
+            return Point(pos.x, self.__height - 1)
+        return Point(-1, -1)
 
-    def __updatelightgrid(self, frompos: RowCol, topos: RowCol) -> None:
-        startrow = min(frompos[0], topos[0])
-        startcol = min(frompos[1], topos[1])
-        for drow in range(abs(frompos[0] - topos[0]) + 1):
-            for dcol in range(abs(frompos[1] - topos[1]) + 1):
-                self.__lightgrid[startrow + drow][startcol + dcol] = 1
+    def __update_lightgrid(self, frompos: Point, topos: Point) -> None:
+        startrow = min(frompos.y, topos.y)
+        startcol = min(frompos.x, topos.x)
+        for drow in range(abs(frompos.y - topos.y) + 1):
+            for dcol in range(abs(frompos.x - topos.x) + 1):
+                self.__lit_tiles.add(Point(startcol + dcol, startrow + drow))
 
-    def __getlightscore(self) -> int:
-        return sum([sum(row) for row in self.__lightgrid])
+    def __get_lightscore(self) -> int:
+        return len(self.__lit_tiles)
 
-    def __resetlightgrid(self) -> None:
-        self.__lightgrid = [[0 for _ in range(self.width)] for _ in range(self.height)]
+    def __reset_lightgrid(self) -> None:
+        self.__lit_tiles = set()
+
+    def get_energized_tiles(self) -> int:
+        return self.__insert_light(Point(0, 0), Direction.RIGHT)
+
+    def get_max_energized_tiles(self) -> int:
+        result = 0
+        for y in range(self.__height):
+            result = max(result, self.__insert_light(Point(0, y), Direction.RIGHT))
+            result = max(result, self.__insert_light(Point(self.__width - 1, y), Direction.LEFT))
+        for x in range(self.__width):
+            result = max(result, self.__insert_light(Point(x, 0), Direction.DOWN))
+            result = max(result, self.__insert_light(Point(x, self.__height - 1), Direction.UP))
+        return result
 
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
         mygrid = Grid(file.read().strip('\n'))
-    p1 = mygrid.insertlight((0, 0), Directions['r'])
-    print(f"Part 1: {p1}")
-
-    # Part 2
-    p2 = 0
-    for row in range(mygrid.height):
-        p2 = max(p2, mygrid.insertlight((row, 0), Directions['r']))
-        p2 = max(p2, mygrid.insertlight((row, mygrid.width - 1), Directions['l']))
-    for col in range(mygrid.width):
-        p2 = max(p2, mygrid.insertlight((0, col), Directions['d']))
-        p2 = max(p2, mygrid.insertlight((mygrid.height - 1, col), Directions['u']))
-    print(f"Part 2: {p2}")
+    print(f"Part 1: {mygrid.get_energized_tiles()}")
+    print(f"Part 2: {mygrid.get_max_energized_tiles()}")
     return 0
 
 
