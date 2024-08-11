@@ -74,6 +74,23 @@ class Island:
                             self.__adj[vertex].add((neighbor, distance + 1))
                         elif ignore_slopes or not direction.is_opposite_direction(nchar):
                             queue.append((neighbor, distance + 1))
+        # Optimization - only move 'right' / 'down' when on an outer node, meaning nodes with only 3 neighbors.
+        # I.e. make those edges directional so that they don't allow backtracking towards the start, since that would
+        # make the path cut itself off from the rest of the map.
+        trim_queue = [(self.__start, None)]
+        trim_seen = set()
+        while trim_queue:
+            node, prev = trim_queue.pop(0)
+            remove_me = None
+            exit_in_neighbors = self.__exit in [x for x, _ in self.__adj[node]]
+            for n, s in self.__adj[node]:
+                if n == prev:
+                    remove_me = n, s
+                elif not exit_in_neighbors and len(self.__adj[n]) < 4:
+                    trim_queue.append((n, node))
+            if remove_me:
+                self.__adj[node].remove(remove_me)
+            trim_seen.add(node)
 
     def __dfs(self, from_v: Point, to_v: Point, seen: set) -> list[int]:
         if from_v == to_v:
