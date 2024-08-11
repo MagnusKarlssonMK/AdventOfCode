@@ -1,14 +1,32 @@
 """
 Stores the grid as a graph with the gridpoints connecting to more than two neighbors as vertices. Uses BFS to find
 the edges, and then a recursive DFS to calculate all path lengths from start to exit to find the longest path.
-An argument can be given when building the graph to ignore the slopes for part 2. Note that this results in
-significantly more edges and makes Part 2 take well over 10 seconds to complete.
+An argument can be given when rebuilding the graph to ignore the slopes for part 2. Note that this graph results in
+significantly more edges and makes Part 2 take a really long time to complete.
 """
 import sys
 from pathlib import Path
+from dataclasses import dataclass
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2023/day23.txt')
+
+
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def get_neighbors(self) -> iter:
+        for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+            yield self + Point(*d)
+
+    def is_opposite_direction(self, d: str) -> bool:
+        dirmap = {(1, 0): '<', (-1, 0): '>', (0, 1): '^', (0, -1): 'v'}
+        return dirmap[(self.x, self.y)] == d
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
 
 
 class Island:
@@ -16,50 +34,48 @@ class Island:
         self.__grid = rawstr.splitlines()
         self.__height = len(self.__grid)
         self.__width = len(self.__grid[0])
-        self.start: tuple[int, int] = 0, self.__grid[0].index('.')
-        self.exit: tuple[int, int] = self.__height - 1, self.__grid[-1].index('.')
-        # Find vertices
-        self.__vertices = set()
-        self.__adj: dict[tuple[int, int]: set[tuple[int, int]]] = {}
-        for row in range(self.__height):
-            for col in range(self.__width):
-                if self.__grid[row][col] == "#":
+        self.__start = Point(self.__grid[0].index('.'), 0)
+        self.__exit = Point(self.__grid[-1].index('.'), self.__height - 1)
+        # Find the nodes that connects to more than two other neighbors.
+        self.__connectors: set[Point] = set()
+        self.__adj: dict[Point: tuple[set[Point], int]] = {}
+        for y in range(self.__height):
+            for x in range(self.__width):
+                if self.__grid[y][x] == "#":
                     continue
                 neighbors = 0
-                for drow, dcol in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                    if (0 <= row + drow < self.__height and 0 <= col + dcol < self.__width and
-                            self.__grid[row + drow][col + dcol] != "#"):
+                for n in Point(x, y).get_neighbors():
+                    if (0 <= n.y < self.__height and 0 <= n.x < self.__width and
+                            self.__grid[n.y][n.x] != "#"):
                         neighbors += 1
                 if neighbors > 2:
-                    self.__vertices.add((row, col))
-        self.__vertices.add(self.start)
-        self.__vertices.add(self.exit)
+                    self.__connectors.add(Point(x, y))
+        self.__connectors.add(self.__start)
+        self.__connectors.add(self.__exit)
 
-    def load_tree(self, ignore_slopes: bool = False):
+    def __load_tree(self, ignore_slopes: bool):
+        """Creates the neighbor list between the connectors."""
         self.__adj.clear()
-        for vertex in self.__vertices:
-            queue: list[tuple[tuple[int, int], int]] = [(vertex, 0)]
-            visited: set[tuple[int, int]] = set()
-            if vertex not in list(self.__adj.keys()):
+        for vertex in self.__connectors:
+            queue: list[tuple[Point, int]] = [(vertex, 0)]
+            seen: set[Point] = set()
+            if vertex not in self.__adj:
                 self.__adj[vertex] = set()
             while queue:
-                (row, col), distance = queue.pop(0)
-                if (row, col) not in visited:
-                    visited.add((row, col))
-                    for drow, dcol in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-                        neighbor = row + drow, col + dcol
-                        if (0 <= neighbor[0] < self.__height and 0 <= neighbor[1] < self.__width and
-                                (nchar := self.__grid[neighbor[0]][neighbor[1]]) != "#"):
-                            if neighbor in self.__vertices and neighbor != vertex:
-                                self.__adj[vertex].add((neighbor, distance + 1))
-                            else:
-                                if not ignore_slopes:
-                                    opposite_direction = {(0, 1): '<', (0, -1): '>', (1, 0): '^', (-1, 0): 'v'}
-                                    if nchar == opposite_direction[drow, dcol]:
-                                        continue
-                                queue.append((neighbor, distance + 1))
+                point, distance = queue.pop(0)
+                if point in seen:
+                    continue
+                seen.add(point)
+                for direction in Point(0, 0).get_neighbors():
+                    neighbor = point + direction
+                    if (0 <= neighbor.y < self.__height and 0 <= neighbor.x < self.__width and
+                            (nchar := self.__grid[neighbor.y][neighbor.x]) != "#"):
+                        if neighbor in self.__connectors and neighbor != vertex:
+                            self.__adj[vertex].add((neighbor, distance + 1))
+                        elif ignore_slopes or not direction.is_opposite_direction(nchar):
+                            queue.append((neighbor, distance + 1))
 
-    def __dfs(self, from_v: tuple[int, int], to_v: tuple[int, int], seen: set) -> list[int]:
+    def __dfs(self, from_v: Point, to_v: Point, seen: set) -> list[int]:
         if from_v == to_v:
             return [0]
         seen.add(from_v)
@@ -71,17 +87,16 @@ class Island:
         seen.remove(from_v)
         return lengthlist
 
-    def get_maxpathlength(self) -> int:
-        return max(self.__dfs(self.start, self.exit, set()))
+    def get_maxpathlength(self, ignore_slopes: bool = False) -> int:
+        self.__load_tree(ignore_slopes)
+        return max(self.__dfs(self.__start, self.__exit, set()))
 
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
         island = Island(file.read().strip('\n'))
-    island.load_tree()
     print(f"Part 1: {island.get_maxpathlength()}")
-    island.load_tree(True)
-    print(f"Part 2: {island.get_maxpathlength()}")
+    print(f"Part 2: {island.get_maxpathlength(True)}")
     return 0
 
 
