@@ -16,63 +16,68 @@ INPUT_FILE = Path(ROOT_DIR, '2023/day19.txt')
 
 Partrating = dict[str: int]   # Parts = ['x', 'm', 'a', 's']
 Partratingrange = dict[str: range]
-Op = {'<': operator.lt, '>': operator.gt}
 
 
 class Rule:
-    def __init__(self, rulestr: str):
+    __OPMAP = {'<': operator.lt, '>': operator.gt}
+
+    def __init__(self, rulestr: str) -> None:
         if len(tmp := rulestr.split(":")) > 1:
-            self.condpart, self.condoperation, nbrstr = re.findall(r"(\w)(.)(\d+)", tmp[0])[0]
-            self.condthrshold = int(nbrstr)
+            self.__condpart, self.__condoperation, nbrstr = re.findall(r"(\w)(.)(\d+)", tmp[0])[0]
+            self.__condthrshold = int(nbrstr)
         else:
-            self.condpart = None
-            self.condthrshold = 0
-            self.condoperation = ""
-        self.ifpass = tmp[-1]
+            self.__condpart = None
+            self.__condthrshold = 0
+            self.__condoperation = ""
+        self.__ifpass = tmp[-1]
 
     def getverdict(self, part: Partrating) -> str:
-        if self.condpart:
-            if Op[self.condoperation](part[self.condpart], self.condthrshold):
-                return self.ifpass
+        if self.__condpart:
+            if Rule.__OPMAP[self.__condoperation](part[self.__condpart], self.__condthrshold):
+                return self.__ifpass
             else:
                 return ""
         else:
-            return self.ifpass
+            return self.__ifpass
 
     def getrangesplit(self, inranges: Partratingrange) -> iter:
-        if self.condpart:
-            thrshold = self.condthrshold if self.condoperation == "<" else self.condthrshold + 1
-            if self.condthrshold in inranges[self.condpart]:
+        if self.__condpart:
+            thrshold = self.__condthrshold if self.__condoperation == "<" else self.__condthrshold + 1
+            if self.__condthrshold in inranges[self.__condpart]:
                 outrangeslow: Partratingrange = dict(inranges)
                 outrangeshigh: Partratingrange = dict(inranges)
-                outrangeslow[self.condpart] = range(outrangeslow[self.condpart].start, thrshold)
-                outrangeshigh[self.condpart] = range(thrshold, inranges[self.condpart].stop)
-                if self.condoperation == ">":
+                outrangeslow[self.__condpart] = range(outrangeslow[self.__condpart].start, thrshold)
+                outrangeshigh[self.__condpart] = range(thrshold, inranges[self.__condpart].stop)
+                if self.__condoperation == ">":
                     yield "", outrangeslow
-                    yield self.ifpass, outrangeshigh
+                    yield self.__ifpass, outrangeshigh
                 else:
                     yield "", outrangeshigh
-                    yield self.ifpass, outrangeslow
+                    yield self.__ifpass, outrangeslow
             else:
-                yield self.ifpass, inranges
+                yield self.__ifpass, inranges
         else:
-            yield self.ifpass, inranges
+            yield self.__ifpass, inranges
 
     def __repr__(self):
-        return f"{self.condpart}-{self.condoperation}-{self.condthrshold}-{self.ifpass}"
+        return f"{self.__condpart}-{self.__condoperation}-{self.__condthrshold}-{self.__ifpass}"
 
 
 class System:
-    def __init__(self, wfstr: str):
-        self.workflows: dict[str: list[Rule]] = {}
-        for flow in wfstr.splitlines():
+    def __init__(self, rawstr: str) -> None:
+        wf, rt = rawstr.split('\n\n')
+        self.__workflows: dict[str: list[Rule]] = {}
+        for flow in wf.splitlines():
             label, rls = flow.strip('}').split('{')
-            self.workflows[label] = [Rule(r) for r in rls.split(',')]
+            self.__workflows[label] = [Rule(r) for r in rls.split(',')]
+        self.__ratings: list[Partrating] = \
+            [{part: int(count) for part, count in re.findall(r"(.)=(\d+)", rating)}
+             for rating in rt.splitlines()]
 
-    def process_workflow(self, rating: Partrating) -> int:
+    def __process_workflow(self, rating: Partrating) -> int:
         currentworkflow = "in"
         while currentworkflow not in ("A", "R"):
-            for rule in self.workflows[currentworkflow]:
+            for rule in self.__workflows[currentworkflow]:
                 if (verdict := rule.getverdict(rating)) != "":
                     currentworkflow = verdict
                     break
@@ -80,16 +85,18 @@ class System:
             return sum(rating.values())
         return 0
 
+    def get_accepted_sum(self) -> int:
+        return sum([self.__process_workflow(rating) for rating in self.__ratings])
+
     def get_combinationcount(self) -> int:
         initialpartgroup: tuple[str, Partratingrange] = ("in", {"x": range(1, 4001), "m": range(1, 4001),
                                                                 "a": range(1, 4001), "s": range(1, 4001)})
         queue: list[tuple[str, Partratingrange]] = [initialpartgroup]
         verdict_a = []
-
-        while len(queue) > 0:
+        while queue:
             currentworkflow, ranges = queue.pop(0)
             if currentworkflow not in ("A", "R"):
-                for rule in self.workflows[currentworkflow]:
+                for rule in self.__workflows[currentworkflow]:
                     done = True
                     for newranges in rule.getrangesplit(ranges):
                         if newranges[0] != "":
@@ -101,17 +108,13 @@ class System:
                         break
             elif currentworkflow == "A":
                 verdict_a.append(ranges)
-
         return sum([prod([r.stop - r.start for r in list(a_ranges.values())]) for a_ranges in verdict_a])
 
 
 def main() -> int:
     with open(INPUT_FILE, 'r') as file:
-        wf, rt = file.read().strip('\n').split('\n\n')
-    system = System(wf)
-    ratings: list[Partrating] = [{part: int(count) for part, count in re.findall(r"(.)=(\d+)", rating)}
-                                 for rating in rt.splitlines()]
-    print(f"Part 1: {sum([system.process_workflow(rating) for rating in ratings])}")
+        system = System(file.read().strip('\n'))
+    print(f"Part 1: {system.get_accepted_sum()}")
     print(f"Part 2: {system.get_combinationcount()}")
     return 0
 
