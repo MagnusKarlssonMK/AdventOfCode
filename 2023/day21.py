@@ -6,38 +6,52 @@ answer from that.
 """
 import sys
 from pathlib import Path
+from dataclasses import dataclass
 
 ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
 INPUT_FILE = Path(ROOT_DIR, '2023/day21.txt')
 
 
-RowCol = tuple[int, int]
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def get_neighbors(self) -> iter:
+        for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+            yield self + Point(*d)
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
 
 
 class Grid:
     def __init__(self, rawstr: str):
-        self.grid = rawstr.splitlines()
-        self.__height = len(self.grid)
-        self.__width = len(self.grid[0])
-        self.start = -1, -1
-        for row in range(self.__height):
-            if (col := self.grid[row].find('S')) >= 0:
-                self.start = row, col
+        lines = rawstr.splitlines()
+        self.__height = len(lines)
+        self.__width = len(lines[0])
+        self.__start = Point(-1, -1)
+        self.__rocks: set[Point] = set()
+        for y, line in enumerate(rawstr.splitlines()):
+            for x, c in enumerate(line):
+                if c == 'S':
+                    self.__start = Point(x, y)
+                elif c == '#':
+                    self.__rocks.add(Point(x, y))
 
-    def __get_neighbors(self, coord: RowCol, expand: bool) -> iter:
-        for direction in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            row, col = tuple(map(sum, zip(coord, direction)))
+    def __get_neighbors(self, coord: Point, expand: bool) -> iter:
+        for neighbor in coord.get_neighbors():
             if expand:
-                if self.grid[row % self.__height][col % self.__width] != "#":
-                    yield row, col
+                if Point(neighbor.x % self.__width, neighbor.y % self.__height) not in self.__rocks:
+                    yield neighbor
             else:
-                if 0 <= row < self.__height and 0 <= col < self.__width and self.grid[row][col] != "#":
-                    yield row, col
+                if Point(neighbor.x, neighbor.y) not in self.__rocks:
+                    yield neighbor
 
     def get_reachablecount(self, steps: int, expand: bool = False) -> int:
-        seen: set[RowCol] = set()
-        reachable: set[RowCol] = set()
-        bfs_queue = [(self.start, 0)]
+        seen: set[Point] = set()
+        reachable: set[Point] = set()
+        bfs_queue = [(self.__start, 0)]
         while bfs_queue:
             u, count = bfs_queue.pop(0)
             if count <= steps:
