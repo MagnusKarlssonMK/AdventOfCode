@@ -4,12 +4,9 @@ from statistics module, and then determine the total fuel cost at that value.
 For part 2, the optimal distance will rather be on the mean value, so similar approach to part 1, but also check
 the surrounding values to be safe against rounding errors.
 """
-import sys
+import time
 from pathlib import Path
 import statistics
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day07.txt')
 
 
 class CrabArmy:
@@ -33,13 +30,18 @@ class CrabArmy:
         return sum([d * (d + 1) // 2 for d in [abs(crab - calnbr) for crab in self.__crabs]])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        crabs = CrabArmy(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    crabs = CrabArmy(aoc_input)
     print(f"Part 1: {crabs.get_calibration_cost()}")
     print(f"Part 2: {crabs.get_calibration_cost(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

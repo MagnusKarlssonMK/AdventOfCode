@@ -1,12 +1,9 @@
 """
 A bit of regex generation and recursion.
 """
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day19.txt')
 
 
 class SatelliteData:
@@ -37,13 +34,18 @@ class SatelliteData:
         return self.get_matching_0()
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        data = SatelliteData(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    data = SatelliteData(aoc_input)
     print(f"Part 1: {data.get_matching_0()}")
     print(f"Part 2: {data.update_and_get_matching_0()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day19.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

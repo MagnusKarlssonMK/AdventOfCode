@@ -12,15 +12,12 @@ instead of just one. This will give the answer to Part 2.
 
 Note: Quite a bit of duplicated code between Part1 and Part2 functions, can probably be cleaned up a bit.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -173,13 +170,18 @@ class Vault:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        vault = Vault(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    vault = Vault(aoc_input)
     print(f"Part 1: {vault.get_steps_all_keys_one_room()}")
     print(f"Part 2: {vault.get_steps_all_keys_four_rooms()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day18.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

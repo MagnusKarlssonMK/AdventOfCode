@@ -4,13 +4,10 @@ and check which ones result in a matching value. Sum up the number of samples th
 answer to part 1. For part 2, play a bit of sudoku to generate the mapping between opcode and number, and then run the
 test program to find the value of register 0.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day16.txt')
 
 
 OP_CODES = {
@@ -91,13 +88,18 @@ class Device:
         return registers[0]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        device = Device(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    device = Device(aoc_input)
     print(f"Part 1: {device.get_samples_count()}")
     print(f"Part 2: {device.get_reg_zero_value()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day16.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

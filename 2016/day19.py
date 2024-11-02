@@ -8,11 +8,8 @@ that is still smaller than the target, and then the answer can be found based on
 with 1 as winner on every 'new' / added digit in the base-3 representation (4, 10, 28...); in the first half in-between
 those numbers, the winning number is incremented by 1, while in the second half the winning number is incremented by 2.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day19.txt')
 
 
 def get_winning_elf(nbr_elfs: int) -> int:
@@ -36,13 +33,18 @@ def get_winning_elf_opposite(nbr_elfs: int) -> int:
         return nbr_elfs - b3_p + rem
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        nbr = int(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    nbr = int(aoc_input)
     print(f"Part 1: {get_winning_elf(nbr)}")
     print(f"Part 2: {get_winning_elf_opposite(nbr)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day19.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -8,15 +8,12 @@ Gets the job done, but definitely not fast. Attempts to optimize the state branc
 - Throw away robots and resources that won't be of any use with the remaining time, to increase the chances of finding
   overlap with already seen branches.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
 from collections import deque
 import math
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day19.txt')
 
 
 class Minerals(Enum):
@@ -182,13 +179,18 @@ class Factory:
         return max_geode
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myfactory = Factory(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myfactory = Factory(aoc_input)
     print(f"Part 1: {myfactory.get_total_bp_qualitylevel(24)}")
     print(f"Part 2: {myfactory.get_topthree_product(32)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day19.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

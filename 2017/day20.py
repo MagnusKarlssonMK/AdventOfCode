@@ -6,14 +6,11 @@ initial velocity is not safe since it depends on the relative direction between 
 So in lack of better ideas at the moment, I'll just stick with a bit of trial and error to try to find an estimate
 of number of steps to run the simulation before it seems to stabilize.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day20.txt')
 
 
 @dataclass(frozen=True)
@@ -77,13 +74,18 @@ class GPU:
         return len(particles)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        gpu = GPU(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    gpu = GPU(aoc_input)
     print(f"Part 1: {gpu.get_closest_particle()}")
     print(f"Part 2: {gpu.get_remaining_particle_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

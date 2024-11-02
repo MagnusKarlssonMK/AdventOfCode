@@ -2,12 +2,9 @@
 Pretty basic game of life. Not a very efficient solution, but gets the job done in a couple of seconds.
 Would probably be much improved just by using numpy instead.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -69,17 +66,19 @@ class Grid:
             self.__currentgrid.append(list(row))
         return retval
 
-    def __repr__(self):
-        return f"{''.join([''.join(map(str, r))+'\n' for r in self.__currentgrid])}"
 
-
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        grid = Grid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    grid = Grid(aoc_input)
     print(f"Part 1: {grid.get_lights_after_steps()}")
     print(f"Part 2: {grid.get_lights_after_steps(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day18.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

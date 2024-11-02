@@ -9,11 +9,8 @@ For part 1, keep track of the max strength by any found bridge.
 For part 2, keep track of the longest bridge found (use strength as secondary selector for equal lengths).
 The answer to both parts can be obtained in one go.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day24.txt')
 
 
 class Bridge:
@@ -67,14 +64,19 @@ class Bridge:
         return maxstr, sum([self.__adj[t][0] for t in longest])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        bridge = Bridge(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    bridge = Bridge(aoc_input)
     p1, p2 = bridge.get_max_strength()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

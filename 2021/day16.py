@@ -4,13 +4,10 @@ to the padding of zeroes - judging from the examples, what is apparently meant i
 to the last (outer) package, but the description makes it sound like it applies to ANY literal value package. It is
 also not clear what 'its' is referring to - the value or the (sub)package? Or the entire bitstream from the start?
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from math import prod
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day16.txt')
 
 
 class PacketType(Enum):
@@ -114,14 +111,19 @@ class BitsDecoder:
         return packet
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        decoder = BitsDecoder(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    decoder = BitsDecoder(aoc_input)
     mypacket = decoder.decodestream()
     print(f"Part 1: {decoder.versionsum}")
     print(f"Part 2: {mypacket.get_value()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day16.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

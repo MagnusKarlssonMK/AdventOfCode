@@ -8,14 +8,11 @@ The map state is cyclic since the winds will eventually return to the start posi
 cycle is longer than the time spent to traverse the map, so there isn't much of a benefit to optimize making use of the
 cycle.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day24.txt')
 
 
 @dataclass(frozen=True)
@@ -104,14 +101,19 @@ class Valley:
         return a, c
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        valley = Valley(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    valley = Valley(aoc_input)
     p1, p2 = valley.get_there_and_back_again()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

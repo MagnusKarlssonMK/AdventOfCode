@@ -4,12 +4,9 @@ only the ones that have odd/even number of steps (depending on whether the count
 Part 2: Solves it with three-point-formula to determine the coefficients in a quadratic formula, and calculate the
 answer from that.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day21.txt')
 
 
 @dataclass(frozen=True)
@@ -75,13 +72,18 @@ class Grid:
         return (a * x ** 2) + (b * x) + c
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygrid = Grid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygrid = Grid(aoc_input)
     print(f"Part 1: {mygrid.get_reachablecount(64)}")
     print(f"Part 2: {mygrid.get_reachablecount_infinite(26501365)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day21.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

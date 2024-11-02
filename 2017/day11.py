@@ -2,11 +2,8 @@
 Stores the hexgrid using axial coordinate system, i.e. based on 3d system (q, r, s) but with the third dimension
 truncated, since the sum of all three must be zero, meaning that it can be calculated when necessary.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day11.txt')
 
 
 class HexPoint:
@@ -49,14 +46,19 @@ class Hexgrid:
         return current_distance, maxdistance
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        hexgrid = Hexgrid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    hexgrid = Hexgrid(aoc_input)
     p1, p2 = hexgrid.get_distance()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -6,12 +6,9 @@ layers will catch us. There are probably some clever ways to reduce the search s
 something with knowing the layer delay and the modulo factor for each layer), but this runs in about a second or so, so
 it isn't too bad.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -47,13 +44,18 @@ class Firewall:
         return delay
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        firewall = Firewall(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    firewall = Firewall(aoc_input)
     print(f"Part 1: {firewall.get_trip_severity()}")
     print(f"Part 2: {firewall.get_safe_delay()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

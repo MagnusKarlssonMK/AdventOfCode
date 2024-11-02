@@ -6,12 +6,9 @@ larger than the target value, then popping the oldest values from the window unt
 the sum is equal to the target value, sort the values in the window and get the answer from the sum of the smallest
 and the largest value.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day09.txt')
 
 
 @dataclass(frozen=True)
@@ -60,13 +57,18 @@ class XMAS:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        xmas = XMAS(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    xmas = XMAS(aoc_input)
     print(f"Part 1: {xmas.get_invalid_nbr()}")
     print(f"Part 2: {xmas.get_encryption_weakness()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day09.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

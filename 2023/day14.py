@@ -5,11 +5,8 @@ This turned out to be very ineffiecient though with many repetitions and especia
 unnecessarily. It gets the job done but very slow Part 2, so it would probably be much more efficient to store it in a
 regular grid matrix, possibly combined with row / column dictionaries for faster lookups of available positions.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day14.txt')
 
 
 tiltdirections = {"None": 0, "North": 1, "East": 2, "South": 3, "West": 4}
@@ -128,9 +125,8 @@ class Board:
         return tmpstring
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myboard = Board(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myboard = Board(aoc_input)
 
     myboard.settilt(tiltdirections["North"])
     print(f"Part 1: {myboard.getload()}")
@@ -158,8 +154,14 @@ def main() -> int:
         seenlist.append(thiscycle)
 
     print(f"Part 2: {myboard.getload()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day14.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

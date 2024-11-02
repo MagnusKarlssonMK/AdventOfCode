@@ -15,13 +15,10 @@ part 2 goes from 99999999 (probably hours) to near instant.
 This optimization could potentially also be back-ported to the solution for Day-12, since that was running fairly slow
 as well, probably for the same reasons.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day23.txt')
 
 
 @dataclass
@@ -116,13 +113,18 @@ class Computer:
         self.__program = tuple(opt)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        computer = Computer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    computer = Computer(aoc_input)
     print(f"Part 1: {computer.get_a_register()}")
     print(f"Part 2: {computer.get_a_register(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day23.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

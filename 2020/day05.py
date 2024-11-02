@@ -2,11 +2,8 @@
 Basically just decode the data as specified and store in a sorted list. The last item will be the largest and thus
 the answer to Part 1, then loop through the list to find a gap in the ID:s which will be the answer to Part 2.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day05.txt')
 
 
 def decode(s: str, up: str, low: str, rng: range) -> int:
@@ -39,13 +36,18 @@ class Scanner:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        passes = Scanner(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    passes = Scanner(aoc_input)
     print(f"Part 1: {passes.get_highest_seat()}")
     print(f"Part 2: {passes.get_seat_id()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

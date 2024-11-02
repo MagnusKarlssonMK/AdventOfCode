@@ -7,11 +7,8 @@ and try the next.
 Similar deal for part 2, making use of the sorted list and keeping track of the upper bound we've checked for allowed
 numbers while counting numbers not covered by blocked intervals.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day20.txt')
 
 
 class Firewall:
@@ -37,13 +34,18 @@ class Firewall:
         return allowed_total
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        firewall = Firewall(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    firewall = Firewall(aoc_input)
     print(f"Part 1: {firewall.get_lowest_ip()}")
     print(f"Part 2: {firewall.get_allowed_ip_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

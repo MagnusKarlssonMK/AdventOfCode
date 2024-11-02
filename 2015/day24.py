@@ -5,13 +5,10 @@ first started thinking of rather wild recursive algorithms to traverse through, 
 the list of the shortest combinations for the first crate, and then find the one whose product ('quantum entanglement')
 is the smallest.
 """
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
 from math import prod
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day24.txt')
 
 
 class Packages:
@@ -31,13 +28,18 @@ class Packages:
         return sorted(firstgroup_combos)[0]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        packages = Packages(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    packages = Packages(aoc_input)
     print(f"Part 1: {packages.get_first_qe()}")
     print(f"Part 2: {packages.get_first_qe(4)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

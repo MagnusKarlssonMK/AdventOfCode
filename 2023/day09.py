@@ -2,11 +2,8 @@
 Just a simple recursive function to generate the lines until a line of zeroes shows up.
 Surprisingly simple part 2, basically just to reverse the input data and run the same function.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day09.txt')
 
 
 def findnextnumber(nbrs: list[int]) -> int:
@@ -17,18 +14,28 @@ def findnextnumber(nbrs: list[int]) -> int:
         return nbrs[-1] + findnextnumber(nextlevellist)
 
 
-def main() -> int:
+def get_numbers(rawstr: str) -> tuple[int, int]:
     result_p1 = 0
     result_p2 = 0
-    with open(INPUT_FILE, 'r') as file:
-        for line in file.read().strip('\n').splitlines():
-            numbers = list(map(int, line.split()))
-            result_p1 += findnextnumber(numbers)
-            result_p2 += findnextnumber(list(reversed(numbers)))
-    print(f"Part1: {result_p1}")
-    print(f"Part2: {result_p2}")
-    return 0
+    for line in rawstr.splitlines():
+        numbers = list(map(int, line.split()))
+        result_p1 += findnextnumber(numbers)
+        result_p2 += findnextnumber(list(reversed(numbers)))
+    return result_p1, result_p2
+
+
+def main(aoc_input: str) -> None:
+    p1, p2 = get_numbers(aoc_input)
+    print(f"Part1: {p1}")
+    print(f"Part2: {p2}")
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day09.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

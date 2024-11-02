@@ -2,12 +2,9 @@
 Do most of the heavy lifting in a Room class, which will hold the input values and provides functions for validating
 the checksum and decodes the string.
 """
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day04.txt')
 
 
 class Room:
@@ -71,13 +68,18 @@ class Kiosk:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        kiosk = Kiosk(file.read().strip('\n'))
+def main(aoc_input) -> None:
+    kiosk = Kiosk(aoc_input)
     print(f"Part 1: {kiosk.get_real_rooms_sector_sum()}")
     print(f"Part 2: {kiosk.get_north_pole_sectorid()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day04.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

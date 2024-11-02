@@ -3,12 +3,9 @@ Key point here is that the min and max values in each direction forms a "frame",
 extend to infinity. I.e. any coordinate having a location as 'closest' on or outside that area will have an infinite
 area.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day06.txt')
 
 
 @dataclass(frozen=True)
@@ -61,13 +58,18 @@ class ChronalMap:
                     if sum([loc.get_distance(c) for c in self.__coordinates]) < max_total_distance])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        c_map = ChronalMap(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    c_map = ChronalMap(aoc_input)
     print(f"Part 1: {c_map.get_largest_area_size()}")
     print(f"Part 2: {c_map.get_most_surrounded_size()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day06.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

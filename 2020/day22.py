@@ -2,12 +2,9 @@
 Kinda straightforward, just a bit messy with the recursion bit, and somewhat slow, can probably be improved by using
 dequeue instead of the regular pop.
 """
-import sys
+import time
 from pathlib import Path
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day22.txt')
 
 
 class Combat:
@@ -52,13 +49,18 @@ class Combat:
         return sum([(i + 1) * card for i, card in enumerate(reversed(players[0 if len(players[0]) > 0 else 1]))])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygame = Combat(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygame = Combat(aoc_input)
     print(f"Part 1: {mygame.play_combat()}")
     print(f"Part 2: {mygame.play_recursive_combat()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

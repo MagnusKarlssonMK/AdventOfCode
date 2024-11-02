@@ -3,11 +3,9 @@ I can't be bothered to try to parse and automate this, and besides it feels like
 play the game!
 """
 import sys
+import time
 from pathlib import Path
 from intcode import Intcode, IntResult
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day25.txt')
 
 
 class AsciiComputer:
@@ -28,12 +26,17 @@ class AsciiComputer:
                 break
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        computer = AsciiComputer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    computer = AsciiComputer(aoc_input)
     computer.rescue_santa()
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day25.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,13 +4,10 @@ Stores the cuboids as base point and 'delta' vector. I didn't end up using that 
 Basically run through the cuboids and find intersections and create 'negative' cuboids for the intersecting areas,
 and then calculate the total volume from that.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day22.txt')
 
 
 @dataclass
@@ -84,13 +81,18 @@ class Reactor:
         return sum([c.get_volume() for c in processed_cuboids])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myreactor = Reactor(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myreactor = Reactor(aoc_input)
     print(f"Part 1: {myreactor.get_reboot_cubes()}")
     print(f"Part 2: {myreactor.get_reboot_cubes(False)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

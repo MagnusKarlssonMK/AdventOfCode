@@ -43,13 +43,10 @@ Y-axis:
     know how to calculate the number of steps to get back to y=0, so we can simply take the step counter from when
     evaluating the corresponding negative value -1 and just add that extra offset.
 """
-import sys
+import time
 from pathlib import Path
 import re
 import math
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day17.txt')
 
 
 class Steps:
@@ -129,13 +126,18 @@ class ProbeLauncer:
         return len(combinations)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mylauncher = ProbeLauncer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mylauncher = ProbeLauncer(aoc_input)
     print(f"Part 1: {mylauncher.get_max_height()}")
     print(f"Part 2: {mylauncher.get_combination_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

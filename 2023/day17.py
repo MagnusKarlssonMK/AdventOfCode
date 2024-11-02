@@ -2,13 +2,10 @@
 Sort of an A* solution (using the manhattan distance as heuristic) but with a bit more complicated state, since it also
 needs to track direction. Certainly not fast, but gets the job done.
 """
-import sys
+import time
 from pathlib import Path
 from heapq import heappop, heappush
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day17.txt')
 
 
 @dataclass(frozen=True)
@@ -78,13 +75,18 @@ class CityBoard:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mycity = CityBoard(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mycity = CityBoard(aoc_input)
     print(f"Part 1: {mycity.get_shortestpath()}")
     print(f"Part 2: {mycity.get_shortestpath(4, 10)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

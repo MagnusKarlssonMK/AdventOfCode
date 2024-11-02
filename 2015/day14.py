@@ -5,13 +5,10 @@ For part 2 we simply need to simulate the race second-for-second and award point
 to keep in mind is that the time loop needs to start at 1 to avoid awarding points on the starting line, and to run
 until 2503+1 to compensate for python's range not including the last value.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day14.txt')
 
 
 @dataclass(frozen=True)
@@ -55,13 +52,19 @@ class Olympics:
         return max(scoretable.values())
 
 
-def main() -> int:
+def main(aoc_input: str) -> None:
     with open(INPUT_FILE, 'r') as file:
-        olympics = Olympics(file.read().strip('\n'))
+        olympics = Olympics(aoc_input)
     print(f"Part 1: {olympics.get_winner_distance()}")
     print(f"Part 2: {olympics.get_winner_distance(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day14.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

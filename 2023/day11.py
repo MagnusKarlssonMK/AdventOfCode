@@ -5,13 +5,10 @@ checking the number of empty rows/columns between them. Since the grid input doe
 than the scaling of empty space, we can calculate the answers to both part 1 and 2 at the same time by not evaluating
 the value of empty space until the last step everything has been assembled.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day11.txt')
 
 
 @dataclass(frozen=True)
@@ -58,14 +55,19 @@ class Space:
                 total_steps + total_emptyspace * (Space.__LARGE_EXPANSION_RATE - 1))
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        space = Space(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    space = Space(aoc_input)
     p1, p2 = space.get_distance_sum()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -2,12 +2,9 @@
 Solution: rather than storing the actual string, store the developed polymer as a dict of pairs with a counter.
 For every step, expand each pair into two new pairs and inherit the counter value for both.
 """
-import sys
+import time
 from pathlib import Path
 from collections import Counter
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day14.txt')
 
 
 class Polymer:
@@ -49,16 +46,21 @@ class Polymer:
         return max(countlist.values()) - min(countlist.values())
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        poly = Polymer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    poly = Polymer(aoc_input)
     poly.takesteps(10)
     print(f"Part 1: {poly.getscore()}")
     poly.reset()
     poly.takesteps(40)
     print(f"Part 2: {poly.getscore()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day14.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

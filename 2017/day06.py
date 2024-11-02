@@ -4,11 +4,8 @@ in a set after every rebalancing and check if we have a repeated value.
 Part 2: We saved the state of the memory banks after part 1, so simply run the checker again to get the answer for the
 next cycle.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day06.txt')
 
 
 class Memory:
@@ -34,13 +31,18 @@ class Memory:
             seen_configs.add(next_cfg)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        memory = Memory(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    memory = Memory(aoc_input)
     print(f"Part 1: {memory.get_cycles_count()}")
     print(f"Part 2: {memory.get_cycles_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day06.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

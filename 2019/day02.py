@@ -1,12 +1,9 @@
 """
 Build a computer class to hold the data and run the program, taking the first two values as input.
 """
-import sys
+import time
 from pathlib import Path
 from intcode import Intcode, IntResult
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day02.txt')
 
 
 class Computer:
@@ -39,13 +36,18 @@ class Computer:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        computer = Computer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    computer = Computer(aoc_input)
     print(f"Part 1: {computer.get_alarmstate()}")
     print(f"Part 2: {computer.find_correct_inputs()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

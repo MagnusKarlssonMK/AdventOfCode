@@ -1,10 +1,7 @@
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day10.txt')
 
 
 class Instruction(Enum):
@@ -67,13 +64,18 @@ class CPU:
         return ''.join([''.join(line + ['\n']) for line in crt])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cpu = CPU(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cpu = CPU(aoc_input)
     print(f"Part 1: {cpu.get_signal_strength_sum()}")
     print(f"Part 2:\n{cpu.get_crt_output()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day10.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

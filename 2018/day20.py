@@ -3,12 +3,9 @@ Build a dictionary of distances while expanding the map through reading the rege
 From that we can get the answer to part1 just by finding the maximum distance value in the dict, and the answer to
 part 2 by counting the number of keys with a distance value of at least 1000.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day20.txt')
 
 
 DIRMAP = {'N': (0, -1), 'E': (1, 0), 'S': (0, 1), 'W': (-1, 0)}
@@ -55,14 +52,19 @@ class Building:
         return p1, p2
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        building = Building(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    building = Building(aoc_input)
     p1, p2 = building.get_fewest_doors()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

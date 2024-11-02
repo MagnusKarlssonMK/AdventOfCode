@@ -3,13 +3,10 @@ Stores parsed data in a graph, and generates a trimmed variant of it with only t
 with Floyd-Warshall algorithm.
 Then finds the answer with a recursive search using bitmaps.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from itertools import permutations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day16.txt')
 
 
 class ValveNetwork:
@@ -54,13 +51,18 @@ class ValveNetwork:
         return flow
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myvalves = ValveNetwork(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myvalves = ValveNetwork(aoc_input)
     print(f"Part 1: {myvalves.get_maxflow(30)}")
     print(f"Part 2: {myvalves.get_maxflow(26, True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day16.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

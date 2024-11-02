@@ -9,4 +9,4 @@ AoC page.
 
 # Usage
 The python scripts assumes that the corresponding input data is stored in a file with a file structure like 
-`/AdventOfCode-Input/<year>/day<xx>.txt`, where that parent folder is placed alongside the folder for this repo.
+`/AdventOfCode-Input/<year>/day<xx>.txt`, where that parent folder is placed in the root folder of this repo.

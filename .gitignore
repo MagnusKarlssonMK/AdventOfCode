@@ -45,3 +45,7 @@ venv.bak/
 
 # PyCharm
 .idea/
+
+# Advent of code input files
+AdventOfCode-Input*
+

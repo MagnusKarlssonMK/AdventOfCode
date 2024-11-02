@@ -1,12 +1,9 @@
 """
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from intcode import Intcode, IntResult
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day23.txt')
 
 
 @dataclass
@@ -74,14 +71,19 @@ class Network:
         return p1, p2
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        net = Network(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    net = Network(aoc_input)
     p1, p2 = net.get_first_packets_y_value()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day23.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

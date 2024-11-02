@@ -1,9 +1,6 @@
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day13.txt')
 
 
 def get_cbi(inputstr: str) -> int:
@@ -99,13 +96,18 @@ class DistressSignal:
         return (all_packet_list.index(divider_two) + 1) * (all_packet_list.index(divider_six) + 1)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        signal = DistressSignal(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    signal = DistressSignal(aoc_input)
     print(f"Part 1: {signal.get_correct_order_index_sum()}")
     print(f"Part 2: {signal.get_decoder_key()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

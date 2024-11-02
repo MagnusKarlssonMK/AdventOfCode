@@ -2,12 +2,9 @@
 Iterate with an increasing index value and use hashlib to calculate the md5 checksums to generate the passwords.
 Takes a lot of iterations, i.e. doorbreaking is NOT fast.
 """
-import sys
+import time
 from pathlib import Path
 import hashlib
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day05.txt')
 
 
 class Door:
@@ -40,13 +37,18 @@ class Door:
         return ''.join(pwd)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        door = Door(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    door = Door(aoc_input)
     print(f"Part 1: {door.get_password()}")
     print(f"Part 2: {door.get_advanced_password()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -11,12 +11,9 @@ used for both anwers. The solution could be optimized to store the result and ge
 but it's already fast enough that it isn't really worth the effort.
 Breaking the giant drop_rocks function into smaller pieces would be welcome.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day17.txt')
 
 
 class Shape(Enum):
@@ -142,13 +139,18 @@ class Cave:
             min_y -= 1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mycave = Cave(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mycave = Cave(aoc_input)
     print(f"Part 1: {mycave.drop_rocks(2022)}")
     print(f"Part 2: {mycave.drop_rocks(1_000_000_000_000)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

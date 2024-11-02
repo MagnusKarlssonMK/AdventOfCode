@@ -8,11 +8,8 @@ can determine the segment mapping to 'b' and 'd'. From here on we should have en
 rest of the numbers and mappings.
 Store the signals in sets to be able to use the '-' operator to find the difference between numbers.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day08.txt')
 
 
 class Display:
@@ -66,13 +63,18 @@ class Display:
         return int(retstr)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        display = Display(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    display = Display(aoc_input)
     print(f"Part 1: {display.get_1478_count()}")
     print(f"Part 2: {display.get_output_sum()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day08.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

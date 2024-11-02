@@ -5,13 +5,10 @@ a=dy, b=-dx, c can be found based on the given coordinate.
 Part 2: Uses the sympy equation solver to find the answer. I may have borrowed the basis for this solution from
 people smarter than me...
 """
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
 import sympy as sp
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day24.txt')
 
 
 class Hailstone:
@@ -75,15 +72,20 @@ class Air:
         return sum(solution[:3])
 
 
-def main() -> int:
+def main(aoc_input: str) -> None:
     myair = Air()
-    with open(INPUT_FILE, 'r') as file:
-        for line in file.read().strip('\n').splitlines():
-            myair.add_hailstone(line)
+    for line in aoc_input.splitlines():
+        myair.add_hailstone(line)
     print(f"Part 1: {myair.get_2d_intersectioncount()}")
     print(f"Part 2: {myair.get_3d_silverbullet()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,12 +4,9 @@ condition checks when looking up the neighbors.
 Part 2 - similar to Part 1, but this instead does the BFS 'backwards' starting from the end point and also reverses
 the condition in the neighbor check.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day12.txt')
 
 
 @dataclass(frozen=True)
@@ -81,13 +78,18 @@ class Grid:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygrid = Grid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygrid = Grid(aoc_input)
     print(f"Part 1: {mygrid.get_minsteps_fromstart()}")
     print(f"Part 2: {mygrid.get_minsteps_fromany()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

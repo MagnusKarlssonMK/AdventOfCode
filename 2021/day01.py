@@ -3,11 +3,8 @@ For part 2, we actually only need to compare the first element of the first wind
 second window, since all the elements in between are shared by both. So by making use of that logic, the answer
 for both part 1 and 2 can be calculated with one function, taking the window length as an input.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day01.txt')
 
 
 class Report:
@@ -18,13 +15,18 @@ class Report:
         return sum([1 for i in range(windowsize, len(self.__nbrs)) if self.__nbrs[i] > self.__nbrs[i - windowsize]])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        report = Report(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    report = Report(aoc_input)
     print(f"Part 1: {report.count_depth_increase(1)}")
     print(f"Part 2: {report.count_depth_increase(3)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day01.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

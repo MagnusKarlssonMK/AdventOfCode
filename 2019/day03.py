@@ -3,12 +3,9 @@ For part 1, we can find all intersections by putting all coordinates in sets for
 points. Then the answer is given by the smallest manhattan distance from origin to intersection.
 For Part 2, we can get the distances by finding the index of each intersection's coordinate in the wire lists.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -53,13 +50,18 @@ class FuelSystem:
                     for i in self.__intersections])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        system = FuelSystem(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    system = FuelSystem(aoc_input)
     print(f"Part 1: {system.get_closest_intersection_mh()}")
     print(f"Part 2: {system.get_closest_intersection_steps()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day03.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

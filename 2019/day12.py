@@ -4,16 +4,13 @@ correct.
 For part 2, find the individual cycles for the x, y, z directions separately, since they are independent, and then
 use LCM to calculate the total cycle.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
 from math import lcm
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day12.txt')
 
 
 @dataclass(frozen=True)
@@ -96,13 +93,18 @@ class MoonTracker:
         return lcm(*cycles)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        tracker = MoonTracker(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    tracker = MoonTracker(aoc_input)
     print(f"Part 1: {tracker.get_total_energy()}")
     print(f"Part 2: {tracker.get_cycle_length()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

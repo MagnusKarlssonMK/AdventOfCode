@@ -5,12 +5,9 @@ Might look a bit fancier if rather than manually hardcoding the maps, instead di
 description and then having a parsing function to convert it to the layouts, but isn't quite worth it for such simple
 mappings.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum, auto
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day02.txt')
 
 
 class Directions(Enum):
@@ -63,13 +60,18 @@ class KeyPad:
         return ''.join(code)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        keypad = KeyPad(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    keypad = KeyPad(aoc_input)
     print(f"Part 1: {keypad.get_bathroom_code()}")
     print(f"Part 2: {keypad.get_bathroom_code(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

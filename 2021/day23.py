@@ -5,12 +5,9 @@ for the Dijkstra search, and instead wound up with this absolute monstrosity. I 
 something readable, but right now I feel like leaving it like this for the comedy effect. Good luck to anyone trying
 to decipher this in the future (myself included...).
 """
-import sys
+import time
 from pathlib import Path
 from heapq import heappop, heappush
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day23.txt')
 
 
 class Burrow:
@@ -123,13 +120,18 @@ class Burrow:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        burrow = Burrow(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    burrow = Burrow(aoc_input)
     print(f"Part 1: {burrow.get_energycost()}")
     print(f"Part 2: {burrow.get_energycost(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day23.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

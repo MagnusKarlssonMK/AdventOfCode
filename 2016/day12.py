@@ -2,12 +2,9 @@
 Straightforward, simply store the program in a computer class, and then run the program according to the definitions
 of the instructions. For Part 2, simply change the initial value for register C to 1 instead of 0.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day12.txt')
 
 
 @dataclass(frozen=True)
@@ -53,13 +50,18 @@ class Computer:
         return regs['a']
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        computer = Computer(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    computer = Computer(aoc_input)
     print(f"Part 1: {computer.get_a_register()}")
     print(f"Part 2: {computer.get_a_register(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

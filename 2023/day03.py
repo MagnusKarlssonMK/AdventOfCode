@@ -6,13 +6,10 @@ symbol in its adjacent list.
 For part 2, instead iterate over the symbols and find the gears, and then iterate over the parts to see how many parts
 that are adjacent for each gear.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -65,13 +62,18 @@ class Schematic:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myschematic = Schematic(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myschematic = Schematic(aoc_input)
     print(f"Part 1: {myschematic.get_partnumber_sum()}")
     print(f"Part 2: {myschematic.get_gearratio_sum()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day03.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

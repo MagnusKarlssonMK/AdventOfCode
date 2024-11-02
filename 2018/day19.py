@@ -9,11 +9,8 @@ input, but it will not work for other inputs if the specific lines in the progra
 The same optimization can be used in the common function for both parts, and seems to give quite a large performance
 boost also for part 1.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day19.txt')
 
 
 OP_CODES = {
@@ -67,13 +64,18 @@ class Device:
         return registers[0]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        device = Device(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    device = Device(aoc_input)
     print(f"Part 1: {device.get_reg_zero_val()}")
     print(f"Part 2: {device.get_reg_zero_val(1)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day19.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

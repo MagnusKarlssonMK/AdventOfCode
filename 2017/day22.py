@@ -3,14 +3,11 @@ Represent the grid with a set of infected points, and store non-clean points in 
 the bursts, add the point or update its state if the point the virus is on is no longer clean, or remove it from the
 dict if it becomes clean.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day22.txt')
 
 
 class NodeState(Enum):
@@ -98,13 +95,18 @@ class Cluster:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cluster = Cluster(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cluster = Cluster(aoc_input)
     print(f"Part 1: {cluster.get_infected_count(10_000)}")
     print(f"Part 2: {cluster.get_infected_count(10_000_000, True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

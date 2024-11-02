@@ -8,12 +8,9 @@ is still low enough that this is a somewhat reasonable approach (runs in about a
 Part 2: Pretty much the same thing, just with a small modification for how to keep track of the current number while
 building the spiral.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -80,13 +77,18 @@ class Memory:
         return i
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        memory = Memory(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    memory = Memory(aoc_input)
     print(f"Part 1: {memory.get_manhattan_distance()}")
     print(f"Part 2: {memory.get_larger_number()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day03.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

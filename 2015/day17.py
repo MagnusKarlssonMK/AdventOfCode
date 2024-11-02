@@ -3,12 +3,9 @@ Simply use the 'combinations' function to generate combinations for all numbers 
 ones matching the volume. Also store the length of the matches in a list to use for part 2, where that list is
 sorted, and we then count number of entries for that length.
 """
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day17.txt')
 
 
 class ContainerList:
@@ -30,13 +27,18 @@ class ContainerList:
         return sortlist.count(sortlist[0])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        containers = ContainerList(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    containers = ContainerList(aoc_input)
     print(f"Part 1: {containers.get_combination_count()}")
     print(f"Part 2: {containers.get_min_combination_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

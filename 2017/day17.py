@@ -4,11 +4,8 @@ Part 2: No need to actually build the buffer now, since the value 0 will always 
 for the number in index 1 after 50M iterations. So all we need to do is to keep track of the current position and
 update the current value of index 1 whenever it ends up there.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day17.txt')
 
 
 class Spinlock:
@@ -33,13 +30,18 @@ class Spinlock:
         return pos_1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        spinlock = Spinlock(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    spinlock = Spinlock(aoc_input)
     print(f"Part 1: {spinlock.get_2017_insert()}")
     print(f"Part 2: {spinlock.get_50m_pos1()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

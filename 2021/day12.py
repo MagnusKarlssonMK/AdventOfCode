@@ -4,11 +4,8 @@ Solution: store the input as an adjacency list, and then perform a sort of modif
 path is stored and finally counted once the queue is emptied. For Part 2, just add a condition that one small cave
 be visited one extra time, and add that flag to the queue.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day12.txt')
 
 
 class Cavesystem:
@@ -57,13 +54,18 @@ class Cavesystem:
         return retstr
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cave = Cavesystem(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cave = Cavesystem(aoc_input)
     print("Part 1:", cave.findallpaths())
     print("Part 2:", cave.findallpaths(1))
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -3,12 +3,9 @@ Pretty much just walking a path and recording letters along the way. Only switch
 otherwise keep walking in current direction and record the character if it is not a pipe. Count how many steps it takes
 to get to the end.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day19.txt')
 
 
 @dataclass(frozen=True)
@@ -62,14 +59,19 @@ class Diagram:
         return ''.join(path), count
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        diagram = Diagram(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    diagram = Diagram(aoc_input)
     path, steps = diagram.get_path()
     print(f"Part 1: {path}")
     print(f"Part 2: {steps}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day19.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

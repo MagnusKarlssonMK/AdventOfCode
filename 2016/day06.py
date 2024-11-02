@@ -4,11 +4,8 @@ be sorted (increasing or decreasing depending on part 1 or 2) to generate the re
 Just to make up for the time-consuming problem the previous day, make an unnecessary optimization to an already instant
 calculation and generate the answers for both parts in one step.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day06.txt')
 
 
 class Signal:
@@ -31,14 +28,19 @@ class Signal:
         return signal, modified_signal
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        signal = Signal(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    signal = Signal(aoc_input)
     p1, p2 = signal.decode_signal()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day06.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

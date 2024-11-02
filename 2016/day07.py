@@ -3,12 +3,9 @@ Use regex to split the IP addresses in segments based on the brackets; the first
 that will be a supernet, while the second segment and every other after that will be a hypernet.
 From there on it's mostly just string parsing, with a sliding window over the strings to scan them for the patterns.
 """
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day07.txt')
 
 
 def contains_abba(word: str) -> bool:
@@ -72,13 +69,18 @@ class IpDatabase:
         return sum([1 if ip.supports_ssl() else 0 for ip in self.__ipaddr])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        iplist = IpDatabase(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    iplist = IpDatabase(aoc_input)
     print(f"Part 1: {iplist.get_tls_support_count()}")
     print(f"Part 2: {iplist.get_ssl_support_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

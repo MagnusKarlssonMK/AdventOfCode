@@ -5,11 +5,8 @@ For Part 2, make a recursive call on the dictionary to count the bags in the bag
 I added a memo cache for the recursion just in case, since I suspected that there would be a lot of repeated
 calls for the same bag, but it doesn't seem to make much of a performance difference.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day07.txt')
 
 
 class BagRules:
@@ -51,13 +48,18 @@ class BagRules:
         return count
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        rules = BagRules(file.read().strip('\n'))
-    print(f"Part 1: {rules.countcontainedin("shiny gold")}")
-    print(f"Part 2: {rules.countbagscontainedin("shiny gold")}")
-    return 0
+def main(aoc_input: str) -> None:
+    rules = BagRules(aoc_input)
+    print(f"Part 1: {rules.countcontainedin('shiny gold')}")
+    print(f"Part 2: {rules.countbagscontainedin('shiny gold')}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

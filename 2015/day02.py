@@ -1,9 +1,6 @@
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day02.txt')
 
 
 class PresentList:
@@ -25,13 +22,18 @@ class PresentList:
         return ribbon
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        presents = PresentList(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    presents = PresentList(aoc_input)
     print(f"Part 1: {presents.get_paper_total()}")
     print(f"Part 2: {presents.get_ribbon_total()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

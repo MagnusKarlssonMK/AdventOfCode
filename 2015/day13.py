@@ -7,11 +7,8 @@ people in the middle (who will not be affected by any further additions) yields 
 This works quite well and blazingly fast compared to brute-forcing with permutations, but the code is NASTY, definitely
 would benefit from some restructuring.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day13.txt')
 
 
 class SeatPlanner:
@@ -93,13 +90,18 @@ class SeatPlanner:
                     for i, p in enumerate(seating)])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        planner = SeatPlanner(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    planner = SeatPlanner(aoc_input)
     print(f"Part 1: {planner.get_max_happiness()}")
     print(f"Part 2: {planner.get_max_happiness(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

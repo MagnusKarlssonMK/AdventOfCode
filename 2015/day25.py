@@ -3,12 +3,9 @@ A simple function to translate the input coordinate to code number according to 
 description text. This is then used to determine how many times to re-calculate the starting value, which will give
 the answer.
 """
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day25.txt')
 
 
 class CodeGenerator:
@@ -37,12 +34,17 @@ class CodeGenerator:
         return code
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        code = CodeGenerator(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    code = CodeGenerator(aoc_input)
     print(f"Part 1: {code.get_code()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day25.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,12 +4,9 @@ is the answer to Part 1.
 For Part 2, make a recursive weight calculation of the tree, where each program checks the weight of its leafs (if any),
 and calculates and reports the required correction if discovered.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day07.txt')
 
 
 @dataclass
@@ -77,13 +74,18 @@ class Tower:
         return self.__programs[program].weight + (sum(leafweights) * sum([len(v) for v in leafweights.values()])), 0
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        tower = Tower(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    tower = Tower(aoc_input)
     print(f"Part 1: {tower.get_bottom_program_name()}")
     print(f"Part 2: {tower.get_correct_weight()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

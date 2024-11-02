@@ -3,11 +3,8 @@ Valid passwords are generated with an iter function, minimizing the number of nu
 the lowest valid password and then for each increment, adjust to follow the rules if necessary before completing
 the loop.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day04.txt')
 
 
 class PasswordGenerator:
@@ -57,13 +54,18 @@ class PasswordGenerator:
         return sum([1 for _ in self.__generate_pwds(exactlytwo)])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        pwdgen = PasswordGenerator(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    pwdgen = PasswordGenerator(aoc_input)
     print(f"Part 1: {pwdgen.get_password_count()}")
     print(f"Part 2: {pwdgen.get_password_count(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day04.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -7,11 +7,8 @@ Part 2: the sum increase for each generation will eventually converge to a const
 generations and checking the increase, and once it seems to have settled (using 10 times repeated delta here), we can
 calculate the final value.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day12.txt')
 
 
 class Tunnel:
@@ -52,13 +49,18 @@ class Tunnel:
         return sum(pots) + delta * (50_000_000_000 - generations)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        tunnel = Tunnel(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    tunnel = Tunnel(aoc_input)
     print(f"Part 1: {tunnel.get_pot_sum_small()}")
     print(f"Part 2: {tunnel.get_pot_sum_large()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

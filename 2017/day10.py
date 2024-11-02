@@ -2,11 +2,8 @@
 So we're basically building a hasher. I probably spent 98% of the time on this problem just trying to understand the
 description, but the actual coding of it is mostly straightforward.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day10.txt')
 
 
 class KnotHasher:
@@ -66,14 +63,18 @@ def parse_input(rawstr: str, use_ascii: bool = False) -> list[int]:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        rawstr = file.read().strip('\n')
+def main(aoc_input: str) -> None:
     knot = KnotHasher()
-    print(f"Part 1: {knot.get_test_multiple(parse_input(rawstr))}")
-    print(f"Part 2: {knot.get_knot_hash(parse_input(rawstr, True))}")
-    return 0
+    print(f"Part 1: {knot.get_test_multiple(parse_input(aoc_input))}")
+    print(f"Part 2: {knot.get_knot_hash(parse_input(aoc_input, True))}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day10.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

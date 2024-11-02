@@ -7,13 +7,10 @@ might be some more clever way to do this, but basically just try and rotate left
 would result in the correct result, and that way we will eventually find the origin string that generated the
 result from calling this operation.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day21.txt')
 
 
 class Instr(Enum):
@@ -138,13 +135,18 @@ class Scrambler:
         return descrambled.pwd
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        scrambler = Scrambler(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    scrambler = Scrambler(aoc_input)
     print(f"Part 1: {scrambler.get_scrambled_string('abcdefgh')}")
     print(f"Part 2: {scrambler.get_descrambled_string('fbgdceah')}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day21.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

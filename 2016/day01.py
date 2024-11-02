@@ -5,13 +5,10 @@ Part 2: Store the visited points in a set and stop when landing on a point that 
 manhattan distance of that point. Note that unlike part 1, this means that we need to walk every single point one step
 at a time, and not directly jump the number of steps in the instruction in one giant step.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum, auto
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day01.txt')
 
 
 class Rotation(Enum):
@@ -68,13 +65,18 @@ class WalkingSimulator:
         return pos.manhattan()
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        sim = WalkingSimulator(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    sim = WalkingSimulator(aoc_input)
     print(f"Part 1: {sim.get_shortest_distance()}")
     print(f"Part 2: {sim.get_shortest_distance(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day01.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

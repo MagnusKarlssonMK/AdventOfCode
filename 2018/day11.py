@@ -1,11 +1,8 @@
 """
 Using 'summed-area table' algorithm. (https://en.wikipedia.org/wiki/Summed-area_table)
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day11.txt')
 
 
 class FuelCellGrid:
@@ -51,13 +48,18 @@ class FuelCellGrid:
         return f"{max_fuelcell_x},{max_fuelcell_y},{max_fuelcell_size}"
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        grid = FuelCellGrid(int(file.read().strip('\n')))
+def main(aoc_input: str) -> None:
+    grid = FuelCellGrid(int(aoc_input))
     print(f"Part 1: {grid.get_maxpower_coord()}")
     print(f"Part 2: {grid.get_advanced_maxpower_coord()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

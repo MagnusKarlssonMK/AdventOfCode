@@ -3,12 +3,9 @@ Store the trench in a class as a list of dig steps, i.e. expands as we dig throu
 After the dig commands have been carried out, the results are calculated with shoelace formula and Pick's theorem.
 For part 2, simply convert the instructions before running the command.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -68,13 +65,18 @@ class Trench:
         return (abs(areasum) // 2) + 1 + (length // 2)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mytrench = Trench(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mytrench = Trench(aoc_input)
     print(f"Part 1: {mytrench.get_areapoints()}")
     print(f"Part 2: {mytrench.get_areapoints(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day18.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

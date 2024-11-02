@@ -3,13 +3,10 @@ Another assembly simulator of sorts. Nothing special about part 1, but a bit mor
 two programs running in parallel and communcicating with messages. Mostly just a matter of having two instances of
 everything, keeping track of the progam states and toggling the 'running' program.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day18.txt')
 
 
 @dataclass(frozen=True)
@@ -132,13 +129,18 @@ class Duet:
         return send_count
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        duet = Duet(file.read().strip())
+def main(aoc_input: str) -> None:
+    duet = Duet(aoc_input)
     print(f"Part 1: {duet.get_recovered_freq()}")
     print(f"Part 2: {duet.get_duet_send_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day18.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

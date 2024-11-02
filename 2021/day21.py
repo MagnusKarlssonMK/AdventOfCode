@@ -2,13 +2,10 @@
 Recursive solution, using pre-computed values for part 2 to generate possible rolls and the corresponding number of
 combinations yielding that roll. Also uses memo from functools to get the recursion done in decent time.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from functools import lru_cache
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day21.txt')
 
 
 @dataclass(frozen=True)
@@ -57,13 +54,18 @@ class Game:
             return max(game.get_dirac_score())
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        game = Game(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    game = Game(aoc_input)
     print(f"Part 1: {game.get_finalscore()}")
     print(f"Part 2: {game.get_finalscore(False)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day21.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

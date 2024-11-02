@@ -5,14 +5,11 @@ similarly to the previous day, which here really just made it much harder to act
 Basically keep game data in a state class which recursively tries different sequences of spells and finds the
 most mana efficient one.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum, auto
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day22.txt')
 
 
 class Spells(Enum):
@@ -141,13 +138,18 @@ class WizardSim:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        game = WizardSim(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    game = WizardSim(aoc_input)
     print(f"Part 1: {game.get_cheapest_win()}")
     print(f"Part 2: {game.get_cheapest_win(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

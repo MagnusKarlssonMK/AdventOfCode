@@ -1,11 +1,8 @@
 """
 Very basic calculation for Part 1. Include a bit of recursion for Part 2.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day01.txt')
 
 
 def calc_mass(mass: int, countfuel: bool = False) -> int:
@@ -15,13 +12,18 @@ def calc_mass(mass: int, countfuel: bool = False) -> int:
     return fuel_own_mass + calc_mass(fuel_own_mass, countfuel)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        nbrs = list(map(int, file.read().strip('\n').splitlines()))
+def main(aoc_input: str) -> None:
+    nbrs = list(map(int, aoc_input.splitlines()))
     print("Part 1:", sum([calc_mass(nbr) for nbr in nbrs]))
     print("Part 2:", sum([calc_mass(nbr, True) for nbr in nbrs]))
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit((main()))
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day01.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -5,13 +5,10 @@ all line combinations and storing only intersecting points in a set, this simple
 best. The first alternative is noticably slower, and the second alternative is slightly faster but much more
 complicated implementation and scales badly with increased number of lines.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day05.txt')
 
 
 @dataclass(frozen=True)
@@ -69,13 +66,18 @@ class Seabottom:
         return sum([1 for y in self.__grid for x in y if x > 1])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        seabottom = Seabottom(file.read().strip('\n').splitlines())
+def main(aoc_input: str) -> None:
+    seabottom = Seabottom(aoc_input.splitlines())
     print(f"Part 1: {seabottom.get_score()}")
     print(f"Part 2: {seabottom.get_score(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

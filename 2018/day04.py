@@ -2,14 +2,11 @@
 Parsing, parsing, parsing... and then some sorting.
 Not much else to say, just some dict trickery to extract the corresponding values / keys from the records.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day04.txt')
 
 
 class Event(Enum):
@@ -83,14 +80,19 @@ class Record:
         return maxasleep[0] * maxasleep[2], maxminute[0] * maxminute[2]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        record = Record(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    record = Record(aoc_input)
     p1, p2 = record.get_guard_id()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day04.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

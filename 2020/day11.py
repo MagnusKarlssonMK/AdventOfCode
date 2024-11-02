@@ -2,12 +2,9 @@
 Pre-calculate the neighbor seats in all directions for every seat, which is done differently for Part 1 vs Part 2. This
 does most of the heavy lifting, so after that just keep playing rounds until the occupied seats no longer changes.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day11.txt')
 
 
 @dataclass(frozen=True)
@@ -70,13 +67,18 @@ class WaitingArea:
             occupied_chairs = buffer
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        area = WaitingArea(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    area = WaitingArea(aoc_input)
     print(f"Part 1: {area.get_steadystate_occupied()}")
     print(f"Part 2: {area.get_steadystate_occupied(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

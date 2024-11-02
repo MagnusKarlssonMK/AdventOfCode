@@ -1,15 +1,12 @@
 """
 Oh boy, just when I assumed that day 15 was done dealt with, we get another one just like it...
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 import re
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day24.txt')
 
 
 class Team(Enum):
@@ -147,14 +144,19 @@ class ImmuneSystemSimulator:
         return p1, p2
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        iss = ImmuneSystemSimulator(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    iss = ImmuneSystemSimulator(aoc_input)
     p1, p2 = iss.get_winning_units()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

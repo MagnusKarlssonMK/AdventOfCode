@@ -1,9 +1,6 @@
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day15.txt')
 
 
 def mergeintervals(intervallist: list[list[int]]) -> iter:
@@ -93,13 +90,18 @@ class Zone:
         return True
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myzone = Zone(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myzone = Zone(aoc_input)
     print(f"Part 1: {myzone.get_coverage(2000000)}")
     print(f"Part 2: {myzone.get_darkpointfreq(4000000)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day15.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

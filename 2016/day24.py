@@ -8,11 +8,8 @@ Based on this we can then do BFS with keeping a sorted list of the visited numbe
 
 For part 2, simply modify the stop condition of the BFS to also require the current point to be 0.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day24.txt')
 
 
 class AirDucts:
@@ -80,13 +77,18 @@ class AirDucts:
         return shortest_path
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        grid = AirDucts(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    grid = AirDucts(aoc_input)
     print(f"Part 1: {grid.get_shortest_path()}")
     print(f"Part 2: {grid.get_shortest_path(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

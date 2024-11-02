@@ -4,11 +4,8 @@ first move the east-moving ones, and then process the south-moving cucumbers bas
 stores in dictionaries per x/y coordinate rather than dumping it all in giant sets of x/y coordinates, which makes it a
 bit more complicated but seems to speed up the execution quite a bit.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day25.txt')
 
 
 class Seabottom:
@@ -64,12 +61,17 @@ class Seabottom:
             self.__south = next_south
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        bottom = Seabottom(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    bottom = Seabottom(aoc_input)
     print(f"Part 1: {bottom.get_rounds_stop_moving()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day25.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

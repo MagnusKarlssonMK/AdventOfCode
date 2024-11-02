@@ -6,13 +6,10 @@ and then add those to the instruction queue. Monitor the bot outputs to see when
 answer to Part 1. Once the queue is emptied, the answer to part 2 is found by multiplyeing the values stored in
 the first three outputs.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day10.txt')
 
 
 class Node(Enum):
@@ -87,13 +84,18 @@ class Factory:
         return self.__outputs[0][0] * self.__outputs[1][0] * self.__outputs[2][0]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        factory = Factory(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    factory = Factory(aoc_input)
     print(f"Part 1: {factory.get_comparing_bot_id()}")
     print(f"Part 2: {factory.get_output_prod()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day10.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -1,13 +1,10 @@
 """
 Store the wires in a dict and use operator class to represent gates, then get the answer recursively.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 import operator
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day07.txt')
 
 
 @dataclass
@@ -61,13 +58,18 @@ class Circuit:
         return retval
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mycircuit = Circuit(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mycircuit = Circuit(aoc_input)
     print(f"Part 1: {mycircuit.get_a_wire_value()}")
     print(f"Part 2: {mycircuit.get_a_wire_value(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

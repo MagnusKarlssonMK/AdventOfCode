@@ -4,11 +4,8 @@ to an adjacency graph of neighboring ones. The answer for part 1 is then the num
 For part 2, simply traverse through the graph with a simple BFS to identify the groups, similar to the solution for
 day 12.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day14.txt')
 
 
 class KnotHasher:
@@ -87,13 +84,18 @@ class Disk:
         return groups
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        disk = Disk(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    disk = Disk(aoc_input)
     print(f"Part 1: {disk.get_squares_count()}")
     print(f"Part 2: {disk.get_groups_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day14.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

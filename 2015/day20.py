@@ -4,11 +4,8 @@ Basically simulates the present delivery by iterating over the elfs from 1 and u
 of the lowest house found yet reaching the target to avoid iterating further over higher houses that have no chance of
 winning.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day20.txt')
 
 
 class ElfDelivery:
@@ -47,13 +44,18 @@ class ElfDelivery:
         return upper_bound
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        delivery = ElfDelivery(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    delivery = ElfDelivery(aoc_input)
     print(f"Part 1: {delivery.get_lowest_house()}")
     print(f"Part 2: {delivery.get_lowest_house_lazy_elf()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

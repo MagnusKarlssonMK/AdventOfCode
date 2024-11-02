@@ -2,11 +2,8 @@
 Although the description sort of teases with 'travelling salesman', this actually only comes down to a number of
 simple BFS's through the map to find out which nodes are connected.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day12.txt')
 
 
 class Village:
@@ -42,13 +39,18 @@ class Village:
         return len(self.__sorted)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        village = Village(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    village = Village(aoc_input)
     print(f"Part 1: {village.get_group_0_size()}")
     print(f"Part 2: {village.get_groups_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

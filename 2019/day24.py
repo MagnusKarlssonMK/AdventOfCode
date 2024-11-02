@@ -4,11 +4,8 @@ of neighbor masks (current, inner and outer level) for each bit in the grid.
 For future cleanup: I started out the parsing and neighbor relation mapping aiming to do it dynamically based on the
 size of the input, but when filling in the bits for other levels for part 2 I just assumed a 5x5 grid.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day24.txt')
 
 
 class Eris:
@@ -109,13 +106,18 @@ class Eris:
         return sum([level.count('1') for level in current.values()])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        eris = Eris(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    eris = Eris(aoc_input)
     print(f"Part 1: {eris.get_first_repetition_diveristy()}")
     print(f"Part 2: {eris.get_recursive_bugs_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -2,11 +2,8 @@
 Dictionary based solution, same for both Part 1 and Part 2.
 P1 zips by fast, but P2 takes a handful of seconds.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day15.txt')
 
 
 class MemoryGame:
@@ -29,13 +26,18 @@ class MemoryGame:
         return lastspoken
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygame = MemoryGame(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygame = MemoryGame(aoc_input)
     print(f"Part 1: {mygame.playrounds(2020)}")
     print(f"Part 2: {mygame.playrounds(30_000_000)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day15.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

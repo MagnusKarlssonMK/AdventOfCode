@@ -3,13 +3,10 @@ Mostly straightforward just figuring out how to use the computer.
 A bit unclear from the description for part 1 whether it counts as painting a tile if the output color is the same as
 input, but it seems like it should be counted.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from intcode import Intcode, IntResult
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day11.txt')
 
 
 @dataclass(frozen=True)
@@ -73,13 +70,18 @@ class PaintingRobot:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        robot = PaintingRobot(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    robot = PaintingRobot(aoc_input)
     print(f"Part 1: {robot.get_painted_panels_count()}")
     print(f"Part 2: {robot.get_registration_id()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

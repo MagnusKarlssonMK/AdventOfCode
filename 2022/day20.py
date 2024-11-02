@@ -1,9 +1,6 @@
-import sys
+import time
 from pathlib import Path
 from collections import deque
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day20.txt')
 
 
 class Sequence:
@@ -37,13 +34,18 @@ class Sequence:
         return sum([mixed_nbrs[(mixed_nbrs.index(0) + n) % len(mixed_nbrs)] for n in Sequence.__GROVE_COORDINATES])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        sequence = Sequence(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    sequence = Sequence(aoc_input)
     print(f"Part 1: {sequence.get_coordsum()}")
     print(f"Part 2: {sequence.get_encryptedcoordsum()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -1,10 +1,7 @@
-import sys
+import time
 from pathlib import Path
 import math
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day11.txt')
 
 
 class Monkey:
@@ -63,13 +60,18 @@ class KeepAway:
         return result[0] * result[1]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        game = KeepAway(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    game = KeepAway(aoc_input)
     print(f"Part 1: {game.get_monkey_level()}")
     print(f"Part 2: {game.get_monkey_level(10_000, False)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

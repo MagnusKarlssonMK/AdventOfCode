@@ -12,12 +12,9 @@ For part 2, it's simply game of life again. For each round, check the neighbors 
 whether to flip it to white, and also store any white neigbors and check them afterward to see which ones to flip to
 black.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day24.txt')
 
 
 STR_TO_POINT = {'ne': (1, -1), 'e': (1, 0), 'se': (0, 1), 'sw': (-1, 1), 'w': (-1, 0), 'nw': (0, -1)}
@@ -86,13 +83,18 @@ class Hexgrid:
         return len(self.__black_tiles)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        hexgrid = Hexgrid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    hexgrid = Hexgrid(aoc_input)
     print(f"Part 1: {hexgrid.get_nbr_black_tiles()}")
     print(f"Part 2: {hexgrid.flip_and_get_nbr_black_tiles()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

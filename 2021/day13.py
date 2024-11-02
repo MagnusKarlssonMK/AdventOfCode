@@ -2,11 +2,8 @@
 Solution: store the parsed coordinates in a Paper class, in a set rather than a list to easier handle overlapping
 points when folding the paper later.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day13.txt')
 
 
 class Paper:
@@ -46,16 +43,21 @@ class Paper:
         grid = [['.' for _ in range(self.__width)] for _ in range(self.__height)]
         for r, c in self.__coordinates:
             grid[r][c] = "#"
-        return f"{''.join([line + '\n' for line in [''.join(s) for s in grid]])}"
+        return ''.join([line + '\n' for line in [''.join(s) for s in grid]])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mypaper = Paper(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mypaper = Paper(aoc_input)
     print(f"Part 1: {mypaper.fold_and_get_dots()}")
     print(f"Part 2: \n{mypaper}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

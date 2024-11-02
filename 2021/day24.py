@@ -4,13 +4,10 @@ to inspect the program and try to reverse engineer what it is doing. The monad p
 of instructions with slightly different numbers as arguments, i.e. each chunk represents one calculcation per digit in
 the model number.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day24.txt')
 
 
 class Op(Enum):
@@ -56,13 +53,18 @@ class ALU:
         return int(''.join(map(str, modelnbr)))
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        alu = ALU(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    alu = ALU(aoc_input)
     print(f"Part 1: {alu.get_model_nbr()}")
     print(f"Part 2: {alu.get_model_nbr(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day24.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

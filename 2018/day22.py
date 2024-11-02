@@ -9,14 +9,11 @@ Also using a weighted time for the pq, adding 'best case scenario' to the remain
 to the time used for queue prioritization only, to try to steer the states towards the target node. This basically
 turns the algorithm into A*, since the added weight acts as heuristic.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day22.txt')
 
 
 class Tool(Enum):
@@ -136,13 +133,18 @@ class Cave:
         return visited[target]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cave = Cave(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cave = Cave(aoc_input)
     print(f"Part 1: {cave.get_total_risk_level()}")
     print(f"Part 2: {cave.get_shortest_path()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

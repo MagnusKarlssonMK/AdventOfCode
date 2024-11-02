@@ -1,12 +1,9 @@
 """
 Some regex juggling and a recursive function to step the password.
 """
-import sys
+import time
 from pathlib import Path
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day11.txt')
 
 
 class Password:
@@ -40,15 +37,20 @@ class Password:
         return f"{self.__pwd}"
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        pwd = Password(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    pwd = Password(aoc_input)
     pwd = pwd.get_new_password()
     print(f"Part 1: {pwd}")
     pwd = pwd.get_new_password()
     print(f"Part 2: {pwd}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

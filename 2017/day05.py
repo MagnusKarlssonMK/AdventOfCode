@@ -3,11 +3,8 @@ Straightforward; just step through the program with a stackpointer, while modify
 described in the instructions. The only difference between part 1 and 2 is the step for the program modification at
 each jump.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day05.txt')
 
 
 class CPU:
@@ -27,13 +24,18 @@ class CPU:
         return count
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cpu = CPU(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cpu = CPU(aoc_input)
     print(f"Part 1: {cpu.get_exit_step_count()}")
     print(f"Part 1: {cpu.get_exit_step_count(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

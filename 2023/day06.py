@@ -3,14 +3,11 @@ Uses quadratic formula to calculate the two points where the score intersects th
 challenges was to round them off in the right direction, to also account for the few cases where the solution was
 exactly the same value as the old record.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 import math
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day06.txt')
 
 
 @dataclass(frozen=True)
@@ -41,13 +38,18 @@ class Competition:
         return megarace.get_score()
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myrace = Competition(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myrace = Competition(aoc_input)
     print(f"Part 1: {myrace.get_race_product()}")
     print(f"Part 2: {myrace.get_megarace_score()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day06.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

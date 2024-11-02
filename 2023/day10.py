@@ -3,12 +3,9 @@ Store the data in a grid, then for Part 1 simply walk through the system until r
 the answer by dividing the number of steps taken by 2. For part 2, calculate the answer by first determining the area
 with the shoelace formula and then use that with Pick's theorem.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day10.txt')
 
 
 @dataclass(frozen=True)
@@ -82,13 +79,18 @@ class Maze:
         return area + 1 - (len(self.__pipepath) // 2)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mymaze = Maze(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mymaze = Maze(aoc_input)
     print(f"Part 1: {mymaze.get_farpoint_length()}")
     print(f"Part 2: {mymaze.get_enclosed_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day10.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

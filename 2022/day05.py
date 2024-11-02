@@ -3,13 +3,10 @@ Stores the input data in a crateship class, containing the crates and procedures
 method running the procedures. This is done on a local copy of the crate data to avoid having to create a copy
 of the entire class for Part 2.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day05.txt')
 
 
 class Crateship:
@@ -37,13 +34,18 @@ class Crateship:
         return ''.join([crates[key][-1] for key in list(crates.keys())])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        ship = Crateship(*file.read().strip('\n').split('\n\n'))
+def main(aoc_input: str) -> None:
+    ship = Crateship(*aoc_input.split('\n\n'))
     print(f"Part 1: {ship.run_procedures()}")
     print(f"Part 2: {ship.run_procedures(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

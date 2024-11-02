@@ -1,12 +1,9 @@
 """
 Uses the json module to load the data and then traverses it recursivly to count the content.
 """
-import sys
+import time
 from pathlib import Path
 import json
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day12.txt')
 
 
 class JSON:
@@ -30,13 +27,18 @@ class JSON:
         return 0  # strings have no value
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        json_data = JSON(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    json_data = JSON(aoc_input)
     print(f"Part 1: {json_data.get_number_sum()}")
     print(f"Part 2: {json_data.get_number_sum('red')}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day12.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

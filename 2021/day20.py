@@ -6,11 +6,8 @@ some point.
 Also - unlike the example input, the real input toggles the void at each enhancement. So we also need to keep track
 of the state of the void and use that for creating the outer buffer to get the correct result at the boundaries.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day20.txt')
 
 
 class Image:
@@ -55,14 +52,19 @@ class Image:
         return sum([line.bit_count() for line in self.__image])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myimg = Image(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myimg = Image(aoc_input)
     print(f"Part 1: {myimg.get_enhancement_count(2)}")
     print(f"Part 2: {myimg.get_enhancement_count(48)}")
     # Note: The state of the image is stored after the first two rounds, so we only need to do another 48 to get to 50.
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,11 +4,8 @@ generate the adjacent nodes every single time. When taking a step, go through al
 they already flashed this step), and if a node flashes, increment all adjacent nodes, i.e. incrementation is done
 recursively.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day11.txt')
 
 
 class Cavern:
@@ -60,18 +57,20 @@ class Cavern:
                 p1 = self.__flashcount
         return p1, p2 + 1
 
-    def __str__(self):
-        return f"{''.join([''.join([str(n) for n in row]) + '\n' for row in self.__grid])}"
 
-
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cavern = Cavern(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cavern = Cavern(aoc_input)
     p1, p2 = cavern.get_flashcounts()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

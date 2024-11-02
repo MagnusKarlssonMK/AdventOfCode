@@ -4,14 +4,11 @@ point (500, 0), trail the water path with a DFS, falling down as far as possible
 After the queue is exhausted, the answers can be found by counting the number of tiles in state 'resting'/'flowing'
 for part 1, 'resting' for part 2.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from enum import Enum, auto
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day17.txt')
 
 
 class Tile(Enum):
@@ -91,14 +88,19 @@ class Ground:
         return p1, p2
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        ground = Ground(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    ground = Ground(aoc_input)
     p1, p2 = ground.get_water_tile_count()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

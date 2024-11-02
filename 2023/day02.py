@@ -2,14 +2,11 @@
 Most of the work here is parsing the input, with that done it's mostly down to walking through the content and checking
 the specified conditions.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day02.txt')
 
 
 @dataclass(frozen=True)
@@ -66,13 +63,18 @@ class GameRecord:
         return sum([game.get_power() for game in self.__games])
 
 
-def main() -> int:
-    with open(INPUT_FILE, "r") as file:
-        record = GameRecord(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    record = GameRecord(aoc_input)
     print(f"Part 1: {record.get_valid_games_value()}")
     print(f"Part 2: {record.get_total_power()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

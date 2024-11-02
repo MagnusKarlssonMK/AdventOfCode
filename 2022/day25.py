@@ -2,12 +2,9 @@
 Stores the SNAFU value in a simple class which then implements the 'add' function, which adds two SNAFU numbers
 directly without converting to/from decimal. Then simply add all the numbers read from the input data.
 """
-import sys
+import time
 from pathlib import Path
 from itertools import zip_longest
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day25.txt')
 
 
 class SNAFU:
@@ -51,12 +48,17 @@ class FuelRequirements:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        reqs = FuelRequirements(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    reqs = FuelRequirements(aoc_input)
     print(f"Part 1: {reqs.get_console_nbr()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day25.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

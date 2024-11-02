@@ -4,12 +4,9 @@ The main challenge here is for part 2 - obviously we don't want to run 1B simula
 many rounds are needed until it starts over with the same value. When knowing that cycle length, we can use the stored
 values to directly calculate what the value will be after 1B rounds.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day16.txt')
 
 
 @dataclass(frozen=True)
@@ -57,13 +54,18 @@ class Dance:
         return self.__seen[(target_rounds - 1) % cycle_len]  # Target - 1 since initial value is not included in seen
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        dance = Dance(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    dance = Dance(aoc_input)
     print(f"Part 1: {dance.get_one_round_order()}")
     print(f"Part 2: {dance.get_one_billion_rounds_order()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day16.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

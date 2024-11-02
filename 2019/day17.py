@@ -8,14 +8,11 @@ three programs. Needs to be tested with more inputs to see if it holds up.
 Also, some room for improvement in the juggling between string and list formats of the scaffold / function
 representations, particularly in the functon for generating the A/B/C-functions.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from intcode import Intcode, IntResult
 import re
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day17.txt')
 
 
 @dataclass(frozen=True)
@@ -211,13 +208,18 @@ class Scaffold:
         return outputbuffer[-1]
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        scaffold = Scaffold(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    scaffold = Scaffold(aoc_input)
     print(f"Part 1: {scaffold.get_alignment_sum()}")
     print(f"Part 2: {scaffold.get_dust_collected()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

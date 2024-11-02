@@ -6,11 +6,8 @@ there it's mostly down to doing the necessary transformations for each step.
 For a rainy day: a bit curious if it could run even faster by using recursion instead and expanding the dictionary
 sort of like a memo cache along the way for larger block sizes?
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2017/day21.txt')
 
 
 def flipblock(inblock: tuple[str, ...]) -> tuple[str, ...]:
@@ -59,13 +56,18 @@ class ImageConverter:
         return ''.join(image).count('#')
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        converter = ImageConverter(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    converter = ImageConverter(aoc_input)
     print(f"Part 1: {converter.get_pixel_count(5)}")
     print(f"Part 1: {converter.get_pixel_count(18)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2017/day21.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

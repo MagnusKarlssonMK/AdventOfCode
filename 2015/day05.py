@@ -3,11 +3,8 @@ Part 1: Just scan each string to see if they follow the rules, quit immediately 
 Part 2: First search each string to check the second rule for repeated with one distance, if not found then quit, else
 continue to check the first rule by using the python 'count' function which counts non-overlapping occurrences.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day05.txt')
 
 
 class SantaString:
@@ -50,13 +47,18 @@ class SantaText:
         return sum([1 if s.is_nice(new_rules) else 0 for s in self.__strings])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        textfile = SantaText(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    textfile = SantaText(aoc_input)
     print(f"Part 1: {textfile.get_nice_count()}")
     print(f"Part 1: {textfile.get_nice_count(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

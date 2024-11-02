@@ -7,12 +7,9 @@ on the fly.
 As a small potential optimization, both parts could be kept in the same 'expanded' object and an input parameter
 to the 'get' function could set the limits on which parts of the grid can be used.
 """
-import sys
+import time
 from pathlib import Path
 from heapq import heappop, heappush
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2021/day15.txt')
 
 
 class Cavegrid:
@@ -58,15 +55,19 @@ class Cavegrid:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        indata = file.read().strip('\n')
-        cave = Cavegrid(indata)
-        largecave = Cavegrid(indata, True)
+def main(aoc_input: str) -> None:
+    cave = Cavegrid(aoc_input)
+    largecave = Cavegrid(aoc_input, True)
     print("Part 1:", cave.get_minimum_risk())
     print("Part 2:", largecave.get_minimum_risk())
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2021/day15.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

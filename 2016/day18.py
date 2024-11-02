@@ -2,11 +2,8 @@
 Super simple, but also not superfast for part 2.
 Gets the job done in 5 seconds or so, but I can't help but wonder if there is some hidden trick to optimize it...
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day18.txt')
 
 
 class TrapRoom:
@@ -28,13 +25,18 @@ class TrapRoom:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        room = TrapRoom(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    room = TrapRoom(aoc_input)
     print(f"Part 1: {room.get_safetile_count(40)}")
     print(f"Part 2: {room.get_safetile_count(400000)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day18.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

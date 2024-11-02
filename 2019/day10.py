@@ -2,13 +2,10 @@
 Use atan2 to calculate angles between asteroids, with some extra trickery to compensate for the 'upside-down'
 coordinate system.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from math import atan2, degrees
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day10.txt')
 
 
 @dataclass(frozen=True)
@@ -59,13 +56,18 @@ class AsteriodMap:
         return (100 * winner.x) + winner.y
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        asteroids = AsteriodMap(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    asteroids = AsteriodMap(aoc_input)
     print(f"Part 1: {asteroids.get_best_asteroid_count()}")
     print(f"Part 2: {asteroids.get_winning_asteroid()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day10.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

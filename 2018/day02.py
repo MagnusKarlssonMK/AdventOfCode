@@ -4,12 +4,9 @@ exactly 2 / 3 repetitions. Guess I could have used count from itertools, but meh
 Part 2: Go through the combinations of strings and generate a string of the matching characters; if its length is
 exactly 1 smaller, we found the match.
 """
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day02.txt')
 
 
 class Warehouse:
@@ -36,13 +33,18 @@ class Warehouse:
         return ''
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        warehouse = Warehouse(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    warehouse = Warehouse(aoc_input)
     print(f"Part 1: {warehouse.get_checksum()}")
     print(f"Part 2: {warehouse.get_common_letters()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

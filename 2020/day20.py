@@ -6,15 +6,12 @@ re-asssembling the image it gets really wonky.
 This solution also assumes that all edges are unique, i.e. that all tiles have exactly one possible neighbor in the
 directions that a neighbor exists, and none on the border edges.
 """
-import sys
+import time
 from pathlib import Path
 from itertools import combinations
 from math import prod
 from dataclasses import dataclass
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day20.txt')
 
 
 class Directions(Enum):
@@ -187,13 +184,18 @@ class Image:
         return total_points - len(monster_points)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        img = Image(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    img = Image(aoc_input)
     print(f"Part 1: {img.get_corner_checksum()}")
     print(f"Part 2: {img.get_water_roughness()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day20.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

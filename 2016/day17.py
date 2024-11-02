@@ -5,13 +5,10 @@ This is used in a simple BFS loop which runs until all paths either get locked i
 and from the found paths the answer to part 1 is the first entry (the actual path), and the answer to part 2 is the
 length of the last entry.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 import hashlib
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day17.txt')
 
 
 GRID_SIZE = 4
@@ -49,14 +46,19 @@ class Vault:
         return found_paths[0], len(found_paths[-1])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        vault = Vault(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    vault = Vault(aoc_input)
     p1, p2 = vault.get_shortestpath()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day17.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -6,13 +6,10 @@ a stripped down BFS is used to traverse the bouncers and record the movement. Th
 when entering a bouncer in a direction that has already been seen and then not continue that path, since that would
 otherwise likely create an endless loop.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day16.txt')
 
 
 @dataclass(frozen=True)
@@ -184,13 +181,18 @@ class Grid:
         return result
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygrid = Grid(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygrid = Grid(aoc_input)
     print(f"Part 1: {mygrid.get_energized_tiles()}")
     print(f"Part 2: {mygrid.get_max_energized_tiles()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day16.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

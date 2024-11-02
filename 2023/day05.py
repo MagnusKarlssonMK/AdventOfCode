@@ -4,12 +4,9 @@ and see what it has been translated to in the other end.
 For part 2 however it gets a lot more messy when the seeds are ranges themselves, which then gets split into other
 ranges as they travel through the map filters, which means a bit of recursion when evaluating the filter translations.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day05.txt')
 
 
 @dataclass(frozen=True)
@@ -84,13 +81,18 @@ class Almanac:
         return sorted(seedranges, key=lambda r: r.start)[0].start
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        myalmanac = Almanac(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    myalmanac = Almanac(aoc_input)
     print(f"Part 1: {myalmanac.get_lowest_location()}")
     print(f"Part 2: {myalmanac.get_lowest_ranged_location()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day05.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

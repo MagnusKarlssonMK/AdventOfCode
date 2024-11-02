@@ -1,9 +1,6 @@
-import sys
+import time
 from pathlib import Path
 from enum import Enum
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day02.txt')
 
 
 class Hand(Enum):
@@ -42,13 +39,18 @@ class StrategyBook:
         return sum([opponent.get_score(opponent.determine_response(you)) for opponent, you in self.__rounds])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        book = StrategyBook(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    book = StrategyBook(aoc_input)
     print(f"Part 1: {book.get_assumed_total_score()}")
     print(f"Part 2: {book.get_correct_total_score()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -3,12 +3,9 @@ Simple BFS solution, and implementing the neighbor generator function in a point
 The only difference between Part 1 & 2 is in the stop condition for the search function; in part 1 we are looking
 for a specific target node, while for part 2 we want to walk 50 steps and then check number of seen nodes.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -52,13 +49,18 @@ class CubicleMaze:
         return len(seen)
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        maze = CubicleMaze(int(file.read().strip('\n')))
+def main(aoc_input: str) -> None:
+    maze = CubicleMaze(int(aoc_input))
     print(f"Part 1: {maze.get_count()}")
     print(f"Part 2: {maze.get_count(Point(0, 0), 50)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

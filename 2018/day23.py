@@ -4,16 +4,13 @@ use manhattan distance to count how many other bots are in its range.
 Solution to part 2 is basically treating the nanobots as cubes and splits them into smaller and smaller with A* until
 down to a single coordinate.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 import math
 from heapq import heappop, heappush
 from itertools import count, product
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day23.txt')
 
 
 @dataclass(frozen=True)
@@ -107,13 +104,18 @@ class Teleport:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        teleport = Teleport(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    teleport = Teleport(aoc_input)
     print(f"Part 1: {teleport.get_in_range_largest_bot()}")
     print(f"Part 2: {teleport.get_best_position_distance()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day23.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,13 +4,10 @@ sort the hands. The power value is generated as a hex value with the hand result
 this way the different hands can be sorted according to the rules. The power calculation method is done in two variants,
 one basic for Part 1 and one using jokers for Part 2.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from collections import Counter
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2023/day07.txt')
 
 
 class HandResults(Enum):
@@ -105,13 +102,18 @@ class CamelCards:
         return sum([hand.bid * (rank + 1) for rank, hand in enumerate(self.__hands)])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        mygame = CamelCards(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    mygame = CamelCards(aoc_input)
     print(f"Part 1: {mygame.get_winnings()}")
     print(f"Part 2: {mygame.get_winnings(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2023/day07.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

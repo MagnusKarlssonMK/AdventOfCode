@@ -5,14 +5,11 @@ Part 2 is not clear at all from the problem description what the joystick actual
 the game, but apparently all we need to do is to steer the x-position of the paddle towards the ball (so it's basically
 sort of an Arkanoid game), e.g. if ball < paddle steer left.
 """
-import sys
+import time
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
 from intcode import Intcode, IntResult
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2019/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -92,13 +89,18 @@ class ArcadeGame:
         return score
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        arcade = ArcadeGame(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    arcade = ArcadeGame(aoc_input)
     print(f"Part 1: {arcade.get_block_tiles()}")
     print(f"Part 2: {arcade.get_winning_score()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2019/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

@@ -4,13 +4,10 @@ point.
 For part 1, keep moving step-by-step until first collision is registered.
 For part 2, keep going until there is only one cart left.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day13.txt')
 
 
 @dataclass(frozen=True)
@@ -117,13 +114,18 @@ class TrackSystem:
         return f"{p.col},{p.row}"
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        tracks = TrackSystem(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    tracks = TrackSystem(aoc_input)
     print(f"Part 1: {tracks.get_first_crash_location()}")
     print(f"Part 2: {tracks.get_last_cart_location()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day13.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

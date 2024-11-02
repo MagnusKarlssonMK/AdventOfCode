@@ -7,13 +7,10 @@ squares have been counted more than once.
 While doing that, mark up the claims that don't have overlap just to prune what we need to check for Part 2. Then
 go over those once more and find which one still doesn't have overlap after the entire dict has been built.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2018/day03.txt')
 
 
 @dataclass(frozen=True)
@@ -59,14 +56,19 @@ class Fabric:
         return overlap_count, -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        fabric = Fabric(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    fabric = Fabric(aoc_input)
     p1, p2 = fabric.get_overlap_and_id()
     print(f"Part 1: {p1}")
     print(f"Part 2: {p2}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2018/day03.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

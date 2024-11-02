@@ -14,14 +14,11 @@ the grid and then calculate the answer by hand, but to keep it at least a little
 nodes.
 2. Add the row length multiplied by 5 for the cost of moving G to the top left.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day22.txt')
 
 
 @dataclass
@@ -79,13 +76,18 @@ class Cluster:
         return g_steps + (5 * (self.__max_x - 1))
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        cluster = Cluster(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    cluster = Cluster(aoc_input)
     print(f"Part 1: {cluster.get_viable_pairs_count()}")
     print(f"Part 2: {cluster.get_fewest_steps_count()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day22.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

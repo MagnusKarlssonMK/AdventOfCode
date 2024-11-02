@@ -3,15 +3,11 @@ Basic structure is a game consisting of a shop and two players (the player and t
 all possible equipment combinations from the shop and then simulate the battle to see who wins. The collected result
 can then be used to determine the answers to both part 1 and 2.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2015/day21.txt')
-SHOP_FILE = Path(ROOT_DIR, '2015/day21_shop.txt')
 
 
 @dataclass(frozen=True)
@@ -144,17 +140,23 @@ def parse_shop(rawstr: str) -> dict:
     return items
 
 
-def main():
+def main(aoc_input: str, shop_input: str) -> None:
+    game = Game(aoc_input, shop_input)
+    part1, part2 = game.get_loadouts()
+    print(f"Part 1: {part1}")
+    print(f"Part 2: {part2}")
+
+
+if __name__ == "__main__":
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2015/day21.txt')
+    SHOP_FILE = Path(ROOT_DIR, '2015/day21_shop.txt')
+
+    start_time = time.perf_counter()
     with open(INPUT_FILE, 'r') as file_boss:
         bossdata = file_boss.read().strip('\n')
     with open(SHOP_FILE, 'r') as file_shop:
         shopdata = file_shop.read().strip('\n')
-    game = Game(bossdata, shopdata)
-    part1, part2 = game.get_loadouts()
-    print(f"Part 1: {part1}")
-    print(f"Part 2: {part2}")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+    main(bossdata, shopdata)
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

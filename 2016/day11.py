@@ -5,15 +5,12 @@ floor of its microchip and its generator. (Not doing this abstraction causes the
 different permutations of isotopes in the same overall state, just different names on the corresponding positions).
 For part 2, simply add 2 isotopes with both generators and microchips on the first floor and run again.
 """
-import sys
+import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
 from copy import deepcopy
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2016/day11.txt')
 
 
 @dataclass(frozen=True)
@@ -112,13 +109,18 @@ class Facility:
         return -1
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        facility = Facility(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    facility = Facility(aoc_input)
     print(f"Part 1: {facility.get_min_steps()}")
     print(f"Part 2: {facility.get_min_steps(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2016/day11.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

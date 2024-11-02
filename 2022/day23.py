@@ -4,11 +4,8 @@ in a dict along the way. Elf positions are stored in a dict with a mapped intege
 neighbors.
 NOT a fast solution, but gets the job done (completes in about 10s). Not sure how it can be further optimized.
 """
-import sys
+import time
 from pathlib import Path
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2022/day23.txt')
 
 
 class MapScan:
@@ -76,14 +73,19 @@ class MapScan:
         return sum((x, y) not in self.__elfs for y in range(y_min, y_max + 1) for x in range(x_min, x_max + 1))
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        elfs = MapScan(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    elfs = MapScan(aoc_input)
     elfs.run_simulation()
     print(f"Part 1: {elfs.get_roundscore(10)}")
     print(f"Part 2: {elfs.get_stablerounds()}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2022/day23.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")

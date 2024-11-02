@@ -1,12 +1,9 @@
 """
 Mostly an exercise in string parsing, checking the content after that is pretty straightforward.
 """
-import sys
+import time
 from pathlib import Path
 from dataclasses import dataclass
-
-ROOT_DIR = Path(Path(__file__).parents[2], 'AdventOfCode-Input')
-INPUT_FILE = Path(ROOT_DIR, '2020/day02.txt')
 
 
 @dataclass(frozen=True)
@@ -37,13 +34,18 @@ class Database:
         return sum([1 for p in self.__passwords if p.is_valid(newpolicy)])
 
 
-def main() -> int:
-    with open(INPUT_FILE, 'r') as file:
-        pwdb = Database(file.read().strip('\n'))
+def main(aoc_input: str) -> None:
+    pwdb = Database(aoc_input)
     print(f"Part 1: {pwdb.get_valid_passwords_count()}")
     print(f"Part 2: {pwdb.get_valid_passwords_count(True)}")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
+    INPUT_FILE = Path(ROOT_DIR, '2020/day02.txt')
+
+    start_time = time.perf_counter()
+    with open(INPUT_FILE, 'r') as file:
+        main(file.read().strip('\n'))
+    end_time = time.perf_counter()
+    print(f"Total time (ms): {1000 * (end_time - start_time)}")
