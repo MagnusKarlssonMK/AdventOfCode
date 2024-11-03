@@ -7,8 +7,7 @@ import re
 
 
 class Password:
-    RULE_ONE = re.compile(r"abc|bcd|cde|def|efg|fgh|pqr|rst|stu|tuv|uvw|vwx|wxy|xyz")
-    RULE_TWO = re.compile(r"[^iol]")
+    RULE_ONE = re.compile(r"abc|bcd|cde|def|efg|fgh|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz")
     RULE_THREE = re.compile(r"(.)\1.*(.)\2")
 
     def __init__(self, rawstr: str) -> None:
@@ -16,16 +15,20 @@ class Password:
 
     def __get_next_pwd(self, old_pwd: str) -> str:
         old_pwd_list = list(old_pwd)
-        if old_pwd_list[-1] == 'z':
+        last_char = old_pwd_list[-1]
+        if last_char == 'z':
             return self.__get_next_pwd(''.join(old_pwd_list[0:-1])) + 'a'
-        old_pwd_list[-1] = chr(ord(old_pwd_list[-1]) + 1)
+        if last_char in ('h', 'k', 'n'):
+            old_pwd_list[-1] = chr(ord(last_char) + 2)
+        else:
+            old_pwd_list[-1] = chr(ord(last_char) + 1)
         return ''.join(old_pwd_list)
 
     def get_new_password(self) -> "Password":
         new_pwd = self.__pwd
         while True:
             new_pwd = self.__get_next_pwd(new_pwd)
-            if Password.RULE_ONE.search(new_pwd) and Password.RULE_TWO.search(new_pwd):
+            if Password.RULE_ONE.search(new_pwd):
                 pairs = Password.RULE_THREE.search(new_pwd)
                 if pairs:
                     p1, p2 = pairs.groups()
