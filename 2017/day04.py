@@ -20,11 +20,8 @@ class PassphraseList:
         else:
             result = 0
             for line in self.__pwds:
-                words = [set(w) for w in line]
-                for w1, w2 in combinations(words, 2):
-                    if w1 == w2:
-                        break
-                else:
+                sortedwords = [''.join(sorted(word)) for word in line]
+                if len(sortedwords) == len(set(sortedwords)):
                     result += 1
             return result
 
