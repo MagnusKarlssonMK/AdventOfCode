@@ -25,7 +25,7 @@ class Point:
 class Head:
     def __init__(self) -> None:
         self.__pos = Point(0, 0)
-        self.__direction = Point(1, 0)
+        self.__direction = Point(0, 1)
 
     def get_pos(self) -> Point:
         return self.__pos
@@ -53,9 +53,7 @@ class Memory:
     def get_manhattan_distance(self) -> int:
         head = Head()
         points: set[Point] = {head.get_pos()}
-        head.step()
-        i = 2
-        points.add(head.get_pos())
+        i = 1
         while i < self.__nbr:
             head.step(head.get_left() not in points)
             i += 1
@@ -64,9 +62,8 @@ class Memory:
 
     def get_larger_number(self) -> int:
         head = Head()
-        points: dict[Point: int] = {head.get_pos(): 1}
-        head.step()
-        points[head.get_pos()] = i = 1
+        i = 1
+        points: dict[Point: int] = {head.get_pos(): i}
         while i <= self.__nbr:
             head.step(head.get_left() not in points)
             i = 0
