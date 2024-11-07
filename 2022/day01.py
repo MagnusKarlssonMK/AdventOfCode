@@ -11,9 +11,6 @@ class Elf:
         self.calories = calories
         self.totalcalories = sum(calories)
 
-    def __str__(self):
-        return f"{self.calories}"
-
 
 class ElfGroup:
     def __init__(self, rawstr: str) -> None:

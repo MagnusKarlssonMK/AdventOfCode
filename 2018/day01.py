@@ -15,9 +15,9 @@ class Device:
         return sum(self.__nbrs)
 
     def get_calibration_value(self) -> int:
-        seen = set()
         i = 0
         freq = 0
+        seen = {freq}
         while True:
             freq += self.__nbrs[i]
             if freq in seen:
