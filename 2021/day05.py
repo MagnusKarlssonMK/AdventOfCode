@@ -49,13 +49,11 @@ class Line:
                 break
             point += dxdy
 
-    def __repr__(self):
-        return f"Line: {self.__points[0]} - {self.__points[1]}"
-
 
 class Seabottom:
-    def __init__(self, inputlines: list[str]) -> None:
-        self.__lines = [Line(*list(map(int, re.findall(r"\d+", line)))) for line in inputlines]
+    def __init__(self, inputlines: str) -> None:
+        self.__lines = [Line(*list(map(int, re.findall(r"\d+", line))))
+                        for line in inputlines.splitlines()]
         self.__grid = [[0 for _ in range(Line.max_x + 1)] for _ in range(Line.max_y + 1)]
 
     def get_score(self, use_diagonal: bool = False) -> int:
@@ -67,7 +65,7 @@ class Seabottom:
 
 
 def main(aoc_input: str) -> None:
-    seabottom = Seabottom(aoc_input.splitlines())
+    seabottom = Seabottom(aoc_input)
     print(f"Part 1: {seabottom.get_score()}")
     print(f"Part 2: {seabottom.get_score(True)}")
 

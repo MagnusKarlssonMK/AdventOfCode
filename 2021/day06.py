@@ -14,13 +14,13 @@ class Fishies:
         for nbr in nbrs:
             self.__states[nbr] += 1
 
-    def get_answers(self) -> tuple[int, int]:
+    def get_answers(self, p1_days: int = 80) -> tuple[int, int]:
         p1 = 0
         for n in range(256):
             state_0 = self.__states.pop(0)
             self.__states[6] += state_0
             self.__states.append(state_0)
-            if n == 79:
+            if n == p1_days - 1:
                 p1 = sum(self.__states)
         return p1, sum(self.__states)
 
