@@ -34,6 +34,8 @@ class Maze:
         # Note: when starting at 'S', take whatever direction we find first, it doesn't matter which way we walk
         for direction in Maze.__DIRECTIONS.values():
             v = self.__get_value(self.__startpoint + direction)
+            if v == '.':
+                continue
             if direction.get_reverse() in [Maze.__DIRECTIONS[p] for p in Maze.__PIPES[v]]:
                 self.__startdirection = direction
                 break
