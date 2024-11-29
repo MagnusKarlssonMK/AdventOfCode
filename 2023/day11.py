@@ -30,14 +30,11 @@ class Point:
 
 
 class Space:
-    __SMALL_EXPANSION_RATE = 2
-    __LARGE_EXPANSION_RATE = 1_000_000
-
     def __init__(self, rawstr: str) -> None:
         self.__galaxies: list[Point] = [Point(x, y) for y, line in enumerate(rawstr.splitlines())
                                         for x, c in enumerate(line) if c == "#"]
 
-    def get_distance_sum(self) -> tuple[int, int]:
+    def get_distance_sum(self, small_exp_rate: int = 2, large_exp_rate: int = 1_000_000) -> tuple[int, int]:
         total_steps = 0
         total_emptyspace = 0
         x_occupied = set([g.x for g in self.__galaxies])
@@ -51,8 +48,8 @@ class Space:
                                  sum([1 for y in y_empty if y_range[0] < y < y_range[1]]))
             total_steps += g1.get_manhattan(g2)
         # Note: -1 on the expansion rates since those tiles are already counted once in normal steps
-        return (total_steps + total_emptyspace * (Space.__SMALL_EXPANSION_RATE - 1),
-                total_steps + total_emptyspace * (Space.__LARGE_EXPANSION_RATE - 1))
+        return (total_steps + total_emptyspace * (small_exp_rate - 1),
+                total_steps + total_emptyspace * (large_exp_rate - 1))
 
 
 def main(aoc_input: str) -> None:

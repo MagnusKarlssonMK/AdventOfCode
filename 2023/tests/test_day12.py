@@ -1,0 +1,25 @@
+from day12 import SpringRecord
+
+# ----------- Part 1 ------------
+
+def test_part1_1() -> None:
+    test_string = '''???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1'''
+    test_input = SpringRecord(test_string)
+    assert test_input.get_arrangement_sum() == 21
+
+# ----------- Part 2 ------------
+
+def test_part2_1() -> None:
+    test_string = '''???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1'''
+    test_input = SpringRecord(test_string)
+    assert test_input.get_arrangement_sum(5) == 525152

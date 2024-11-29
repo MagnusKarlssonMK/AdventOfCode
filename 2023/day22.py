@@ -36,7 +36,7 @@ class GroundZero:
         self.__count = 0
         self.__grid = [[(0, '') for _ in range(y_size)] for _ in range(x_size)]
 
-    def drop_newbrick(self, brick: Brick) -> [int, set[str]]:
+    def drop_newbrick(self, brick: Brick) -> list[int, set[str]]:
         """Finds the lowest available Z-coordinate for brick with ID 'uid' and updates the grid with the new brick.
         Returns the new lowest Z-value and a list of the id's of the bricks it is resting on."""
         new_z = 0
@@ -60,7 +60,7 @@ class GroundZero:
 class Grid:
     def __init__(self, rawstr: str) -> None:
         self.__moving_bricks: list[Brick] = []
-        self.__resting_bricks: dict[str: Brick, [str], [str]] = {}  # {id: Brick, down-ids, up-ids}
+        self.__resting_bricks: dict[str: Brick, list[str], list[str]] = {}  # {id: Brick, down-ids, up-ids}
         for line in rawstr.splitlines():
             left, right = line.split("~")
             x1, y1, z1 = [int(nbr) for nbr in left.split(',')]
