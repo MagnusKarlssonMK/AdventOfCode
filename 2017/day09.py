@@ -1,5 +1,4 @@
 """
-Recursive solution to break down the string into smaller parts.
 """
 import time
 from pathlib import Path
@@ -8,48 +7,39 @@ from pathlib import Path
 class Stream:
     def __init__(self, rawstr: str) -> None:
         self.__s = rawstr
-        self.__garbagecount = 0
 
-    def __get_group_score(self, startidx: int, level: int) -> tuple[int, int]:  # stopidx, score
-        i = startidx
-        ignored = False
-        garbage = False
+    def get_score_and_garbage(self) -> tuple[int, int]:
+        i = 0
+        garbage_count = 0
         score = 0
+        level = 1
         while i < len(self.__s):
-            if ignored:
-                ignored = False
-            elif garbage:
-                if self.__s[i] == '>':
-                    garbage = False
-                elif self.__s[i] == '!':
-                    ignored = True
-                else:
-                    self.__garbagecount += 1
-            else:
-                match self.__s[i]:
-                    case '{':
-                        i, new_score = self.__get_group_score(i + 1, level + 1)
-                        score += new_score
-                    case '}':
-                        return i, score + level
-                    case '<':
-                        garbage = True
-                    case '!':
-                        ignored = True
+            match self.__s[i]:
+                case "<":
+                    i += 1
+                    while i < len(self.__s):
+                        match self.__s[i]:
+                            case "!":
+                                i += 1
+                            case ">":
+                                break
+                            case _:
+                                garbage_count += 1
+                        i += 1
+                case "{":
+                    score += level
+                    level += 1
+                case "}":
+                    level -= 1
             i += 1
-        return -1, -1
-
-    def get_total_score(self) -> int:
-        return self.__get_group_score(1, 1)[1]
-
-    def get_total_garbage(self) -> int:
-        return self.__garbagecount
+        return score, garbage_count
 
 
 def main(aoc_input: str) -> None:
     stream = Stream(aoc_input)
-    print(f"Part 1: {stream.get_total_score()}")
-    print(f"Part 2: {stream.get_total_garbage()}")
+    p1, p2 = stream.get_score_and_garbage()
+    print(f"Part 1: {p1}")
+    print(f"Part 2: {p2}")
 
 
 if __name__ == "__main__":
