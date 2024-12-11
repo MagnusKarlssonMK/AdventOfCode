@@ -7,10 +7,10 @@ class Placeholder:
         pass
 
     def get_p1(self) -> int:
-        1
+        return 1
 
     def get_p2(self) -> int:
-        2
+        return 2
 
 
 def main(aoc_input: str) -> None:
