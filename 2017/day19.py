@@ -26,7 +26,7 @@ class Point:
 class Diagram:
     def __init__(self, rawstr: str) -> None:
         self.__grid = rawstr.splitlines()
-        self.__start = Point(0, len(self.__grid[0]) - 1)
+        self.__start = Point(0, self.__grid[0].find('|'))
 
     def __get_point(self, p: Point) -> str:
         if not 0 <= p.row < len(self.__grid):
