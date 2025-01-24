@@ -6,6 +6,7 @@ SAN -> COM, then find where those two paths meet and get the answer from the rem
 """
 import time
 from pathlib import Path
+from functools import lru_cache
 
 
 class OrbitMap:
@@ -29,6 +30,7 @@ class OrbitMap:
     def get_orbitcount(self) -> int:
         return sum([self.__get_allorbits(x) for x in self.__orbits])
 
+    @lru_cache(maxsize=2000)
     def __get_allorbits(self, obj: str) -> int:
         if obj not in self.__orbits:
             return 0
