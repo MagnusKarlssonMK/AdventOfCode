@@ -1,6 +1,5 @@
 """
 Dictionary based solution, same for both Part 1 and Part 2.
-P1 zips by fast, but P2 takes a handful of seconds.
 """
 import time
 from pathlib import Path
@@ -16,13 +15,9 @@ class MemoryGame:
             nbrs[self.__startlist[i]] = i
         lastspoken = self.__startlist[-1]
         for turn in range(len(self.__startlist), rounds):
-            if lastspoken not in nbrs:
-                nbrs[lastspoken] = turn - 1
-                lastspoken = 0
-            else:
-                speak = turn - nbrs[lastspoken] - 1
-                nbrs[lastspoken] = turn - 1
-                lastspoken = speak
+            speak = 0 if lastspoken not in nbrs else turn - nbrs[lastspoken] - 1
+            nbrs[lastspoken] = turn - 1
+            lastspoken = speak
         return lastspoken
 
 

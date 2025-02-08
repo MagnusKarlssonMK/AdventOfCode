@@ -40,7 +40,7 @@ class TicketData:
         validnearby: list[Ticket] = []
         for ticket in self.__nearby:
             for nbr in ticket.nbrs:
-                if not self.__containedinfield(nbr):
+                if not any([f.is_inrange(nbr) for f in self.__fields]):
                     invalid_nbrs.append(nbr)
                     break
             else:
@@ -48,19 +48,10 @@ class TicketData:
         self.__nearby = validnearby
         return sum(invalid_nbrs)
 
-    def __containedinfield(self, nbr: int) -> bool:
-        for i in range(len(self.__fields)):
-            if self.__fields[i].is_inrange(nbr):
-                return True
-        return False
-
     def get_departurescore(self) -> int:
         nbrsets = [set([nt.nbrs[i] for nt in self.__nearby]) for i in range(len(self.__nearby[0].nbrs))]
-        possible = []
-        for i, nbrset in enumerate(nbrsets):
-            possible.append([field.name for field in self.__fields
-                             if all([field.is_inrange(nbr) for nbr in nbrset])])
-        possible = list(zip([i for i in range(len(possible))], possible))
+        possible = [[field.name for field in self.__fields if all([field.is_inrange(nbr) for nbr in nbrset])] for nbrset in nbrsets]
+        possible = [(i, p) for i, p in enumerate(possible)]
         possible = sorted(possible, key=lambda x: len(x[1]))
         queue = [[p] for p in possible[0][1]]
         paths = []

@@ -51,22 +51,22 @@ class Computer:
 
     def get_memorysum_v2(self) -> int:
         memory: dict[int: int] = {}
-        bitmask = ''
         xmask = 0
+        addrmasks = []
         for instr in self.__instr:
             if instr.action == Action.MASK:
-                bitmask = instr.val1
                 x = ''
-                for c in bitmask:
+                for c in instr.val1:
                     if c == 'X':
                         x += '0'
                     else:
                         x += '1'
                 xmask = int(x, 2)
+                addrmasks = self.__mask_value(instr.val1)
             elif instr.action == Action.MEM:
                 addr = int(instr.val1)
                 val = int(instr.val2)
-                for mask in self.__mask_value(bitmask):
+                for mask in addrmasks:
                     memory[(addr & xmask) | mask] = val
         return sum(list(memory.values()))
 

@@ -12,13 +12,11 @@ OPMAP = {'+': operator.add, '*': operator.mul}
 
 def shunting_yard(line: str, is_advanced: bool) -> int:
     # Generate the output buffer with shunting yard
-    inp = list(line)
     output = []
     opstack = []
-    while inp:
-        c = inp.pop(0)
+    for c in line:
         if c.isdigit():
-            output.append(int(c))
+            output.append(c)
         elif c in OPMAP:
             while opstack:
                 if opstack[-1] != '(' and (not is_advanced or not (opstack[-1] == '*' and c == '+')):
@@ -38,8 +36,8 @@ def shunting_yard(line: str, is_advanced: bool) -> int:
     while output:
         o = output.pop(0)
         if o in OPMAP:
-            v1 = evaluated.pop()
-            v2 = evaluated.pop()
+            v1 = int(evaluated.pop())
+            v2 = int(evaluated.pop())
             evaluated.append(OPMAP[o](v1, v2))
         else:
             evaluated.append(o)
