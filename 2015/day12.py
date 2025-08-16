@@ -8,7 +8,6 @@ import json
 
 class JSON:
     def __init__(self, rawstr: str) -> None:
-        self.__jsonstr = rawstr
         self.__json = json.loads(rawstr)
 
     def get_number_sum(self, ignored: str = None) -> int:
