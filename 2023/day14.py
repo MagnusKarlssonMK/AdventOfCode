@@ -1,159 +1,192 @@
 """
-Inspired by the solution to day 13, I tried a binary representation to this problem as well, using bitmasks to
-make the round rocks fall in whatever the tilt direction is set to in a tetris style, i.e. one step at a time.
-This turned out to be very ineffiecient though with many repetitions and especially complicates the 'rotation' part
-unnecessarily. It gets the job done but very slow Part 2, so it would probably be much more efficient to store it in a
-regular grid matrix, possibly combined with row / column dictionaries for faster lookups of available positions.
 """
 import time
 from pathlib import Path
+from dataclasses import dataclass
 
 
-tiltdirections = {"None": 0, "North": 1, "East": 2, "South": 3, "West": 4}
+# I really want to move Point and Grid to utility packages, but not exactly
+# best friends with the python import system...
+@dataclass(frozen=True)
+class Point:
+    x: int
+    y: int
+
+    def rotate_left(self) -> "Point":
+        return Point(self.y, -self.x)
+
+    def rotate_right(self) -> "Point":
+        return Point(-self.y, self.x)
+
+    def manhattan(self, other: "Point") -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+    def determinant(self, other: "Point") -> int:
+        return (self.x * other.y) - (self.y * other.x)
+
+    def __add__(self, other: "Point") -> "Point":
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other: "Point") -> "Point":
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, m: int) -> "Point":
+        return Point(self.x * m, self.y * m)
 
 
-class Board:
-    def __init__(self, rawinput: str):
-        self.width = 0
-        self.tilt = tiltdirections["None"]
-        self.roundrows = []
-        self.cuberows = []
-        for rowstring in rawinput.splitlines():
-            self.width = max(self.width, len(rowstring))
-            binroundstring = ""
-            bincubestring = ""
-            for char in rowstring:
-                binroundstring += "1" if char == "O" else "0"
-                bincubestring += "1" if char == "#" else "0"
-            self.roundrows.append(int(binroundstring, 2))
-            self.cuberows.append(int(bincubestring, 2))
+ORIGIN = Point(0, 0)
+LEFT = Point(-1, 0)
+RIGHT = Point(1, 0)
+UP = Point(0, -1)
+DOWN = Point(0, 1)
 
-    def settilt(self, newdirection: tiltdirections):
-        if newdirection == tiltdirections["North"]:
-            self.tilt = newdirection
-            isinrest = False
-            while not isinrest:
-                isinrest = True
-                for rowindex in range(0, len(self.roundrows) - 1):
-                    a = self.roundrows[rowindex]
-                    b = self.roundrows[rowindex + 1]
-                    c = self.cuberows[rowindex]
-                    new_a = (b & ~c) | a
-                    new_b = (a | c) & b
-                    if a != new_a or b != new_b:
-                        isinrest = False
-                        self.roundrows[rowindex] = new_a
-                        self.roundrows[rowindex + 1] = new_b
-        elif newdirection == tiltdirections["South"]:
-            self.tilt = newdirection
-            isinrest = False
-            while not isinrest:
-                isinrest = True
-                for rowindex in reversed(range(1, len(self.roundrows))):
-                    a = self.roundrows[rowindex]
-                    b = self.roundrows[rowindex - 1]
-                    c = self.cuberows[rowindex]
-                    new_a = (b & ~c) | a
-                    new_b = (a | c) & b
-                    if a != new_a or b != new_b:
-                        isinrest = False
-                        self.roundrows[rowindex] = new_a
-                        self.roundrows[rowindex - 1] = new_b
-        elif newdirection == tiltdirections["East"]:
-            self.tilt = newdirection
-            isinrest = False
-            while not isinrest:
-                isinrest = True
-                for rowindex in range(0, len(self.roundrows)):
-                    oldvalue = self.roundrows[rowindex]
-                    for n in range(0, self.width):
-                        b1 = (self.roundrows[rowindex] >> n) & 1
-                        g1 = (self.cuberows[rowindex] >> n) & 1
-                        if g1 | b1 == 0:
-                            b2 = (self.roundrows[rowindex] >> (n + 1)) & 1
-                            tmp = b1 ^ b2
-                            tmp = (tmp << n) | (tmp << (n + 1))
-                            self.roundrows[rowindex] ^= tmp
-                    if oldvalue != self.roundrows[rowindex]:
-                        isinrest = False
-        elif newdirection == tiltdirections["West"]:
-            self.tilt = newdirection
-            isinrest = False
-            while not isinrest:
-                isinrest = True
-                for rowindex in range(0, len(self.roundrows)):
-                    oldvalue = self.roundrows[rowindex]
-                    for n in reversed(range(1, self.width)):
-                        b1 = (self.roundrows[rowindex] >> n) & 1
-                        g1 = (self.cuberows[rowindex] >> n) & 1
-                        if g1 | b1 == 0:
-                            b2 = (self.roundrows[rowindex] >> (n - 1)) & 1
-                            tmp = b1 ^ b2
-                            tmp = (tmp << n) | (tmp << (n - 1))
-                            self.roundrows[rowindex] ^= tmp
-                    if oldvalue != self.roundrows[rowindex]:
-                        isinrest = False
+DIAG_R_D = Point(1, 1)
+DIAG_L_D = Point(-1, 1)
+DIAG_L_U = Point(-1, -1)
+DIAG_R_U = Point(1, -1)
+
+NEIGHBORS_STRAIGHT = [RIGHT, DOWN, LEFT, UP]
+NEIGHBORS_ALL = [RIGHT, DIAG_R_D, DOWN, DIAG_L_D, LEFT, DIAG_L_U, UP, DIAG_R_U]
+
+
+class Grid:
+    def __init__(self, s: str):
+        '''Creates a new Grid object based on the string input.
+        Assumes that the input is in valid format.'''
+        lines = s.splitlines()
+        self.x_max: int = len(lines[0])
+        self.y_max: int = len(lines)
+        self.elements: list[str] = [c for c in s if c != "\n"]
+
+    def get_element(self, p: Point) -> str:
+        '''Returns the element in a certain point in the grid.
+        If the input point is out-of-bounds, an empty string is returned.'''
+        if 0 <= p.x < self.x_max and 0 <= p.y < self.y_max:
+            return self.elements[(self.x_max * p.y) + p.x]
         else:
-            print("Tilt direction not implemented yet")
+            return ""
 
-    def getidstring(self):
-        retval = ""
-        for nbr in self.roundrows:
-            retval += str(nbr) + ":"
-        return retval
+    def find(self, item: str) -> Point:
+        '''Searches the Grid for an element matching item. The first one found
+        will be returned as a Point, searching top left to the right and then down.
+        If no match is found, (-1, -1) is returned.'''
+        for i, e in enumerate(self.elements):
+            if e == item:
+                return Point(i % self.x_max, i // self.x_max)
+        return Point(-1, -1)
 
-    def getload(self):
-        totalsum = 0
-        size = len(self.roundrows)
-        for rowindex, roundrow in enumerate(self.roundrows):
-            totalsum += roundrow.bit_count() * (size - rowindex)
-        return totalsum
+    def get_index(self, p: Point) -> int:
+        '''Returns the Point corresponding to an index in the Grid element array.
+        Will return -1 if the input is out-of-bounds.'''
+        if 0 <= p.x < self.x_max and 0 <= p.y < self.y_max:
+            return self.x_max * p.y + p.x
+        else:
+            return -1
 
-    def __str__(self):
-        tmpstring = ""
-        for tmprow in range(0, len(self.roundrows)):
-            tmpbinround = format(self.roundrows[tmprow], str(self.width)+'b')
-            tmpbincube = format(self.cuberows[tmprow], str(self.width)+'b')
-            for charindex in range(0, len(tmpbinround)):
-                if tmpbincube[charindex] == "1":
-                    tmpstring += "#"
-                elif tmpbinround[charindex] == "1":
-                    tmpstring += "0"
-                else:
-                    tmpstring += "."
-            tmpstring += "\n"
-        return tmpstring
+    def set_point(self, p: Point, v: str):
+        '''Sets the Point p to the value v. Will do nothing if p is out-of-bounds.'''
+        if 0 <= p.x < self.x_max and 0 <= p.y < self.y_max:
+            self.elements[self.x_max * p.y + p.x] = v
+
+
+class ReflectorDish:
+    def __init__(self, rawinput: str):
+        self.grid = Grid(rawinput)
+
+    def tilt_north(self):
+        for x in range(0, self.grid.x_max):
+            floor = 0
+            for y in range(0, self.grid.y_max):
+                current_point = Point(x, y)
+                e = self.grid.get_element(current_point)
+                if e == "#":
+                    floor = y + 1
+                elif e == "O":
+                    if y > floor:
+                        self.grid.set_point(Point(x, floor), "O")
+                        self.grid.set_point(current_point, ".")
+                    floor += 1
+
+    def tilt_south(self):
+        for x in range(0, self.grid.x_max):
+            floor = self.grid.y_max - 1
+            for y in reversed(range(0, self.grid.y_max)):
+                current_point = Point(x, y)
+                e = self.grid.get_element(current_point)
+                if e == "#":
+                    floor = y - 1
+                elif e == "O":
+                    if y < floor:
+                        self.grid.set_point(Point(x, floor), "O")
+                        self.grid.set_point(current_point, ".")
+                    floor -= 1
+
+    def tilt_east(self):
+        for y in range(0, self.grid.y_max):
+            floor = self.grid.x_max - 1
+            for x in reversed(range(0, self.grid.x_max)):
+                current_point = Point(x, y)
+                e = self.grid.get_element(current_point)
+                if e == "#":
+                    floor = x - 1
+                elif e == "O":
+                    if x < floor:
+                        self.grid.set_point(Point(floor, y), "O")
+                        self.grid.set_point(current_point, ".")
+                    floor -= 1
+
+    def tilt_west(self):
+        for y in range(0, self.grid.y_max):
+            floor = 0
+            for x in range(0, self.grid.x_max):
+                current_point = Point(x, y)
+                e = self.grid.get_element(current_point)
+                if e == "#":
+                    floor = x + 1
+                elif e == "O":
+                    if x > floor:
+                        self.grid.set_point(Point(floor, y), "O")
+                        self.grid.set_point(current_point, ".")
+                    floor += 1
+
+    def cycle(self):
+        self.tilt_north()
+        self.tilt_west()
+        self.tilt_south()
+        self.tilt_east()
+
+    def get_load(self):
+        return sum([self.grid.y_max - (i // self.grid.x_max) for i, e in enumerate(self.grid.elements) if e == "O"])
+
+    def get_part_1(self) -> int:
+        self.tilt_north()
+        return self.get_load()
+
+    def get_part_2(self) -> int:
+        target_cycles = 1_000_000_000
+        seen: dict[str, int] = {}
+        loads: list[int] = []
+
+        for cycle in range(0, target_cycles):
+            self.cycle()
+            loads.append(self.get_load())
+            k = str(self.grid.elements)
+            if k in seen:
+                previous = seen[k]
+                idx = previous + ((target_cycles - 1 - previous) % (cycle - previous))
+                return loads[idx]
+            else:
+                seen[k] = cycle
+        return 0
 
 
 def main(aoc_input: str) -> None:
-    myboard = Board(aoc_input)
+    dish = ReflectorDish(aoc_input)
+    p1 = dish.get_part_1()
+    print(f"Part 1: {p1}")
 
-    myboard.settilt(tiltdirections["North"])
-    print(f"Part 1: {myboard.getload()}")
-
-    cycles = 1000000000
-    count = 0
-    cyclelength = 0
-    seen = {myboard.getidstring()}
-    seenlist = [myboard.getidstring()]
-
-    while count < cycles:
-        count += 1
-        myboard.settilt(tiltdirections["North"])
-        myboard.settilt(tiltdirections["West"])
-        myboard.settilt(tiltdirections["South"])
-        myboard.settilt(tiltdirections["East"])
-        thiscycle = myboard.getidstring()
-        if cyclelength == 0 and thiscycle in seen:
-            firstcycleindex = seenlist.index(thiscycle)
-            cyclelength = count - firstcycleindex
-            print("Cycling! Count = ", count, "Cyclelen = ", cyclelength)
-            count += cyclelength * ((cycles - count) // cyclelength)
-            print("New count = ", count)
-        seen.add(thiscycle)
-        seenlist.append(thiscycle)
-
-    print(f"Part 2: {myboard.getload()}")
+    p2 = dish.get_part_2()
+    print(f"Part 2: {p2}")
 
 
 if __name__ == "__main__":
