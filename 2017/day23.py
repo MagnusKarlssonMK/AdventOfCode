@@ -20,7 +20,7 @@ class Instr:
 
 class Register:
     def __init__(self, regs: set[str], a_init: int = 0) -> None:
-        self.__regs: dict[str: int] = {r: 0 for r in regs}
+        self.__regs: dict[str, int] = {r: 0 for r in regs}
         self.__regs['a'] = a_init
 
     def get_value(self, attr: str) -> int:
@@ -41,7 +41,7 @@ class Register:
 class Coprocessor:
     def __init__(self, rawstr: str) -> None:
         self.__registers = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}
-        self.__instr = []
+        self.__instr: list[Instr] = []
         for line in rawstr.splitlines():
             t = line.split()
             self.__instr.append(Instr(*t))
@@ -64,6 +64,8 @@ class Coprocessor:
                     if regs.get_value(i.attr1) != 0:
                         sp += regs.get_value(i.attr2)
                         continue
+                case _:
+                    pass
             sp += 1
         return mulcount
 
@@ -86,6 +88,8 @@ class Coprocessor:
                     if regs.get_value(i.attr1) != 0:
                         sp += regs.get_value(i.attr2)
                         continue
+                case _:
+                    pass
             sp += 1
 
         # b_jump grabbed directly from the input, this assumes that the jump is located on this specific row

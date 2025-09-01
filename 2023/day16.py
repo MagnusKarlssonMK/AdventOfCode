@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 from enum import Enum
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -40,7 +41,7 @@ class BouncerType(Enum):
     FWD_BOUNCE = '/'
     BCK_BOUNCE = '\\'
 
-    def bounce_light(self, indir: Direction) -> iter:
+    def bounce_light(self, indir: Direction) -> Generator[Direction]:
         match self:
             case BouncerType.HOR_SPLIT:
                 if indir in (Direction.LEFT, Direction.RIGHT):
@@ -68,10 +69,10 @@ class BouncerType(Enum):
 
 class Grid:
     def __init__(self, rawstr: str) -> None:
-        self.__bouncers: dict[Point: BouncerType] = {}
-        self.__bouncersperrow: dict[int: list[int]] = {}
-        self.__bouncerspercol: dict[int: list[int]] = {}
-        grid = []
+        self.__bouncers: dict[Point, BouncerType] = {}
+        self.__bouncersperrow: dict[int, list[int]] = {}
+        self.__bouncerspercol: dict[int, list[int]] = {}
+        grid: list[str] = []
         for y, line in enumerate(rawstr.splitlines()):
             grid.append(line)
             for x, c in enumerate(line):
@@ -88,8 +89,8 @@ class Grid:
                     self.__bouncerspercol[x] = [y]
         self.__width = len(grid[0])
         self.__height = len(grid)
-        self.__lit_tiles = set()
-        self.__adj: dict[tuple[Point, Direction]: set[tuple[Point, Direction]]] = {}
+        self.__lit_tiles: set[Point] = set()
+        self.__adj: dict[tuple[Point, Direction], set[tuple[Point, Direction]]] = {}
         for b in self.__bouncers:
             for indir in Direction:
                 outdir = [d for d in self.__bouncers[b].bounce_light(indir)]

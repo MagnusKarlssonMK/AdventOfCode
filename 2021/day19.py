@@ -30,10 +30,10 @@ class Probe:
     __NBR_OF_BEACONS = 12
 
     def __init__(self, rawstr: str) -> None:
-        self.__scanners = {}
+        self.__scanners: dict[int, set[Point]] = {}
         for i, block in enumerate(rawstr.split('\n\n')):
             self.__scanners[i] = set([Point(*map(int, line.split(','))) for line in block.splitlines()[1:]])
-        self.__offsets = []
+        self.__offsets: list[Point] = []
 
     def __create_map(self):
         aligned = [0]
@@ -41,8 +41,8 @@ class Probe:
 
         while queue:
             for a in aligned:
-                offset_list = []
-                rotation = []
+                offset_list: list[int] = []
+                rotation: list[tuple[int, int]] = []
                 found = -1
                 for u in queue:
                     for base_i in range(3):

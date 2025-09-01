@@ -20,7 +20,7 @@ class Cavegrid:
         if expanded:
             self.__height *= 5
             self.__width *= 5
-        self.__adj: dict[tuple[int, int]: list[tuple[int, int, int]]] = {}
+        self.__adj: dict[tuple[int, int], list[tuple[int, int, int]]] = {}
         for row in range(self.__height):
             for col in range(self.__width):
                 self.__adj[(row, col)] = []
@@ -37,9 +37,9 @@ class Cavegrid:
     def get_minimum_risk(self) -> int:
         start = 0, 0
         end = self.__height - 1, self.__width - 1
-        costs = {start: 0}
-        visited = set()
-        queue = []
+        costs: dict[tuple[int, int], int] = {start: 0}
+        visited: set[tuple[int, int]] = set()
+        queue: list[tuple[int, tuple[int, int]]] = []
         heappush(queue, (0, start))
         while queue:
             c, node = heappop(queue)

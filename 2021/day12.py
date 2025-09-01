@@ -12,7 +12,7 @@ class Cavesystem:
     def __init__(self, rawstr: str) -> None:
         pathlist: list[tuple[str, str]] = [(node[0], node[1]) for node in
                                            [line.split('-') for line in rawstr.splitlines()]]
-        self.__adj: dict[str: list[str]] = {}
+        self.__adj: dict[str, list[str]] = {}
         for nodes in pathlist:
             for i in range(2):
                 if nodes[i] in self.__adj:
@@ -22,8 +22,8 @@ class Cavesystem:
 
     def findallpaths(self, bonusstep: int = 0) -> int:
         """Returns number of possible paths from 'start' to 'end'."""
-        foundpaths = []
-        q = [('start', [], bonusstep)]
+        foundpaths: list[list[str]] = []
+        q: list[tuple[str, list[str], int]] = [('start', [], bonusstep)]
         while q:
             currentnode, path, cbonus = q.pop(0)
             currentpath = [node for node in path]

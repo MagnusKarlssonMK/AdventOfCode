@@ -30,7 +30,7 @@ class ActivationSystem:
     def get_upper_bound(self) -> int:
         startval = 0
         count = 0
-        result = {}
+        result: dict[int, int] = {}
         while True:
             count += (startval << 8) + (startval << 16)
             startval = self.get_lower_bound(startval)

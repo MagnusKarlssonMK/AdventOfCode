@@ -26,7 +26,7 @@ class ALU:
     __MAX_DIGIT = 9
 
     def __init__(self, rawstr: str) -> None:
-        self.__monad = []
+        self.__monad: list[Chunk] = []
         for chunk in rawstr.strip('inp w\n').split('inp w\n'):
             lines = chunk.splitlines()
             if lines[3][-1] == '1':
@@ -36,7 +36,7 @@ class ALU:
 
     def get_model_nbr(self, smallest: bool = False) -> int:
         modelnbr = [0 for _, _ in enumerate(self.__monad)]
-        buffer = []
+        buffer: list[tuple[int, int]] = []
         for i, chunk in enumerate(self.__monad):
             match chunk.op:
                 case Op.INC:

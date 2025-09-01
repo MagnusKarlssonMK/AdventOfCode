@@ -12,7 +12,7 @@ from copy import deepcopy
 class Crateship:
     def __init__(self, cratestr: str, procedurestr: str):
         self.procedures = [tuple(map(int, re.findall(r'\d+', row))) for row in procedurestr.splitlines()]
-        self.crates: dict[int: list[str]] = {}
+        self.crates: dict[int, list[str]] = {}
         cratelines = cratestr.splitlines()
         for idx, line in enumerate(reversed(cratelines)):
             if idx == 0:

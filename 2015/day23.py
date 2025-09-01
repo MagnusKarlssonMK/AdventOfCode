@@ -18,7 +18,7 @@ class Computer:
     def __init__(self, rawstr: str) -> None:
         self.__program = [Instruction(*[w.strip(',') for w in line.split()]) for line in rawstr.splitlines()]
         self.__program_end = len(self.__program)
-        self.__registers: dict[str: int] = {'a': 0, 'b': 0}
+        self.__registers: dict[str, int] = {'a': 0, 'b': 0}
 
     def __run_program(self) -> None:
         """Runs the program. Ends when stack pointer goes out of range of the program."""
@@ -43,6 +43,8 @@ class Computer:
                     if self.__registers[nextinstr.attr1] == 1:
                         s_p += int(nextinstr.attr2)
                         continue
+                case _:
+                    pass
             s_p += 1
 
     def get_b_reg(self, a_start_value: int = 0) -> int:

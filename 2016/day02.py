@@ -49,7 +49,7 @@ class KeyPad:
         self.__instructions = [[directionmap[c] for c in line] for line in rawstr.splitlines()]
 
     def get_bathroom_code(self, advanced_layout: bool = False) -> str:
-        code = []
+        code: list[str] = []
         currentpos = '5'
         layout = KeyPad.__LAYOUTS[1 if advanced_layout else 0]
         for digit in self.__instructions:

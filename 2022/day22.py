@@ -23,8 +23,8 @@ class Face:
         self.id = faceid
         self.gridlines = [''.join([rawgrid[row][col] for col in range(startcol, endcol)])
                           for row in range(startrow, endrow)]
-        self.neighbors = {}  # Flat mapping according to Part 1
-        self.cube_neighbors = {}  # Cube mapping according to Part 2
+        self.neighbors: dict[tuple[int, int], tuple[tuple[int, int], tuple[int, int]]] = {}  # Flat mapping according to Part 1
+        self.cube_neighbors: dict[tuple[int, int], tuple[tuple[int, int], tuple[int, int]]] = {}  # Cube mapping according to Part 2
 
     def add_neighbor(self, neighbor: tuple[int, int], src_direction: tuple[int, int],
                      dest_direction: tuple[int, int], iscube: bool) -> None:
@@ -43,7 +43,7 @@ class MonkeyMap:
 
     def __init__(self, grid: str, path: str):
         self.__path: list[str] = re.findall(r"\d+|\w", path)
-        self.__startface = -1
+        self.__startface = -1, -1
         self.__startpos = -1, 1
         self.__direction = 0, 1
         lines = grid.splitlines()
@@ -60,7 +60,7 @@ class MonkeyMap:
         self.__face_len = rows // face_rows
         if (cols // face_cols) != self.__face_len:
             print("Input warning: mismatch face dimensions!")
-        self.__faces = {}
+        self.__faces: dict[tuple[int, int], Face] = {}
         startfound = False
         for f_row in range(face_rows):
             for f_col in range(face_cols):
@@ -91,7 +91,7 @@ class MonkeyMap:
                                                      (dr, dc), False)
                         break
         # Part 2 - BFS to find the connecting sides and relative rotations
-        queue = []
+        queue: list[tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int], set[tuple[int, int]]]] = []
         for node in self.__faces:
             for d in self.DIRECTIONS:
                 queue.append((node, d, (node[0] + d[0], node[1] + d[1]), d, {node}))

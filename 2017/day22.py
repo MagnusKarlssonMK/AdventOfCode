@@ -37,13 +37,13 @@ class Point:
 
 class Cluster:
     def __init__(self, rawstr: str) -> None:
-        self.__infected: dict[Point: NodeState] = {}
+        self.__infected: dict[Point, NodeState] = {}
         lines = rawstr.splitlines()
         for row, line in enumerate(lines):
             for col, c in enumerate(line):
                 if c == '#':
                     self.__infected[Point(row, col)] = NodeState.INFECTED
-        self.__virus_pos = Point(len(lines) // 2, len(lines[0]) // 2)
+        self.__virus_pos: Point = Point(len(lines) // 2, len(lines[0]) // 2)
         self.__virus_dir = Point(-1, 0)
         self.__startvalues = (deepcopy(self.__infected), deepcopy(self.__virus_pos), deepcopy(self.__virus_dir))
 
@@ -53,7 +53,7 @@ class Cluster:
         self.__virus_dir = deepcopy(self.__startvalues[2])
 
     def __perform_burst(self) -> bool:
-        current_infected = self.__virus_pos in self.__infected
+        current_infected: bool = self.__virus_pos in self.__infected
         if current_infected:
             self.__virus_dir = self.__virus_dir.turn_right()
             self.__infected.pop(self.__virus_pos)

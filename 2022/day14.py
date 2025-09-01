@@ -6,7 +6,7 @@ class Grid:
     def __init__(self, rawstr: str) -> None:
         lines = [[[int(c) for c in coords.split(',')] for coords in line.split(' -> ')] for line in
                  rawstr.split('\n')]
-        self.__rocks = set()
+        self.__rocks: set[tuple[int, int]] = set()
         for line in lines:
             for i in range(len(line)-1):
                 point1, point2 = line[i], line[i+1]

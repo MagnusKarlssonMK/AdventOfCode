@@ -4,6 +4,7 @@ truncated, since the sum of all three must be zero, meaning that it can be calcu
 """
 import time
 from pathlib import Path
+from collections.abc import Generator
 
 
 class HexPoint:
@@ -14,7 +15,7 @@ class HexPoint:
         self.q: int = q
         self.r: int = r
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["HexPoint"]:
         for dq, dr in HexPoint.STR_TO_POINT.values():
             yield HexPoint(self.q + dq, self.r + dr)
 

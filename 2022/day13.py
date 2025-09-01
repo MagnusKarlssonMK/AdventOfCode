@@ -38,7 +38,7 @@ class ElfList:
             else:
                 i += 1
 
-    def issmallerthan(self, other) -> int:
+    def issmallerthan(self, other: "ElfList") -> int:
         for i in range(min(len(self.list), len(other.list))):
             if isinstance(self.list[i], int):
                 if isinstance(other.list[i], int):
@@ -66,7 +66,7 @@ class ElfList:
             return -1
         return 0
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: "ElfList") -> bool:
         return self.issmallerthan(other) != -1
 
     def __repr__(self):
@@ -75,7 +75,7 @@ class ElfList:
 
 class DistressSignal:
     def __init__(self, rawstr: str) -> None:
-        self.__pairs = []
+        self.__pairs: list[tuple[ElfList, ElfList]] = []
         for pair in rawstr.split('\n\n'):
             left, right = pair.split('\n')
             self.__pairs.append((ElfList(left), ElfList(right)))
@@ -84,7 +84,7 @@ class DistressSignal:
         return sum([idx + 1 for idx, pair in enumerate(self.__pairs) if pair[0] < pair[1]])
 
     def get_decoder_key(self) -> int:
-        all_packet_list = []
+        all_packet_list: list[ElfList] = []
         for p1, p2 in self.__pairs:
             all_packet_list.append(p1)
             all_packet_list.append(p2)

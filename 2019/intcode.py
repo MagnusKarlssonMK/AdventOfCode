@@ -32,10 +32,10 @@ class Intcode:
         self.__inputbuffer = []
         self.__head = 0
         self.__relative = 0
-        self.__memory: dict[int: int] = {i: nbr for i, nbr in enumerate(self.__program)}
+        self.__memory: dict[int, int] = {i: nbr for i, nbr in enumerate(self.__program)}
 
     def reboot(self) -> None:
-        self.__inputbuffer = []
+        self.__inputbuffer: list[int] = []
         self.__head = 0
         self.__relative = 0
         self.__memory = {i: nbr for i, nbr in enumerate(self.__program)}
@@ -63,12 +63,12 @@ class Intcode:
 
         while 0 <= self.__head:
             op = __read(self.__head)
-            modes = [0, 0, 0]
-            modes[2] = Mode(op // 10000)
+            modes: list[Mode] = []
+            modes.append(Mode(op // 10000))
             op %= 10000
-            modes[1] = Mode(op // 1000)
+            modes.insert(0, Mode(op // 1000))
             op %= 1000
-            modes[0] = Mode(op // 100)
+            modes.insert(0, Mode(op // 100))
             op_code = OpCode(op % 100)
             p = [__read(i) for i in range(self.__head + 1, self.__head + 4)]
             match op_code:

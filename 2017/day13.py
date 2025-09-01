@@ -25,7 +25,7 @@ class Layer:
 
 class Firewall:
     def __init__(self, rawstr: str) -> None:
-        self.__layers: dict[int: int] = {int(d): Layer(int(d), int(r)) for d, r in
+        self.__layers: dict[int, Layer] = {int(d): Layer(int(d), int(r)) for d, r in
                                          [line.split(': ') for line in rawstr.splitlines()]}
 
     def get_trip_severity(self) -> int:

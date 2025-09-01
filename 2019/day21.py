@@ -11,7 +11,7 @@ class Springdroid:
 
     def __run_program(self, springcode: str) -> int:
         inst = list(map(ord, springcode))
-        output = None
+        output = -1
         for i in inst:
             self.__cpu.add_input(i)
         while True:

@@ -69,7 +69,7 @@ class Reactor:
         for cuboid in self.__reboot_steps:
             if regionlimited and not cuboid.is_inrange(50):
                 continue
-            new_intersections = []
+            new_intersections: list[Cuboid] = []
             for old_c in processed_cuboids:
                 intersection = cuboid.get_intersection(old_c)
                 if intersection:

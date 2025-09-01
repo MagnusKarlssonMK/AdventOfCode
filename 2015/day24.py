@@ -18,7 +18,7 @@ class Packages:
 
     def get_first_qe(self, nbr_groups: int = 3) -> int:
         groupsize = self.__totalweight // nbr_groups
-        firstgroup_combos = []
+        firstgroup_combos: list[int] = []
         for count in range(1, len(self.__weights) - (nbr_groups - 1)):
             for comb in combinations(self.__weights, count):
                 if sum(comb) == groupsize:

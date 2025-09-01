@@ -6,6 +6,7 @@ recursively.
 """
 import time
 from pathlib import Path
+from collections.abc import Generator
 
 
 class Cavern:
@@ -15,12 +16,12 @@ class Cavern:
         self.__width = len(self.__grid[0])
         self.__flashcount = 0
         self.__flashed: set[tuple[int, int]] = set()
-        self.__adj: dict[tuple[int, int]: list[tuple[int, int]]] = {}
+        self.__adj: dict[tuple[int, int], list[tuple[int, int]]] = {}
         for row in range(self.__height):
             for col in range(self.__width):
                 self.__adj[row, col] = [n for n in self.__getadjacent(row, col)]
 
-    def __getadjacent(self, row: int, col: int) -> iter:
+    def __getadjacent(self, row: int, col: int) -> Generator[tuple[int, int]]:
         rowlimits = max(0, row - 1), min(row + 1, self.__height - 1)
         collimits = max(0, col - 1), min(col + 1, self.__width - 1)
         for r in range(rowlimits[0], rowlimits[1] + 1):

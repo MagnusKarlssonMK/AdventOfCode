@@ -16,7 +16,7 @@ class Point:
     def __add__(self, other: "Point") -> "Point":
         return Point(self.x + other.x, self.y + other.y)
 
-    def scale(self, multiplier) -> "Point":
+    def scale(self, multiplier: int) -> "Point":
         return Point(self.x * multiplier, self.y * multiplier)
 
     def get_length(self, other: "Point") -> int:

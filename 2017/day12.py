@@ -8,15 +8,15 @@ from pathlib import Path
 
 class Village:
     def __init__(self, rawstr: str) -> None:
-        self.__programs: dict[int: set[int]] = {}
+        self.__programs: dict[int, set[int]] = {}
         for line in rawstr.splitlines():
             left, right = line.split(' <-> ')
             self.__programs[int(left)] = set(map(int, right.split(', ')))
         self.__unsorted = [i for i in self.__programs]
-        self.__sorted = []
+        self.__sorted: list[set[int]] = []
 
     def __process_group_containing(self, nbr: int) -> None:
-        seen = set()
+        seen: set[int] = set()
         queue = [nbr]
         while queue:
             current = queue.pop(0)

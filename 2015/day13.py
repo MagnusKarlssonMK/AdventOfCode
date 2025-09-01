@@ -16,7 +16,7 @@ class SeatPlanner:
 
     def __init__(self, rawstr: str) -> None:
         self.__people: set[str] = set()
-        self.__happyness: dict[str: dict[str: int]] = {}
+        self.__happyness: dict[str, dict[str, int]] = {}
         for line in rawstr.splitlines():
             person1, _, lg, value, _, _, _, _, _, _, person2 = line.strip('.').split()
             self.__people.add(person1)
@@ -39,7 +39,7 @@ class SeatPlanner:
         if addself:
             people.add(SeatPlanner.__MYSELF)
         first = people.pop()
-        best_seen: dict[tuple[str, str]: list[list[set[str], int]]] = {}  # (first, last): (middle, value)
+        best_seen: dict[tuple[str, str], list[list[set[str], int]]] = {}  # (first, last): (middle, value)
         queue: list[tuple[str, tuple[str], int]] = []
         for p in people:
             queue.append((p, tuple(), self.__get_happiness(list((first, p)))))

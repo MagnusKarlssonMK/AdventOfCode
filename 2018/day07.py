@@ -8,7 +8,7 @@ from pathlib import Path
 
 class SleighKit:
     def __init__(self, rawstr: str) -> None:
-        self.__steprules: dict[str: set[str]] = {}
+        self.__steprules: dict[str, set[str]] = {}
         for line in rawstr.splitlines():
             w = line.split()
             if w[1] not in self.__steprules:
@@ -18,7 +18,7 @@ class SleighKit:
             self.__steprules[w[7]].add(w[1])
 
     def get_step_order(self) -> str:
-        done = []
+        done: list[str] = []
         # Sorted list so that we choose alphabetically when multiple steps are available
         not_done = sorted([step for step in self.__steprules])
         while not_done:
@@ -35,12 +35,12 @@ class SleighKit:
         return ''.join(done)
 
     def get_step_count(self, additional_workers: int = 4, flatcost: int = 60) -> int:
-        done = []
+        done: list[str] = []
         not_done = sorted([step for step in self.__steprules])
-        working: dict[str: int] = {}
+        working: dict[str, int] = {}
         seconds = 0
         while not_done or working:
-            isdone = []
+            isdone: list[str] = []
             for w in working:
                 if working[w] == 0:
                     isdone.append(w)
@@ -50,7 +50,7 @@ class SleighKit:
                 done.append(d)
                 working.pop(d)
             seconds += 1
-            available = []
+            available: list[str] = []
             for step in not_done:
                 for req in self.__steprules[step]:
                     if req not in done:

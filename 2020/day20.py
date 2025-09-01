@@ -41,7 +41,7 @@ class Tile:
         self.__id = tileid
         self.__grid = tuple([grid[line][1:-1] for line in range(1, len(grid) - 1)])
         # self.__grid = tuple([grid[line] for line in range(len(grid))])
-        self.__edges: dict[Directions: Edge] = {Directions.UP: Edge(grid[0], set()),
+        self.__edges: dict[Directions, Edge] = {Directions.UP: Edge(grid[0], set()),
                                                 Directions.RIGHT: Edge(''.join([g[-1] for g in grid]), set()),
                                                 Directions.DOWN: Edge(grid[-1][::-1], set()),
                                                 Directions.LEFT: Edge(''.join([g[0] for g in reversed(grid)]), set())}
@@ -86,7 +86,7 @@ class Tile:
             (self.__edges[Directions.RIGHT], self.__edges[Directions.LEFT])
         for edge in self.__edges.values():
             edge.value = edge.get_reverse()
-            buffer = set()
+            buffer: set[tuple[int, bool]] = set()
             for n in edge.neighbors:
                 buffer.add((n[0], not n[1]))
             edge.neighbors = buffer
@@ -98,7 +98,7 @@ class Tile:
 
 class Image:
     def __init__(self, rawstr: str) -> None:
-        self.__tiles: dict[int: Tile] = {}
+        self.__tiles: dict[int, Tile] = {}
         for tile in rawstr.split('\n\n'):
             lines = tile.splitlines()
             tileid = int(lines[0].split()[1].strip(':'))
@@ -106,8 +106,8 @@ class Image:
         for t1, t2 in combinations(self.__tiles, 2):
             self.__tiles[t1].add_neighbor(self.__tiles[t2])
             self.__tiles[t2].add_neighbor(self.__tiles[t1])
-        self.__corners = []
-        self.__image = []
+        self.__corners: list[int] = []
+        self.__image: list[str] = []
 
     def get_corner_checksum(self) -> int:
         for tileid, tile in self.__tiles.items():
@@ -171,7 +171,7 @@ class Image:
         for m in range(4):
             monster_shapes.append([line[::-1] for line in monster_shapes[m]])
         # For each monster shape, convert it to a set of coordinates and scan the image, store matching points in set
-        monster_points = set()
+        monster_points: set[tuple[int, int]] = set()
         for monster in monster_shapes:
             m = [(row, col) for row, line in enumerate(monster) for col, c in enumerate(line) if c == "#"]
             m_width = len(monster[0])

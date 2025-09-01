@@ -7,7 +7,6 @@ there is any overlap.
 """
 import time
 from pathlib import Path
-from itertools import combinations
 
 
 class PassphraseList:

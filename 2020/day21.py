@@ -7,9 +7,9 @@ from pathlib import Path
 class FoodInfo:
     def __init__(self, rawstr: str) -> None:
         self.__ingredient_list: list[list[str]] = []
-        self.__allergens: dict[str: list[str]] = {}
+        self.__allergens: dict[str, set[str]] = {}
         self.__ingredients: set[str] = set()
-        self.__known: dict[str: str] = {}
+        self.__known: dict[str, str] = {}
         for line in rawstr.splitlines():
             left, right = line.strip(')').split('(contains ')
             self.__ingredient_list.append(left.split())
@@ -25,7 +25,7 @@ class FoodInfo:
         changed = True
         while changed:
             changed = False
-            newallergens = {}
+            newallergens: dict[str, set[str]] = {}
             for allergen in self.__allergens:
                 if len(self.__allergens[allergen]) == 1:
                     self.__known[list(self.__allergens[allergen])[0]] = allergen

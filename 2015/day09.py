@@ -9,7 +9,7 @@ from itertools import permutations
 
 class LocationMap:
     def __init__(self, rawstr: str) -> None:
-        self.__distances: dict[tuple[str, str]: int] = {}
+        self.__distances: dict[tuple[str, str], int] = {}
         self.__cities: set[str] = set()
         for line in rawstr.splitlines():
             city1, _, city2, _, distance = line.split()

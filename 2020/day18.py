@@ -12,8 +12,8 @@ OPMAP = {'+': operator.add, '*': operator.mul}
 
 def shunting_yard(line: str, is_advanced: bool) -> int:
     # Generate the output buffer with shunting yard
-    output = []
-    opstack = []
+    output: list[str] = []
+    opstack: list[str] = []
     for c in line:
         if c.isdigit():
             output.append(c)

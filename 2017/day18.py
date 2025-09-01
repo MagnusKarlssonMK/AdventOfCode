@@ -24,7 +24,7 @@ class State(Enum):
 
 class Register:
     def __init__(self, regs: set[str], pval: int) -> None:
-        self.__regs: dict[str: int] = {r: 0 for r in regs}
+        self.__regs: dict[str, int] = {r: 0 for r in regs}
         self.__regs['p'] = pval
 
     def get_value(self, attr: str) -> int:
@@ -47,8 +47,8 @@ class Register:
 
 class Duet:
     def __init__(self, rawstr: str) -> None:
-        self.__registers = set()
-        self.__instr = []
+        self.__registers: set[str] = set()
+        self.__instr: list[Instr] = []
         for line in rawstr.splitlines():
             t = line.split()
             self.__instr.append(Instr(*t))
@@ -74,12 +74,14 @@ class Duet:
                 case 'mod':
                     regs.mod_value(i.attr1, regs.get_value(i.attr2))
                 case 'rcv':
-                    if regs.get_value(i.attr1) != 0:
+                    if regs.get_value(i.attr1) != 0 and sound:
                         return sound
                 case 'jgz':
                     if regs.get_value(i.attr1) > 0:
                         sp += regs.get_value(i.attr2)
                         continue
+                case _:
+                    pass
             sp += 1
         return -1
 
@@ -87,7 +89,7 @@ class Duet:
         sp = [0, 0]
         regs = [Register(self.__registers, 0), Register(self.__registers, 1)]
         states = [State.IDLE, State.IDLE]
-        inbox = [[], []]
+        inbox: list[list[int]] = [[], []]
         running = 0
         send_count = 0
         while states[running] == State.IDLE or (states[running] == State.RECEIVING and inbox[running]):
@@ -123,6 +125,8 @@ class Duet:
                         sp[running] += regs[running].get_value(i.attr2)
                     else:
                         sp[running] += 1
+                case _:
+                    pass
             if not 0 <= sp[running] < len(self.__instr):
                 states[running] = State.DONE
                 running = (running + 1) % 2

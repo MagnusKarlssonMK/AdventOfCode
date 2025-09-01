@@ -40,8 +40,8 @@ class ArcadeGame:
         self.__cpu = Intcode(list(map(int, rawstr.split(','))))
 
     def get_block_tiles(self) -> int:
-        tiles: dict[Point: TileId] = {}
-        output_buffer = []
+        tiles: dict[Point, TileId] = {}
+        output_buffer: list[int] = []
         while True:
             val, res = self.__cpu.run_program()
             if res == IntResult.WAIT_INPUT:
@@ -62,7 +62,7 @@ class ArcadeGame:
         score = 0
         ball = 0
         paddle = 0
-        output_buffer = []
+        output_buffer: list[int] = []
         while True:
             val, res = self.__cpu.run_program()
             if res == IntResult.WAIT_INPUT:

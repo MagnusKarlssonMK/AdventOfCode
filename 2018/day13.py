@@ -58,6 +58,8 @@ class Cart:
                     self.__facing = self.__facing.rotate_right()
                 else:
                     self.__facing = self.__facing.rotate_left()
+            case _:
+                pass
 
     def get_pos(self) -> Point:
         return self.__pos
@@ -71,8 +73,8 @@ class Cart:
 
 class TrackSystem:
     def __init__(self, rawstr: str) -> None:
-        self.__carts = set()
-        self.__tracks: dict[Point: str] = {}
+        self.__carts: set[Cart] = set()
+        self.__tracks: dict[Point, str] = {}
         for row, line in enumerate(rawstr.splitlines()):
             for col, char in enumerate(line):
                 if char in ('>', '<', '^', 'v'):
@@ -98,7 +100,7 @@ class TrackSystem:
         carts = list(sorted(deepcopy(self.__carts)))
         while len(carts) > 1:
             taken: list[Point] = [c.get_pos() for c in carts]
-            deadcarts = set()
+            deadcarts: set[int] = set()
             for i, cart in enumerate(carts):
                 if i in deadcarts:
                     continue

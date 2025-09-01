@@ -40,7 +40,7 @@ class KnotHasher:
         self.__current_pos = 0
         self.__skipsize = 0
 
-        dense = []
+        dense: list[int] = []
         for block_idx in range(0, 256, 16):
             val = sparse[block_idx]
             for i in range(1, 16):
@@ -54,7 +54,7 @@ def parse_input(rawstr: str, use_ascii: bool = False) -> list[int]:
     if use_ascii:
         return [ord(c) for c in rawstr] + [17, 31, 73, 47, 23]
     else:
-        result = []
+        result: list[int] = []
         for c in rawstr.split(','):
             if c.isdigit():
                 result.append(int(c))

@@ -22,7 +22,7 @@ class LinkList:
 class Crabcups:
     def __init__(self, rawstr: str) -> None:
         self.__inputnbrs = list(map(int, rawstr))
-        self.__list = None
+        self.__list = LinkList([0 for _ in range(max(self.__inputnbrs) + 1)])
         self.__current = 0
         self.__reset()
 

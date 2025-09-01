@@ -11,8 +11,8 @@ from itertools import permutations
 
 class ValveNetwork:
     def __init__(self, rawstr: str) -> None:
-        adjlist: dict[str: list[str]] = {}
-        self.__valves: dict[str: int] = {}
+        adjlist: dict[str, list[str]] = {}
+        self.__valves: dict[str, int] = {}
         for line in rawstr.splitlines():
             valves = re.findall(r'[A-Z]{2}', line.strip('Valve'))
             flow = int(re.findall(r'\d+', line)[0])
@@ -22,7 +22,7 @@ class ValveNetwork:
         self.__start = 'AA'
         self.__valve_indicies = {valve: 1 << i for i, valve in enumerate(self.__valves)}
         # Create a trimmed version of the adj list with Floyd-Warshall, keep only the nodes with non-zero valves
-        self.__distances: dict[tuple[str, str]: int] = {}
+        self.__distances: dict[tuple[str, str], int] = {}
         for valve in adjlist:
             for tunnel_to in adjlist:
                 if tunnel_to in adjlist[valve]:
@@ -41,7 +41,7 @@ class ValveNetwork:
             maxflow = max(self.__checkroom(self.__start, maxtime, 0, 0, {}).values())
         return maxflow
 
-    def __checkroom(self, valve: str, time: int, bitmask: int, released: int, flow) -> dict[int: int]:
+    def __checkroom(self, valve: str, time: int, bitmask: int, released: int, flow: dict[int, int]) -> dict[int, int]:
         flow[bitmask] = max(flow.get(bitmask, 0), released)
         for valve2, f in self.__valves.items():
             timeleft = time - self.__distances[valve, valve2] - 1

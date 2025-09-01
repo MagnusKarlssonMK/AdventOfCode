@@ -13,8 +13,8 @@ class Eris:
         lines = rawstr.splitlines()
         cols = len(lines[0])
         self.__startbugs = ''.join(['1' if c == '#' else '0' for line in lines for c in line])
-        self.__neighbormasks: dict[int: set[tuple[int, str]]] = {}  # bit: relative level, mask
-        for i, c in enumerate(self.__startbugs):
+        self.__neighbormasks: dict[int, set[tuple[int, str]]] = {}  # bit: relative level, mask
+        for i, _ in enumerate(self.__startbugs):
             mask = ['0' for _ in enumerate(self.__startbugs)]
             outermask = ['0' for _ in enumerate(self.__startbugs)]
             innermask = ['0' for _ in enumerate(self.__startbugs)]
@@ -78,7 +78,7 @@ class Eris:
         current = {0: self.__startbugs}
         empty = ''.join(['0' for _ in range(len(self.__startbugs))])
         upper = lower = 0
-        for t in range(minutes):
+        for _ in range(minutes):
             # Add outer levels in both directions if current outer is not empty
             if current[upper] != empty:
                 upper += 1

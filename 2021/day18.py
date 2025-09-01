@@ -62,7 +62,7 @@ class Snailnumber:
             i += 1
         return False
 
-    def __add__(self, other) -> "Snailnumber":
+    def __add__(self, other: "Snailnumber") -> "Snailnumber":
         newnbr = Snailnumber("")
         for nbr in self.__nbrs:
             newnbr.__nbrs.append(SingleNbr(nbr.nbr, nbr.level + 1))

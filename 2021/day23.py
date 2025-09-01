@@ -14,12 +14,12 @@ class Burrow:
     __POD_COSTS = {'A': 1, 'B': 10, 'C': 100, 'D': 1000}
     __ROOM_INDEX = {0: 'A', 1: 'B', 2: 'C', 3: 'D'}
     __INDEX_ROOM = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
-    __ROOM_HALL_INDEX = {}
+    __room_hall_index = {}
 
     def __init__(self, rawstr: str) -> None:
-        rooms: dict[int: list[str]] = {}
+        rooms: dict[int, list[str]] = {}
         hallway: set[int] = set()
-        for y, line in enumerate(rawstr.splitlines()):
+        for line in rawstr.splitlines():
             for x, c in enumerate(line):
                 if c == '.':
                     hallway.add(x)
@@ -28,7 +28,7 @@ class Burrow:
                         rooms[x] = []
                     rooms[x].append(c)
         hallstartidx = min(hallway)
-        Burrow.__ROOM_HALL_INDEX = {i: r - hallstartidx for i, r in enumerate(rooms)}
+        Burrow.__room_hall_index: dict[int, int] = {i: r - hallstartidx for i, r in enumerate(rooms)}
         self.__rooms = [''.join(rooms[r]) for r in sorted(list(rooms))]
         self.__hallway = ''.join(['.' for _ in range(len(hallway))])
 
@@ -41,7 +41,7 @@ class Burrow:
             starting_rooms[2] = starting_rooms[2][0] + 'BA' + starting_rooms[2][1]
             starting_rooms[3] = starting_rooms[3][0] + 'AC' + starting_rooms[3][1]
         visited = {}
-        pqueue = []
+        pqueue: list[tuple[int, str, tuple[str, ...]]] = []
         heappush(pqueue, (0, self.__hallway, tuple(starting_rooms)))
         while pqueue:
             energy, hallway, rooms = heappop(pqueue)
@@ -56,7 +56,7 @@ class Burrow:
                     # Check if target room is open and the path clear
                     if len(set(rooms[Burrow.__INDEX_ROOM[c]]) | {c, '.'}) > 2:
                         continue
-                    pathstart = sorted([Burrow.__ROOM_HALL_INDEX[Burrow.__INDEX_ROOM[c]], i])
+                    pathstart = sorted([Burrow.__room_hall_index[Burrow.__INDEX_ROOM[c]], i])
                     if len(set(hallway[pathstart[0] + 1: pathstart[1]]) | {'.'}) > 1:
                         continue
                     steps = pathstart[1] - pathstart[0]
@@ -81,8 +81,8 @@ class Burrow:
                         newrooms[i] = room[0:j] + '.' + room[j + 1:]
                         steps = j + 1  # Nbr of steps to get it to hall level
                         # First check if the target room is open and path clear, if so move directly bypassing hallway
-                        pathstart = sorted([Burrow.__ROOM_HALL_INDEX[Burrow.__INDEX_ROOM[c]],
-                                            Burrow.__ROOM_HALL_INDEX[i]])
+                        pathstart = sorted([Burrow.__room_hall_index[Burrow.__INDEX_ROOM[c]],
+                                            Burrow.__room_hall_index[i]])
                         if ((len(set(rooms[Burrow.__INDEX_ROOM[c]]) | {c, '.'}) == 2) and
                                 (len(set(hallway[pathstart[0] + 1: pathstart[1]]) | {'.'}) == 1)):
                             steps += pathstart[1] - pathstart[0]
@@ -99,22 +99,22 @@ class Burrow:
                             break
                         newrooms = tuple(newrooms)
                         # left:
-                        for hallpos in reversed(range(Burrow.__ROOM_HALL_INDEX[i])):
-                            if hallpos in Burrow.__ROOM_HALL_INDEX.values():
+                        for hallpos in reversed(range(Burrow.__room_hall_index[i])):
+                            if hallpos in Burrow.__room_hall_index.values():
                                 continue
                             if hallway[hallpos] != '.':
                                 break
                             newhallway = hallway[0:hallpos] + c + hallway[hallpos + 1:]
-                            newenergy = (steps + Burrow.__ROOM_HALL_INDEX[i] - hallpos) * Burrow.__POD_COSTS[c]
+                            newenergy = (steps + Burrow.__room_hall_index[i] - hallpos) * Burrow.__POD_COSTS[c]
                             heappush(pqueue, (energy + newenergy, newhallway, newrooms))
                         # right:
-                        for hallpos in range(Burrow.__ROOM_HALL_INDEX[i] + 1, len(hallway)):
-                            if hallpos in Burrow.__ROOM_HALL_INDEX.values():
+                        for hallpos in range(Burrow.__room_hall_index[i] + 1, len(hallway)):
+                            if hallpos in Burrow.__room_hall_index.values():
                                 continue
                             if hallway[hallpos] != '.':
                                 break
                             newhallway = hallway[0:hallpos] + c + hallway[hallpos + 1:]
-                            newenergy = (steps + hallpos - Burrow.__ROOM_HALL_INDEX[i]) * Burrow.__POD_COSTS[c]
+                            newenergy = (steps + hallpos - Burrow.__room_hall_index[i]) * Burrow.__POD_COSTS[c]
                             heappush(pqueue, (energy + newenergy, newhallway, newrooms))
                         break
         return -1

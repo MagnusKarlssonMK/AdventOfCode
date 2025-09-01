@@ -21,7 +21,7 @@ class Box:
 
 class Lightmachine:
     def __init__(self, rawstr: str) -> None:
-        self.__boxes: dict[int: list[Box]] = {}
+        self.__boxes: dict[int, list[Box]] = {}
         self.__words = rawstr.split(',')
         for word in self.__words:
             label, operation, foc_len = re.findall(r"(\w+)([-|=])(\d+)?", word)[0]
@@ -42,6 +42,8 @@ class Lightmachine:
                         for idx, box in enumerate(self.__boxes[hash_val]):
                             if box.label == label:
                                 self.__boxes[hash_val].pop(idx)
+                case _:
+                    pass
 
     def get_initialization_sum(self) -> int:
         return sum([algo(word) for word in self.__words])

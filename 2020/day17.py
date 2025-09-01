@@ -5,6 +5,7 @@ and then go through them to see which ones to activate.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -13,7 +14,7 @@ class Point:
     y: int
     z: int
 
-    def get_neighbours(self) -> iter:
+    def get_neighbours(self) -> Generator["Point"]:
         for x in range(-1, 2):
             for y in range(-1, 2):
                 for z in range(-1, 2):
@@ -28,7 +29,7 @@ class Point4d:
     z: int
     w: int
 
-    def get_neighbours(self) -> iter:
+    def get_neighbours(self) -> Generator["Point4d"]:
         for x in range(-1, 2):
             for y in range(-1, 2):
                 for z in range(-1, 2):
@@ -39,8 +40,8 @@ class Point4d:
 
 class ConwayCubes:
     def __init__(self, rawstr: str) -> None:
-        self.__cubes = set()
-        self.__cubes4d = set()
+        self.__cubes: set[Point] = set()
+        self.__cubes4d: set[Point4d] = set()
         for y, line in enumerate(rawstr.splitlines()):
             for x, c in enumerate(line):
                 if c == '#':

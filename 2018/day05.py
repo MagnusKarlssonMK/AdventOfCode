@@ -35,6 +35,8 @@ class Polymer:
             removed_len = self.__get_reacted_unit_count(self.__delete_unit(c))
             if not shortest or removed_len < shortest:
                 shortest = removed_len
+        if not shortest:
+            shortest = -1  # Will never happen, just to keep linter happy
         return shortest
 
 

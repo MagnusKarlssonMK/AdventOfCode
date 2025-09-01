@@ -10,7 +10,7 @@ class MemoryGame:
         self.__startlist = [int(i) for i in rawstr.split(',')]
 
     def playrounds(self, rounds: int) -> int:
-        nbrs: dict[int:int] = {}
+        nbrs: dict[int, int] = {}
         for i in range(len(self.__startlist) - 1):
             nbrs[self.__startlist[i]] = i
         lastspoken = self.__startlist[-1]

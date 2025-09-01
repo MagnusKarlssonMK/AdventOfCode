@@ -44,8 +44,8 @@ class Tile:
 
 class Vault:
     def __init__(self, rawstr: str) -> None:
-        self.__tiles: dict[Point: Tile] = {}
-        self.__keys: dict[str: Point] = {}
+        self.__tiles: dict[Point, Tile] = {}
+        self.__keys: dict[str, Point] = {}
         startpoint: Point = Point(-1, -1)
         for y, line in enumerate(rawstr.splitlines()):
             for x, c in enumerate(line):
@@ -96,9 +96,9 @@ class Vault:
 
     def get_steps_all_keys_one_room(self) -> int:
         # Create dict of connections between keys
-        keypaths: dict[str: set[tuple[str, int, str]]] = {k: set() for k in self.__keys}  # key : key, steps, doors
+        keypaths: dict[str, set[tuple[str, int, str]]] = {k: set() for k in self.__keys}  # key : key, steps, doors
         for k in self.__keys:
-            seen = set()
+            seen: set[tuple[Point, str]] = set()
             queue = [(self.__keys[k], '', Point(-1, -1), 0)]
             while queue:
                 current, doors, previous, steps = queue.pop(0)
@@ -114,8 +114,8 @@ class Vault:
                     if n != previous:
                         queue.append((n, doors, current, steps + 1))
         # Use the key connection dict for a Dijkstra search for shortest way to collect all keys
-        visited: dict = {}
-        pqueue = []
+        visited: dict[tuple[str, str], int] = {}
+        pqueue: list[tuple[int, str, str]] = []
         heappush(pqueue, (0, '@', ''))
         while pqueue:
             steps, current_key, have_keys = heappop(pqueue)
@@ -132,9 +132,9 @@ class Vault:
 
     def get_steps_all_keys_four_rooms(self) -> int:
         # Create dict of connections between keys
-        keypaths: dict[str: set[tuple[str, int, str]]] = {k: set() for k in self.__four_keys}  # key : key, steps, doors
+        keypaths: dict[str, set[tuple[str, int, str]]] = {k: set() for k in self.__four_keys}  # key : key, steps, doors
         for k in self.__four_keys:
-            seen = set()
+            seen: set[tuple[Point, str]] = set()
             queue = [(self.__four_keys[k], '', Point(-1, -1), 0)]
             while queue:
                 current, doors, previous, steps = queue.pop(0)
@@ -150,8 +150,8 @@ class Vault:
                     if n != previous:
                         queue.append((n, doors, current, steps + 1))
         # Use the key connection dict for a Dijkstra search for shortest way to collect all keys
-        visited: dict = {}
-        pqueue = []
+        visited: dict[tuple[tuple[str, ...], str], int] = {}
+        pqueue: list[tuple[int, tuple[str, ...], str]] = []
         heappush(pqueue, (0, ('@', '£', '$', '%'), ''))
         while pqueue:
             steps, current_key, have_keys = heappop(pqueue)

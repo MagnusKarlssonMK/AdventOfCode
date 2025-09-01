@@ -54,7 +54,7 @@ class TicketData:
         possible = [(i, p) for i, p in enumerate(possible)]
         possible = sorted(possible, key=lambda x: len(x[1]))
         queue = [[p] for p in possible[0][1]]
-        paths = []
+        paths: list[list[str]] = []
         while queue:
             p = queue.pop(0)
             for nxt in possible[len(p)][1]:

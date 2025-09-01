@@ -12,7 +12,7 @@ from pathlib import Path
 class BagRules:
     def __init__(self, rawstr: str) -> None:
         lines = [[i[0], i[1].split(', ')] for i in [line.split(' bags contain ') for line in rawstr.splitlines()]]
-        self.__rules: dict[str: list[tuple[str, int]]] = {}
+        self.__rules: dict[str, list[tuple[int, str]]] = {}
         for line in lines:
             self.__rules[line[0]] = []
             for content in line[1]:
@@ -20,12 +20,12 @@ class BagRules:
                     break
                 nbr, bag_p1, bag_p2, _ = content.split()
                 self.__rules[line[0]].append((int(nbr), bag_p1 + ' ' + bag_p2))
-        self.__bagcontentcache: dict[str: int] = {}
+        self.__bagcontentcache: dict[str, int] = {}
 
     def countcontainedin(self, bag: str) -> int:
         count = 0
         for key in self.__rules:
-            content = list(self.__rules[key])
+            content: list[tuple[int, str]] = list(self.__rules[key])
             while content:
                 _, color = content.pop(0)
                 if color == bag:

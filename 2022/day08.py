@@ -1,6 +1,7 @@
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 from enum import Enum
 import math
 
@@ -39,8 +40,8 @@ class Forest:
             [visible.add(tree) for tree in self.__generatevisibletrees(-1, c, reversed(range(self.__height)))]
         return len(visible)
 
-    def __generatevisibletrees(self, row, col, iterable) -> iter:
-        tallest = -1
+    def __generatevisibletrees(self, row: int, col: int, iterable) -> Generator[Coordinate]:
+        tallest: int = -1
         for i in iterable:
             if row == -1:
                 r = i
@@ -54,7 +55,7 @@ class Forest:
                 if tallest == 9:
                     break
 
-    def __setdirectionscores(self, row, col, direction: Direction, iterable) -> None:
+    def __setdirectionscores(self, row: int, col: int, direction: Direction, iterable) -> None:
         scorelist = [0 for _ in range(10)]
         for i in iterable:
             if row == -1:

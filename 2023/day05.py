@@ -5,6 +5,7 @@ in the order of parsing it and process them one by one.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -26,7 +27,7 @@ class Map:
                 return nbr + mapfilter.offset
         return nbr
 
-    def map_range(self, i: range) -> iter:
+    def map_range(self, i: range) -> Generator[range]:
         for f in self.__filterlist:
             if f.mask.start < i.stop and f.mask.stop > i.start:  # At least some overlap
                 if f.mask.start <= i.start and i.stop <= f.mask.stop:  # Filter completely covers input range
@@ -65,7 +66,7 @@ class Almanac:
         seedranges: list[range] = [range(self.__seeds[idx], self.__seeds[idx] + self.__seeds[idx + 1])
                                    for idx in range(0, len(self.__seeds), 2)]
         for layer in self.__maps:
-            tmp = []
+            tmp: list[range] = []
             for s in seedranges:
                 for newrange in layer.map_range(s):
                     tmp.append(newrange)

@@ -42,16 +42,16 @@ class MazeMap:
                     InputCommand.WEST: Point(-1, 0), InputCommand.EAST: Point(1, 0)}
 
     def __init__(self) -> None:
-        self.__maze: dict[Point: DroidStatus] = {Point(0, 0): DroidStatus.OK}
+        self.__maze: dict[Point, DroidStatus] = {Point(0, 0): DroidStatus.OK}
 
     def get_unknown_path(self, from_pos: Point) -> list[InputCommand]:
-        queue = [(from_pos, None, None)]
-        seen: dict[Point: tuple[Point, InputCommand]] = {}
+        queue: list[tuple[Point, Point, InputCommand]] = [(from_pos, None, None)]
+        seen: dict[Point, tuple[Point, InputCommand]] = {}
         while queue:
             current, previous, command = queue.pop(0)
             if current not in self.__maze:
                 seen[current] = (previous, command)
-                result = []
+                result: list[InputCommand] = []
                 while current != from_pos:
                     current, cmd = seen[current]
                     result.append(cmd)
@@ -73,7 +73,7 @@ class MazeMap:
 
     def get_shortest_path(self) -> int:
         queue = [(Point(0, 0), 0)]
-        seen = set()
+        seen: set[Point] = set()
         while queue:
             current, steps = queue.pop(0)
             if self.__maze[current] == DroidStatus.OXYGEN:
@@ -91,7 +91,7 @@ class MazeMap:
         oxygen_point = list(self.__maze.keys())[list(self.__maze.values()).index(DroidStatus.OXYGEN)]
         steps = 0
         queue = [(oxygen_point, steps)]
-        seen = set()
+        seen: set[Point] = set()
         while queue:
             current, steps = queue.pop(0)
             if current in seen:

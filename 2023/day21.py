@@ -7,6 +7,7 @@ answer from that.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
             yield self + Point(*d)
 
@@ -36,7 +37,7 @@ class Grid:
                 elif c == '#':
                     self.__rocks.add(Point(x, y))
 
-    def __get_neighbors(self, coord: Point, expand: bool) -> iter:
+    def __get_neighbors(self, coord: Point, expand: bool) -> Generator[Point]:
         for neighbor in coord.get_neighbors():
             if expand:
                 if Point(neighbor.x % self.__width, neighbor.y % self.__height) not in self.__rocks:

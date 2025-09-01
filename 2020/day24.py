@@ -15,6 +15,7 @@ black.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 STR_TO_POINT = {'ne': (1, -1), 'e': (1, 0), 'se': (0, 1), 'sw': (-1, 1), 'w': (-1, 0), 'nw': (0, -1)}
@@ -26,7 +27,7 @@ class HexPoint:
     q: int = 0
     r: int = 0
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["HexPoint"]:
         for dq, dr in STR_TO_POINT.values():
             yield HexPoint(self.q + dq, self.r + dr)
 
@@ -65,8 +66,8 @@ class Hexgrid:
 
     def flip_and_get_nbr_black_tiles(self, days: int = 100) -> int:
         for _ in range(days):
-            black_tiles = set()
-            white_neighbors = set()
+            black_tiles: set[HexPoint] = set()
+            white_neighbors: set[HexPoint] = set()
             for tile in self.__black_tiles:
                 b = 0
                 for n in tile.get_neighbors():

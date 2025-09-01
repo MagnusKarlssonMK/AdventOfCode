@@ -19,9 +19,9 @@ class Triangle:
 
 class DesignOffice:
     def __init__(self, rawstr: str) -> None:
-        self.__triangles_row = []
-        self.__triangles_col = []
-        buffer = [[], [], []]
+        self.__triangles_row: list[Triangle] = []
+        self.__triangles_col: list[Triangle] = []
+        buffer: list[list[int]] = [[], [], []]
         for line in rawstr.splitlines():
             nbrs = list(map(int, line.split()))
             self.__triangles_row.append(Triangle(*nbrs))

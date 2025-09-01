@@ -52,7 +52,7 @@ class Cave:
     def __init__(self, jetstream: str) -> None:
         self.__jetstream = [1 if c == '>' else -1 for c in jetstream]
         self.__cavewidth = 7
-        self.__grid = []
+        self.__grid: list[int] = []
         self.__trimmedrows = 0
         self.__stepcount = 0
 
@@ -60,8 +60,8 @@ class Cave:
         self.__grid = []
         self.__trimmedrows = 0
         self.__stepcount = 0
-        seen_states = []
-        seen_trims = []
+        seen_states: list[int] = []
+        seen_trims: list[tuple[int, int]] = []
         maxheight = 0
         for rock_nbr in range(totalrocks):
             currentrock_idx = rock_nbr % len(Shape)
@@ -70,7 +70,7 @@ class Cave:
                 # Move sideways if possible
                 x_delta = self.__jetstream[self.__stepcount % len(self.__jetstream)]
                 if 0 <= x_delta + currentrock.x_pos <= self.__cavewidth - currentrock.width:
-                    movedrock = []
+                    movedrock: list[int] = []
                     for idx, xval in enumerate(currentrock.get_gridpattern(self.__cavewidth)):
                         if x_delta > 0:
                             movedrock.append(xval >> 1)
@@ -105,13 +105,12 @@ class Cave:
                     break
             state = hash((currentrock_idx, self.__stepcount % len(self.__jetstream), tuple(self.__grid)))
             if state in seen_states:
-                offset = seen_states.index(state)
+                offset: int = seen_states.index(state)
                 cycle_len = rock_nbr - offset
                 trim_per_cycle = self.__trimmedrows - seen_trims[offset][0]
                 nbr_cycles = (totalrocks - 1 - offset) // cycle_len  # Cached list is zero-indexed, rock counter is not.
                 idx = offset + (totalrocks - 1 - offset) % cycle_len
-                answer = seen_trims[idx][0] + seen_trims[idx][1] + (nbr_cycles * trim_per_cycle)
-                return answer
+                return seen_trims[idx][0] + seen_trims[idx][1] + (nbr_cycles * trim_per_cycle)
             seen_states.append(state)
             seen_trims.append((self.__trimmedrows, len(self.__grid)))
         return self.__trimmedrows + len(self.__grid)
@@ -119,7 +118,7 @@ class Cave:
     def __trimgrid(self) -> None:
         # Floodfill the grid from the top, one row above the highest row to guarantee clear space, and then trim
         # anything below rows we can't reach
-        seen = set()
+        seen: set[tuple[int, int]] = set()
         queue = [(0, len(self.__grid))]
         while queue:
             x, y = queue.pop(0)

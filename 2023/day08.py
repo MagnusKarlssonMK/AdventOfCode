@@ -10,7 +10,7 @@ import math
 
 class NodeNetwork:
     def __init__(self, rawstr: str) -> None:
-        self.__nodes: dict[str: dict[str: str]] = {}
+        self.__nodes: dict[str, dict[str, str]] = {}
         self.__sequence, lines = rawstr.split('\n\n')
         for line in lines.splitlines():
             if len(line) > 1:
@@ -27,7 +27,7 @@ class NodeNetwork:
 
     def stepcount_atoz(self) -> int:
         location = [node for node in self.__nodes if node[-1] == 'A']
-        cycles = []
+        cycles: list[int] = []
         for startpoint in location:
             stepcount = 0
             currentloc = startpoint

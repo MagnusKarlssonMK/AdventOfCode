@@ -6,6 +6,7 @@ for a specific target node, while for part 2 we want to walk 50 steps and then c
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -13,7 +14,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self, keyval: int) -> iter:
+    def get_neighbors(self, keyval: int) -> Generator["Point"]:
         for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
             x = self.x + dx
             y = self.y + dy
@@ -35,7 +36,7 @@ class CubicleMaze:
         """BFS to find either the least number of steps to reach the target point (steplimit = 0), or count the
         number of reachable nodes within [steplimit > 0] steps."""
         currentpoint = Point(1, 1)
-        seen = set()
+        seen: set[Point] = set()
         queue: list[tuple[Point, int]] = [(currentpoint, 0)]
         while queue:
             currentpoint, steps = queue.pop(0)

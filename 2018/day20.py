@@ -29,7 +29,7 @@ class Building:
 
     def get_fewest_doors(self) -> tuple[int, int]:
         positions: list[Point] = []
-        distances = {}
+        distances: dict[Point, int] = {}
         current_pos = Point(0, 0)
         previous_pos = Point(0, 0)
         for c in self.__path:

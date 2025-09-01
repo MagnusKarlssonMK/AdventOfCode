@@ -24,8 +24,8 @@ class WaitingArea:
                     Point(1, 0), Point(-1, 1), Point(0, 1), Point(1, 1))
 
     def __init__(self, rawstr: str) -> None:
-        self.__seats_adj: dict[Point: set[Point]] = {}
-        self.__seats_first: dict[Point: set[Point]] = {}
+        self.__seats_adj: dict[Point, set[Point]] = {}
+        self.__seats_first: dict[Point, set[Point]] = {}
         xmax = ymax = 0
         for y, line in enumerate(rawstr.splitlines()):
             ymax = max(y, ymax)

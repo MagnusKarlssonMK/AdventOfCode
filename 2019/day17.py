@@ -13,6 +13,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from intcode import Intcode, IntResult
 import re
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -20,7 +21,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for n in (Point(0, -1), Point(1, 0), Point(0, 1), Point(-1, 0)):
             yield self + n
 
@@ -81,9 +82,9 @@ class Scaffold:
 
     def __init__(self, rawstr: str) -> None:
         self.__cpu = Intcode(list(map(int, rawstr.split(','))))
-        self.__map: dict[Point: list[Point]] = {}
-        self.__vacuum_pos = None
-        self.__vacuum_dir = None
+        self.__map: dict[Point, set[Point]] = {}
+        self.__vacuum_pos = Point(-1, -1)
+        self.__vacuum_dir = Point(-1, -1)
         self.__route: Route = Route([])
 
     def __build_map(self) -> None:
@@ -160,12 +161,12 @@ class Scaffold:
                 if b_len > max_steps:
                     continue
 
-                b_remainder = set()
+                b_remainder_set: set[str] = set()
                 for f in a_fragments:
-                    b_remainder.update(set([c.get_string() for c in f.split(fn_b)]))
-                b_remainder = sorted(list(b_remainder), key=lambda x: len(x))
+                    b_remainder_set.update(set([c.get_string() for c in f.split(fn_b)]))
+                b_remainder: list[str] = sorted(list(b_remainder_set), key=lambda x: len(x))
                 # Reduce the remainder with the shortest (first) entry and see if anything remains
-                c_remainder = []
+                c_remainder: list[str] = []
                 for r in b_remainder:
                     rest = r.split(b_remainder[0])
                     for part in rest:
@@ -196,7 +197,7 @@ class Scaffold:
             self.__cpu.add_input(10)
         self.__cpu.add_input(ord('n'))
         self.__cpu.add_input(10)
-        outputbuffer = []
+        outputbuffer: list[int] = []
         while True:
             val, res = self.__cpu.run_program()
             if res == IntResult.WAIT_INPUT:

@@ -26,7 +26,7 @@ class Instruction:
 
 class LightGrid:
     def __init__(self, rawstr: str) -> None:
-        self.__instructions = []
+        self.__instructions: list[Instruction] = []
         for line in rawstr.splitlines():
             nbrs = list(map(int, re.findall(r'\d+', line)))
             words = line.split()

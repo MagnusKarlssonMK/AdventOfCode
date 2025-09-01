@@ -12,8 +12,8 @@ class Directory:
         self.name = name
         self.__totalfilesize = 0
         self.__totalsubdirsize = -1
-        self.__files: dict[str: int] = {}
-        self.__subdirectories: dict[str: Directory] = {}
+        self.__files: dict[str, int] = {}
+        self.__subdirectories: dict[str, Directory] = {}
 
     def addsubdir(self, path: list[str], dirname: str) -> None:
         if len(path) > 0:
@@ -65,7 +65,7 @@ class Directory:
 class FileSystem:
     def __init__(self, rawstr: str):
         self.__root = Directory("/")
-        self.__head = []
+        self.__head: list[str] = []
         for line in [lines.split() for lines in rawstr.splitlines()]:
             match line[0]:
                 case "$":

@@ -16,7 +16,7 @@ class Room:
     def __validate_checksum(self) -> bool:
         """Generates the checksum for the words, and returns whether it matches the stored checksum from the input."""
         letters = ''.join(self.__words)
-        lettercount = {}
+        lettercount: dict[str, int] = {}
         for c in letters:
             if c not in lettercount:
                 lettercount[c] = 1
@@ -47,11 +47,11 @@ class Room:
 
 class Kiosk:
     def __init__(self, rawstr: str) -> None:
-        self.__rooms = []
+        self.__rooms: list[Room] = []
         for line in rawstr.splitlines():
             *words, sec_id, chksm = re.findall(r"\w+", line)
             self.__rooms.append(Room(words, int(sec_id), chksm))
-        self.__decoded_rooms: dict[str: int] = {}
+        self.__decoded_rooms: dict[str, int] = {}
 
     def get_real_rooms_sector_sum(self) -> int:
         total = 0
@@ -68,7 +68,7 @@ class Kiosk:
         return -1
 
 
-def main(aoc_input) -> None:
+def main(aoc_input: str) -> None:
     kiosk = Kiosk(aoc_input)
     print(f"Part 1: {kiosk.get_real_rooms_sector_sum()}")
     print(f"Part 2: {kiosk.get_north_pole_sectorid()}")

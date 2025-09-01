@@ -16,11 +16,11 @@ from pathlib import Path
 class Bridge:
     def __init__(self, rawstr: str) -> None:
         self.__components = [tuple(map(int, line.split('/'))) for line in rawstr.splitlines()]
-        self.__adj = {}  # id: strength, (left connectors), (right connectors)
-        self.__zerostarts = []
+        self.__adj: dict[int, tuple[int, tuple[int, ...], tuple[int, ...]]] = {}  # id: strength, (left connectors), (right connectors)
+        self.__zerostarts: list[tuple[int, int]] = []
         for i, (left, right) in enumerate(self.__components):
-            left_connects = []
-            right_connects = []
+            left_connects: list[int] = []
+            right_connects: list[int] = []
             if left == 0:
                 self.__zerostarts.append((i, 2))
             elif right == 0:

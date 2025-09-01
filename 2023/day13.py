@@ -2,7 +2,7 @@ import time
 from pathlib import Path
 
 
-def ismirror(patternlist, candidate, wildcardused):
+def ismirror(patternlist: list[int], candidate: int, wildcardused: bool) -> bool:
     if candidate >= (len(patternlist) - 1) or candidate < 0:
         return True if wildcardused else False
     elif patternlist[candidate] == patternlist[candidate + 1]:
@@ -15,7 +15,7 @@ def ismirror(patternlist, candidate, wildcardused):
     return False
 
 
-def getmirrorscore(patternlist, usewildcard: bool):
+def getmirrorscore(patternlist: list[int], usewildcard: bool) -> int:
     for index in range(0, len(patternlist) - 1):
         if ismirror(patternlist, index, usewildcard):
             return index + 1
@@ -24,9 +24,9 @@ def getmirrorscore(patternlist, usewildcard: bool):
 
 class Pattern:
     def __init__(self, rawstr: str) -> None:
-        rows = []
-        self.__binrows = []
-        self.__bincolumns = []
+        rows: list[str] = []
+        self.__binrows: list[int] = []
+        self.__bincolumns: list[int] = []
         # Convert input to a string of binary characters '0' and '1'
         for line in rawstr.splitlines():
             convertedstr = ''.join(['0' if c == '.' else '1' for c in line])

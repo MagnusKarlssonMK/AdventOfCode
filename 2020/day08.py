@@ -15,7 +15,7 @@ class Console:
     def __runprogramtoloop(self) -> bool:
         """Returns True if run to completion (reaching the first index after the last row),
         False if loop encountered."""
-        seen = set()
+        seen: set[int] = set()
         idx = 0
         while True:
             if idx in seen:

@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -40,7 +41,7 @@ class Line:
     def is_diagonal(self) -> bool:
         return self.__points[0].is_diagonal(self.__points[1])
 
-    def get_points(self) -> iter:
+    def get_points(self) -> Generator[Coord]:
         dxdy = self.__points[0].get_derivate(self.__points[1])
         point = self.__points[0]
         while True:

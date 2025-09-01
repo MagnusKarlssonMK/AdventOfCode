@@ -11,7 +11,7 @@ from collections import Counter
 
 class Device:
     def __init__(self, rawstr: str) -> None:
-        self.__ratings = sorted(list(map(int, rawstr.splitlines())))
+        self.__ratings: list[int] = sorted(list(map(int, rawstr.splitlines())))
         self.__ratings.append(self.__ratings[-1] + 3)
         self.__ratings.insert(0, 0)
 
@@ -22,7 +22,7 @@ class Device:
         return diff[1] * diff[3]
 
     def get_nbr_adapter_arrangements(self) -> int:
-        adj = {}
+        adj: dict[int, list[int]] = {}
         for i in range(len(self.__ratings) - 1):
             adj[self.__ratings[i]] = []
             for j in range(i + 1, i + 4):
@@ -34,7 +34,7 @@ class Device:
         return pathcount(adj, start, {})
 
 
-def pathcount(dag, vertex, memo) -> int:
+def pathcount(dag: dict[int, list[int]], vertex: int, memo: dict[int, int]) -> int:
     if vertex in memo:
         return memo[vertex]
     elif vertex in dag:

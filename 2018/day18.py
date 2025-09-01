@@ -10,6 +10,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from collections import Counter
+from collections.abc import Generator
 
 
 class State(Enum):
@@ -23,7 +24,7 @@ class Point:
     x: int
     y: int
 
-    def get_surrounding(self) -> iter:
+    def get_surrounding(self) -> Generator["Point"]:
         for dx, dy in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             yield Point(self.x + dx, self.y + dy)
 
@@ -36,13 +37,13 @@ class LumberArea:
     P2_TIME = 1_000_000_000
 
     def __init__(self, rawstr: str) -> None:
-        self.__grid: dict[Point: State] = {}
+        self.__grid: dict[Point, State] = {}
         for y, line in enumerate(rawstr.splitlines()):
             for x, c in enumerate(line):
                 self.__grid[Point(x, y)] = State(c)
 
-    def __step_minute(self) -> dict[Point: State]:
-        result = {}
+    def __step_minute(self) -> dict[Point, State]:
+        result: dict[Point, State] = {}
         for point in self.__grid:
             surrounding = Counter([self.__grid[s] for s in point.get_surrounding() if s in self.__grid])
             newstate = self.__grid[point]

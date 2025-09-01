@@ -26,7 +26,7 @@ class CrabArmy:
                        self.__scaling_cost(distance + 1))
             return cost
 
-    def __scaling_cost(self, calnbr) -> int:
+    def __scaling_cost(self, calnbr: int) -> int:
         return sum([d * (d + 1) // 2 for d in [abs(crab - calnbr) for crab in self.__crabs]])
 
 

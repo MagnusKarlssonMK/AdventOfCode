@@ -13,7 +13,7 @@ class Signal:
         self.__codes = rawstr.splitlines()
 
     def decode_signal(self) -> tuple[str, str]:
-        counter = [{} for _, _ in enumerate(self.__codes[0])]
+        counter: list[dict[str, int]] = [{} for _, _ in enumerate(self.__codes[0])]
         for code in self.__codes:
             for i, c in enumerate(code):
                 if c not in counter[i]:

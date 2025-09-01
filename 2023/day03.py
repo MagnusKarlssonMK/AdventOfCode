@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -24,7 +25,7 @@ class Part:
     length: int
     value: int
 
-    def get_adjacent_points(self) -> iter:
+    def get_adjacent_points(self) -> Generator[Point]:
         for y in range(self.point.y - 1, self.point.y + 2):
             for x in range(self.point.x - 1, self.point.x + self.length + 1):
                 yield Point(x, y)
@@ -32,8 +33,8 @@ class Part:
 
 class Schematic:
     def __init__(self, rawstr: str) -> None:
-        self.__parts: dict[Part: set[Point]] = {}
-        self.__symbols: dict[Point: str] = {}
+        self.__parts: dict[Part, set[Point]] = {}
+        self.__symbols: dict[Point, str] = {}
         for y, row in enumerate(rawstr.splitlines()):
             nbrs = re.finditer(r"(\d+)", row)
             symbs = re.finditer(r"[^.\d]", row)

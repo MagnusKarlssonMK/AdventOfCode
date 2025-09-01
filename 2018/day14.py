@@ -12,7 +12,7 @@ class RecipeGenerator:
 
     def __init__(self, nbr: str) -> None:
         self.__inputnbr = nbr
-        self.__scoreboard = list(RecipeGenerator.__START_RECIPES)
+        self.__scoreboard: list[int] = list(RecipeGenerator.__START_RECIPES)
         self.__elfs = list(RecipeGenerator.__START_POSITIONS)
 
     def __reset(self) -> None:

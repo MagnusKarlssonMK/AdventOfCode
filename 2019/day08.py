@@ -11,14 +11,14 @@ class Image:
     def __init__(self, rawstr: str, width: int = 25, height: int = 6) -> None:
         self.__width = width
         self.__height = height
-        self.__layers = []
+        self.__layers: list[list[int]] = []
         i = 0
         while i < len(rawstr):
             self.__layers.append([int(c) for c in rawstr[i: i + self.__height * self.__width]])
             i += self.__width * self.__height
 
     def get_checksum(self) -> int:
-        results = []
+        results: list[tuple[int, int]] = []
         for layer in self.__layers:
             c = Counter(layer)
             results.append((c[0], c[1] * c[2]))

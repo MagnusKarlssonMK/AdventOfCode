@@ -11,8 +11,8 @@ class Polymer:
     def __init__(self, rawstr: str) -> None:
         self.__template, r = rawstr.split('\n\n')
         rules = [(left, right) for left, right in [line.split(' -> ') for line in r.splitlines()]]
-        self.__rules: dict[str: str] = {}
-        self.__paircount: dict[str: int] = {}
+        self.__rules: dict[str, str] = {}
+        self.__paircount: dict[str, int] = {}
         for left, right in rules:
             self.__rules[left] = right
         self.reset()
@@ -31,7 +31,7 @@ class Polymer:
 
     def takesteps(self, count: int) -> None:
         for _ in range(count):
-            buffer = []
+            buffer: list[tuple[str, int]] = []
             for key in self.__paircount:
                 buffer.append((key[0] + self.__rules[key], self.__paircount[key]))
                 buffer.append((self.__rules[key] + key[1], self.__paircount[key]))

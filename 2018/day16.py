@@ -54,7 +54,7 @@ class Device:
         samples, testprogram = rawstr.split('\n\n\n')
         self.__testprogram = [Instruction(*list(map(int, re.findall(r"\d+", line))))
                               for line in testprogram.strip('\n').splitlines()]
-        self.__samples = []
+        self.__samples: list[Sample] = []
         for sample in samples.split('\n\n'):
             s = sample.splitlines()
             self.__samples.append(Sample(list(map(int, re.findall(r"\d+", s[0]))),
@@ -66,7 +66,7 @@ class Device:
 
     def get_reg_zero_value(self) -> int:
         # Create dict of possible opcode candidates for each number
-        candidates = {}
+        candidates: dict[int, set[str]] = {}
         for sample in self.__samples:
             for m in sample.get_matching_ops():
                 if sample.instr.r not in candidates:

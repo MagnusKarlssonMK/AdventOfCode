@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import math
 from heapq import heappop, heappush
 from itertools import count, product
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -44,7 +45,7 @@ class Node:
     rect: Rect
     size: int
 
-    def get_next_nodes(self) -> iter:
+    def get_next_nodes(self) -> Generator["Node"]:
         newsize = self.size // 2
         if newsize > 0:
             for steps in product(range(2), repeat=3):
@@ -93,7 +94,7 @@ class Teleport:
         size = 2 ** (int(math.log2(max(maxpoints))) + 1)
         start = Node(rect, size)
         u = count()
-        queue = []
+        queue: list[tuple[int, int, int, int, Node]] = []
         heappush(queue, (*self.__get_node_prio(start), next(u), start))
         while queue:
             _, _, _, _, currentnode = heappop(queue)

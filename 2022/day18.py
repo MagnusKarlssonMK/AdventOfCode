@@ -1,6 +1,7 @@
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -9,11 +10,11 @@ class Point:
     y: int
     z: int
 
-    def get_adjacent(self) -> iter:
+    def get_adjacent(self) -> Generator["Point"]:
         for d in ((0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0)):
             yield self + Point(*d)
 
-    def get_additional_air(self) -> iter:
+    def get_additional_air(self) -> Generator["Point"]:
         for d in ((0, 1, 1), (0, 1, -1), (0, -1, 1), (0, -1, -1),
                   (1, 0, 1), (-1, 0, 1), (1, 0, -1), (-1, 0, -1),
                   (1, 1, 0), (-1, 1, 0), (1, -1, 0), (-1, -1, 0)):
@@ -25,7 +26,7 @@ class Point:
 
 class Lavapool:
     def __init__(self, rawstr: str) -> None:
-        self.__adj: dict[Point: set[Point]] = {}
+        self.__adj: dict[Point, set[Point]] = {}
         for point in [Point(*list(map(int, line.split(',')))) for line in rawstr.splitlines()]:
             self.__adj[point] = set()
         start = Point(999, 999, 999)
@@ -43,7 +44,7 @@ class Lavapool:
         # Use BFS on the air from the start point which is guaranteed to be exterior, and any unreachable points are
         # interior pockets.
         queue = [start]
-        seen = set()
+        seen: set[Point] = set()
         while queue:
             current = queue.pop(0)
             if current in seen:

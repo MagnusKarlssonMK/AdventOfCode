@@ -11,6 +11,7 @@ building the spiral.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -41,7 +42,7 @@ class Head:
             self.__direction = Point(self.__direction.y, -self.__direction.x)
         self.__pos += self.__direction
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator[Point]:
         for n in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
             yield self.__pos + Point(*n)
 
@@ -63,7 +64,7 @@ class Memory:
     def get_larger_number(self) -> int:
         head = Head()
         i = 1
-        points: dict[Point: int] = {head.get_pos(): i}
+        points: dict[Point, int] = {head.get_pos(): i}
         while i <= self.__nbr:
             head.step(head.get_left() not in points)
             i = 0

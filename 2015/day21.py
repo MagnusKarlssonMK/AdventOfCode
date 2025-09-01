@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 from dataclasses import dataclass
 from itertools import combinations
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -18,12 +19,12 @@ class EquipmentItem:
 
 
 class Shop:
-    def __init__(self, shopdata: dict[str: [dict[str: EquipmentItem]]]) -> None:
-        self.__weapons: dict[str: EquipmentItem] = shopdata['Weapons']
-        self.__armor: dict[str: EquipmentItem] = shopdata['Armor']
-        self.__rings: dict[str: EquipmentItem] = shopdata['Rings']
+    def __init__(self, shopdata: dict[str, dict[str, EquipmentItem]]) -> None:
+        self.__weapons: dict[str, EquipmentItem] = shopdata['Weapons']
+        self.__armor: dict[str, EquipmentItem] = shopdata['Armor']
+        self.__rings: dict[str, EquipmentItem] = shopdata['Rings']
 
-    def get_item_bundles(self) -> iter:
+    def get_item_bundles(self) -> Generator[EquipmentItem]:
         """Generates all possible allowed item combinations (Weapons=1, Armor=0..1, Rings=0..2).
         Yields each combination as a single composit EquipmentItem."""
         weapons = list(self.__weapons)
@@ -123,8 +124,8 @@ def parse_boss(rawstr: str) -> tuple[int, int, int]:
     return hp, dmg, armor
 
 
-def parse_shop(rawstr: str) -> dict:
-    items: dict[str: dict[str: EquipmentItem]] = {}
+def parse_shop(rawstr: str) -> dict[str, dict[str, EquipmentItem]]:
+    items: dict[str, dict[str, EquipmentItem]] = {}
     label = ''
     for block in rawstr.split('\n\n'):
         for i, line in enumerate(block.splitlines()):

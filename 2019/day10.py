@@ -35,7 +35,7 @@ class AsteriodMap:
         return result
 
     def get_winning_asteroid(self) -> int:
-        visible = {}
+        visible: dict[float, list[tuple[Point, int]]] = {}
         for a in self.__asteroids:
             if a != self.__best:
                 if (angle := self.__best.get_angle(a)) not in visible:
@@ -46,8 +46,8 @@ class AsteriodMap:
             visible[angle].sort(key=lambda x: x[1])
         angles = sorted(list(visible.keys()))
         idx = 0
-        winner = None
-        for i in range(200):
+        winner = Point(-1, -1)
+        for _ in range(200):
             winner, _ = visible[angles[idx]].pop(0)
             if not visible[angles[idx]]:
                 angles.pop(idx)

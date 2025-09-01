@@ -15,8 +15,8 @@ class Gate:
 
 class Circuit:
     def __init__(self, rawstr: str) -> None:
-        self.__wires: dict[str: Gate] = {}
-        self.__cache: dict[str: int] = {}
+        self.__wires: dict[str, Gate] = {}
+        self.__cache: dict[str, int] = {}
         for line in rawstr.splitlines():
             left, right = line.split(' -> ')
             l_tokens = left.split()
@@ -36,7 +36,7 @@ class Circuit:
     def __get_value(self, wire: str) -> int:
         if wire in self.__cache:
             return self.__cache[wire]
-        values = []
+        values: list[int] = []
         for v in self.__wires[wire].values:
             if v.isdigit():
                 values.append(int(v))

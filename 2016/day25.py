@@ -38,7 +38,7 @@ class Computer:
             regs = {reg: 0 for reg in ['a', 'b', 'c', 'd']}
             regs['a'] = i
             program = list(deepcopy(self.__program))
-            program_states = []
+            program_states: list[tuple[int, tuple[Instruction, ...], tuple[int, ...]]] = []
 
             while 0 <= sp < len(program):
                 match program[sp].instr:
@@ -86,36 +86,38 @@ class Computer:
                         if p_state in program_states:
                             return i
                         program_states.append(p_state)
+                    case _:
+                        pass
                 sp += 1
             i = i + 1
 
-    def __optimize_program(self) -> None:
-        opt: list[Instruction] = list(self.__program)
-        for i in range(len(opt) - 5):
-            if all((opt[i].instr == 'inc',
-                    opt[i+1].instr == 'dec',
-                    opt[i+2].instr == 'jnz' and opt[i+2].arg2 == '-2' and opt[i+2].arg1 == opt[i+1].arg1,
-                    opt[i+3].instr == 'dec',
-                    opt[i+4].instr == 'jnz' and opt[i+4].arg2 == '-5' and opt[i+4].arg1 == opt[i+3].arg1)):
-                opt[i] = Instruction('mul', opt[i].arg1, opt[i+1].arg1, opt[i+3].arg1)
-                opt[i+1] = Instruction('cpy', '0', opt[i+1].arg1)
-                opt[i+2] = Instruction('cpy', '0', opt[i+3].arg1)
-                opt[i+3] = Instruction('jnz', '0', '0')
-                opt[i+4] = Instruction('jnz', '0', '0')
-        for i in range(len(opt) - 3):
-            if all((opt[i].instr == 'inc',
-                    opt[i+1].instr == 'dec' or opt[i+1].instr == 'inc',
-                    opt[i+2].instr == 'jnz' and opt[i+2].arg1 == opt[i+1].arg1 and opt[i+2].arg2 == '-2')):
-                opt[i] = Instruction('add', opt[i].arg1, opt[i+1].arg1, opt[i].arg1)
-                opt[i+1] = Instruction('cpy', '0', opt[i+1].arg1)
-                opt[i+2] = Instruction('jnz', '0', '0')
-            elif all((opt[i].instr == 'dec',
-                      opt[i+1].instr == 'inc',
-                      opt[i+2].instr == 'jnz' and opt[i+2].arg1 == opt[i].arg1 and opt[i+2].arg2 == '-2')):
-                opt[i] = Instruction('add', opt[i+1].arg1, opt[i].arg1, opt[i+1].arg1)
-                opt[i+1] = Instruction('cpy', '0', opt[i+2].arg1)
-                opt[i+2] = Instruction('jnz', '0', '0')
-        self.__program = tuple(opt)
+    #def __optimize_program(self) -> None:
+    #    opt: list[Instruction] = list(self.__program)
+    #    for i in range(len(opt) - 5):
+    #        if all((opt[i].instr == 'inc',
+    #                opt[i+1].instr == 'dec',
+    #                opt[i+2].instr == 'jnz' and opt[i+2].arg2 == '-2' and opt[i+2].arg1 == opt[i+1].arg1,
+    #                opt[i+3].instr == 'dec',
+    #                opt[i+4].instr == 'jnz' and opt[i+4].arg2 == '-5' and opt[i+4].arg1 == opt[i+3].arg1)):
+    #            opt[i] = Instruction('mul', opt[i].arg1, opt[i+1].arg1, opt[i+3].arg1)
+    #            opt[i+1] = Instruction('cpy', '0', opt[i+1].arg1)
+    #            opt[i+2] = Instruction('cpy', '0', opt[i+3].arg1)
+    #            opt[i+3] = Instruction('jnz', '0', '0')
+    #            opt[i+4] = Instruction('jnz', '0', '0')
+    #    for i in range(len(opt) - 3):
+    #        if all((opt[i].instr == 'inc',
+    #                opt[i+1].instr == 'dec' or opt[i+1].instr == 'inc',
+    #                opt[i+2].instr == 'jnz' and opt[i+2].arg1 == opt[i+1].arg1 and opt[i+2].arg2 == '-2')):
+    #            opt[i] = Instruction('add', opt[i].arg1, opt[i+1].arg1, opt[i].arg1)
+    #            opt[i+1] = Instruction('cpy', '0', opt[i+1].arg1)
+    #            opt[i+2] = Instruction('jnz', '0', '0')
+    #        elif all((opt[i].instr == 'dec',
+    #                  opt[i+1].instr == 'inc',
+    #                  opt[i+2].instr == 'jnz' and opt[i+2].arg1 == opt[i].arg1 and opt[i+2].arg2 == '-2')):
+    #            opt[i] = Instruction('add', opt[i+1].arg1, opt[i].arg1, opt[i+1].arg1)
+    #            opt[i+1] = Instruction('cpy', '0', opt[i+2].arg1)
+    #            opt[i+2] = Instruction('jnz', '0', '0')
+    #    self.__program = tuple(opt)
 
 
 def main(aoc_input: str) -> None:

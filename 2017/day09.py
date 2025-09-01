@@ -31,6 +31,8 @@ class Stream:
                     level += 1
                 case "}":
                     level -= 1
+                case _:
+                    pass
             i += 1
         return score, garbage_count
 

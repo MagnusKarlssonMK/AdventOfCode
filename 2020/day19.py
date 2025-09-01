@@ -10,7 +10,7 @@ class SatelliteData:
     def __init__(self, rawstr: str) -> None:
         rules, messages = rawstr.split('\n\n')
         self.__messages = messages.splitlines()
-        self.__rules = {}
+        self.__rules: dict[int, list[list[str]]] = {}
         for rule in rules.splitlines():
             left, right = rule.split(': ')
             self.__rules[int(left)] = [[c.strip("\"") for c in s.split()] for s in right.split(" | ")]

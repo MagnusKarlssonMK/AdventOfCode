@@ -13,8 +13,8 @@ class Seabottom:
         lines = rawstr.splitlines()
         self.__x_max = len(lines[0])
         self.__y_max = len(lines)
-        self.__east: dict[int: set[int]] = {}
-        self.__south: dict[int: set[int]] = {}
+        self.__east: dict[int, set[int]] = {}
+        self.__south: dict[int, set[int]] = {}
         for y, line in enumerate(lines):
             for x, c in enumerate(line):
                 if c == '>':
@@ -33,8 +33,8 @@ class Seabottom:
         while True:
             changed = False
             steps += 1
-            next_east: dict[int: set[int]] = {}
-            next_south: dict[int: set[int]] = {}
+            next_east: dict[int, set[int]] = {}
+            next_south: dict[int, set[int]] = {}
             for y in self.__east:
                 if y not in next_east:
                     next_east[y] = set()

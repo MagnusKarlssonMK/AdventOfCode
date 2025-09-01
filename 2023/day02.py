@@ -35,7 +35,7 @@ class Game:
     def __init__(self, inputstr: str) -> None:
         gameidstring, handstring = inputstr.split(": ")
         self.gameid = int(gameidstring.split()[1])
-        self.__hands = []
+        self.__hands: list[Hand] = []
         for hand in handstring.split("; "):
             newhand = {color: 0 for color in Color}
             for count, colorstr in re.findall(r"(\d+) (\w+)", hand):

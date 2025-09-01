@@ -21,13 +21,13 @@ class Coord:
 
 
 class Maze:
-    __DIRECTIONS = {'u': Coord(-1, 0), 'r': Coord(0, 1), 'd': Coord(1, 0), 'l': Coord(0, -1)}
-    __PIPES = {'|': ('u', 'd'), '-': ('l', 'r'), 'L': ('u', 'r'), 'J': ('u', 'l'), '7': ('d', 'l'),
-               'F': ('d', 'r')}
+    __DIRECTIONS: dict[str, Coord] = {'u': Coord(-1, 0), 'r': Coord(0, 1), 'd': Coord(1, 0), 'l': Coord(0, -1)}
+    __PIPES: dict[str, tuple[str, str]] = {'|': ('u', 'd'), '-': ('l', 'r'), 'L': ('u', 'r'),
+                                           'J': ('u', 'l'), '7': ('d', 'l'), 'F': ('d', 'r')}
 
     def __init__(self, rawstr: str) -> None:
         self.__grid = rawstr.splitlines()
-        self.__startpoint = None
+        self.__startpoint: Coord = Coord(-1, -1)
         for rowidx, row in enumerate(self.__grid):
             if (idx := row.find('S')) >= 0:
                 self.__startpoint = Coord(rowidx, idx)

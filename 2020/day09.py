@@ -24,17 +24,17 @@ class Number:
 
 
 class XMAS:
-    __PREAMBLE_LENGTH = 25
+    __preamble_length = 25
 
     def __init__(self, rawstr: str) -> None:
         self.__nbrs = [Number(int(c)) for c in rawstr.splitlines()]
         self.__invalid_nbr = -1
         if len(self.__nbrs) < 25:
-            XMAS.__PREAMBLE_LENGTH = 5  # Assume test input for smaller inputs
+            XMAS.__preamble_length = 5  # Assume test input for smaller inputs
 
     def get_invalid_nbr(self) -> int:
-        preamble = [self.__nbrs[i].value for i in range(XMAS.__PREAMBLE_LENGTH)]
-        for i in range(XMAS.__PREAMBLE_LENGTH, len(self.__nbrs)):
+        preamble = [self.__nbrs[i].value for i in range(XMAS.__preamble_length)]
+        for i in range(XMAS.__preamble_length, len(self.__nbrs)):
             if not self.__nbrs[i].validatenumber(preamble):
                 self.__invalid_nbr = self.__nbrs[i].value
                 break

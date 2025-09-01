@@ -31,7 +31,7 @@ class Point:
 
 class Ground:
     def __init__(self, rawstr: str) -> None:
-        self.__tiles: dict[Point: Tile] = {}
+        self.__tiles: dict[Point, Tile] = {}
         for line in rawstr.splitlines():
             a, b, c = list(map(int, re.findall(r"\d+", line)))
             for i in range(b, c + 1):

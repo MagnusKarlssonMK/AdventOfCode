@@ -9,10 +9,11 @@ from pathlib import Path
 import re
 import operator
 from math import prod
+from collections.abc import Generator
 
 
-Partrating = dict[str: int]   # Parts = ['x', 'm', 'a', 's']
-Partratingrange = dict[str: range]
+Partrating = dict[str, int]   # Parts = ['x', 'm', 'a', 's']
+Partratingrange = dict[str, range]
 
 
 class Rule:
@@ -37,7 +38,7 @@ class Rule:
         else:
             return self.__ifpass
 
-    def getrangesplit(self, inranges: Partratingrange) -> iter:
+    def getrangesplit(self, inranges: Partratingrange) -> Generator[tuple[str, Partratingrange]]:
         if self.__condpart:
             thrshold = self.__condthrshold if self.__condoperation == "<" else self.__condthrshold + 1
             if self.__condthrshold in inranges[self.__condpart]:
@@ -63,7 +64,7 @@ class Rule:
 class System:
     def __init__(self, rawstr: str) -> None:
         wf, rt = rawstr.split('\n\n')
-        self.__workflows: dict[str: list[Rule]] = {}
+        self.__workflows: dict[str, list[Rule]] = {}
         for flow in wf.splitlines():
             label, rls = flow.strip('}').split('{')
             self.__workflows[label] = [Rule(r) for r in rls.split(',')]
@@ -89,7 +90,7 @@ class System:
         initialpartgroup: tuple[str, Partratingrange] = ("in", {"x": range(1, 4001), "m": range(1, 4001),
                                                                 "a": range(1, 4001), "s": range(1, 4001)})
         queue: list[tuple[str, Partratingrange]] = [initialpartgroup]
-        verdict_a = []
+        verdict_a: list[Partratingrange] = []
         while queue:
             currentworkflow, ranges = queue.pop(0)
             if currentworkflow not in ("A", "R"):

@@ -16,7 +16,7 @@ class MarbleGame:
         self.__last_marble = int(w[6])
 
     def get_winning_score(self, marble_multiplier: int = 1) -> int:
-        scores: dict[int: int] = {}
+        scores: dict[int, int] = {}
         marble_circle = deque([0])
         for marble in range(1, (self.__last_marble * marble_multiplier) + 1):
             if marble % MarbleGame.__MULTIPLE != 0:

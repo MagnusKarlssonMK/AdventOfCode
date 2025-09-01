@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 from dataclasses import dataclass
 import hashlib
+from collections.abc import Generator
 
 
 GRID_SIZE = 4
@@ -20,7 +21,7 @@ class Point:
     col: int
     path: str = ''
 
-    def get_neighbors(self, passcode: str) -> iter:
+    def get_neighbors(self, passcode: str) -> Generator["Point"]:
         h = hashlib.md5((passcode + self.path).encode()).hexdigest()
         for i, (d, (r, c)) in enumerate({'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}.items()):
             new_row, new_col = self.row + r, self.col + c
@@ -34,7 +35,7 @@ class Vault:
 
     def get_shortestpath(self) -> tuple[str, int]:
         p = Point(0, 0)
-        found_paths = []
+        found_paths: list[str] = []
         queue = [p]
         while queue:
             p = queue.pop(0)

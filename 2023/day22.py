@@ -36,11 +36,11 @@ class GroundZero:
         self.__count = 0
         self.__grid = [[(0, '') for _ in range(y_size)] for _ in range(x_size)]
 
-    def drop_newbrick(self, brick: Brick) -> list[int, set[str]]:
+    def drop_newbrick(self, brick: Brick) -> tuple[int, set[str]]:
         """Finds the lowest available Z-coordinate for brick with ID 'uid' and updates the grid with the new brick.
         Returns the new lowest Z-value and a list of the id's of the bricks it is resting on."""
         new_z = 0
-        ret_idlist = []
+        ret_idlist: list[str] = []
         nextpos = brick.pos + brick.dpos
         for x in range(brick.pos.x, nextpos.x + 1):
             for y in range(brick.pos.y, nextpos.y + 1):
@@ -54,13 +54,13 @@ class GroundZero:
                 self.__grid[x][y] = (new_z + brick.dpos.z, brick.id)
         self.__count += 1
         filtered_ret_idlist = {someid for someid in ret_idlist if someid != ""}
-        return [new_z, filtered_ret_idlist]
+        return new_z, filtered_ret_idlist
 
 
 class Grid:
     def __init__(self, rawstr: str) -> None:
         self.__moving_bricks: list[Brick] = []
-        self.__resting_bricks: dict[str: Brick, list[str], list[str]] = {}  # {id: Brick, down-ids, up-ids}
+        self.__resting_bricks: dict[str, tuple[Brick, set[str], list[str]]] = {}  # {id: Brick, down-ids, up-ids}
         for line in rawstr.splitlines():
             left, right = line.split("~")
             x1, y1, z1 = [int(nbr) for nbr in left.split(',')]
@@ -80,12 +80,12 @@ class Grid:
         self.__moving_bricks.sort(key=lambda br: br.pos.z)
         # Start dropping bricks
         while self.__moving_bricks:
-            nextbrick = self.__moving_bricks.pop(0)
+            nextbrick: Brick = self.__moving_bricks.pop(0)
             newz = groundzero.drop_newbrick(nextbrick)
             self.__resting_bricks[nextbrick.id] = \
-                [Brick(Coord3D(nextbrick.pos.x, nextbrick.pos.y, newz[0]),
+                (Brick(Coord3D(nextbrick.pos.x, nextbrick.pos.y, newz[0]),
                        Coord3D(nextbrick.pos.x + nextbrick.dpos.x, nextbrick.pos.y + nextbrick.dpos.y, newz[0] +
-                               nextbrick.dpos.z)), newz[1], []]
+                               nextbrick.dpos.z)), newz[1], [])
             for uplink in newz[1]:
                 self.__resting_bricks[uplink][2].append(nextbrick.id)
         # Find number of bricks that can be safely removed

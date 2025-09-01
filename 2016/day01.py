@@ -50,7 +50,7 @@ class WalkingSimulator:
     def get_shortest_distance(self, findrepeat: bool = False) -> int:
         pos = self.__position
         d = self.__direction
-        seen = set()
+        seen:  set[Point] = set()
         for rotation, steps in self.__instructions:
             d = d.rotate(rotation)
             if findrepeat:

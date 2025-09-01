@@ -55,8 +55,8 @@ class GPU:
     def get_remaining_particle_count(self) -> int:
         particles = deepcopy(self.__particles)
         for _ in range(1000):
-            seen_points = set()
-            collided_points = set()
+            seen_points: set[Point] = set()
+            collided_points: set[Point] = set()
             for p, part in enumerate(particles):
                 particles[p] = part.step()
                 if particles[p].point in seen_points:
@@ -64,7 +64,7 @@ class GPU:
                 else:
                     seen_points.add(particles[p].point)
 
-            collided_particles = []
+            collided_particles: list[Particle] = []
             for cp in collided_points:
                 for p in particles:
                     if p.point == cp:

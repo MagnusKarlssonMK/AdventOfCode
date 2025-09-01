@@ -10,6 +10,7 @@ class Signal:
         for idx in range(len(self.__buffer) - (start_len - 1)):
             if len(set(self.__buffer[idx: idx + start_len])) == start_len:
                 return idx + start_len
+        return -1
 
 
 def main(aoc_input: str) -> None:

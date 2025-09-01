@@ -27,8 +27,8 @@ class Fabric:
         self.__claims = [Claim(*list(map(int, re.findall(r"\d+", line)))) for line in rawstr.splitlines()]
 
     def get_overlap_and_id(self) -> tuple[int, int]:
-        seen = {}
-        possible = []
+        seen: dict[tuple[int, int], int] = {}
+        possible: list[int] = []
         for i, c in enumerate(self.__claims):
             overlap = False
             for x in range(c.x, c.x + c.x_len):

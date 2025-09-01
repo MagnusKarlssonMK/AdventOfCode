@@ -27,7 +27,7 @@ class Reindeer:
 
 class Olympics:
     def __init__(self, rawstr: str) -> None:
-        self.__reindeers: dict[str: Reindeer] = {}
+        self.__reindeers: dict[str, Reindeer] = {}
         for line in rawstr.splitlines():
             nbrs = list(map(int, re.findall(r"\d+", line)))
             name = line.split()[0]
@@ -36,7 +36,7 @@ class Olympics:
     def get_winner_distance(self, new_scoring: bool = False, time: int = 2503) -> int:
         if not new_scoring:
             return max([self.__reindeers[r].get_distance(time) for r in self.__reindeers])
-        scoretable: dict[str: int] = {r: 0 for r in self.__reindeers}
+        scoretable: dict[str, int] = {r: 0 for r in self.__reindeers}
         for seconds in range(1, time + 1):  # Start on 1, so we don't award points at the starting line!
             leader_dist = 0
             leaders = []
@@ -53,8 +53,7 @@ class Olympics:
 
 
 def main(aoc_input: str) -> None:
-    with open(INPUT_FILE, 'r') as file:
-        olympics = Olympics(aoc_input)
+    olympics = Olympics(aoc_input)
     print(f"Part 1: {olympics.get_winner_distance()}")
     print(f"Part 2: {olympics.get_winner_distance(True)}")
 

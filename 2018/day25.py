@@ -25,7 +25,7 @@ class Spacetime:
                               [list(map(int, line.split(','))) for line in rawstr.splitlines()])]
 
     def get_constellations_count(self) -> int:
-        adj: dict[int: set[int]] = {f.uid: set() for f in self.__fixedpoints}
+        adj: dict[int, set[int]] = {f.uid: set() for f in self.__fixedpoints}
         for i in range(len(self.__fixedpoints) - 1):
             for j in range(i + 1, len(self.__fixedpoints)):
                 if self.__fixedpoints[i].get_distance(self.__fixedpoints[j]) <= 3:
@@ -33,7 +33,7 @@ class Spacetime:
                     adj[self.__fixedpoints[j].uid].add(self.__fixedpoints[i].uid)
         constellations = 0
         while adj:
-            seen = set()
+            seen: set[int] = set()
             queue = [list(adj.keys())[0]]
             while queue:
                 currentid = queue.pop(0)

@@ -7,6 +7,7 @@ the condition in the neighbor check.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,7 @@ class Point:
     row: int
     col: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for d in ((-1, 0), (0, 1), (1, 0), (0, -1)):
             yield self + Point(*d)
 
@@ -37,7 +38,7 @@ class Grid:
                 self.__endpos = Point(row, endcol)
                 self.__grid[row] = self.__grid[row].replace('E', 'z')
 
-    def getneigbors(self, coord: Point, downhill: bool = False) -> iter:
+    def getneigbors(self, coord: Point, downhill: bool = False) -> Generator[Point]:
         for n in coord.get_neighbors():
             if 0 <= n.row < self.__height and 0 <= n.col < self.__width:
                 current = ord(self.__grid[coord.row][coord.col])
@@ -47,7 +48,7 @@ class Grid:
 
     def get_minsteps_fromstart(self) -> int:
         # Part 1: Regular BFS search from S to E
-        visited: dict[Point: (int, Point)] = {}
+        visited: dict[Point, int] = {}
         tilequeue: list[tuple[Point, int]] = [(self.__startpos, 0)]
         while tilequeue:
             current_pos, current_steps = tilequeue.pop(0)
@@ -63,7 +64,7 @@ class Grid:
 
     def get_minsteps_fromany(self) -> int:
         # Part 2: BFS again but starting from E and going downhill until finding the first 'a'
-        visited: dict[Point: (int, Point)] = {}
+        visited: dict[Point, int] = {}
         tilequeue: list[tuple[Point, int]] = [(self.__endpos, 0)]
         while tilequeue:
             current_pos, current_steps = tilequeue.pop(0)

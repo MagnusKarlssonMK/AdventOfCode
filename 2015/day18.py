@@ -21,8 +21,8 @@ class Grid:
                    Coord(0, 1), Coord(1, -1), Coord(1, 0), Coord(1, 1)]
 
     def __init__(self, rawstr: str) -> None:
-        self.__startgrid = []
-        self.__currentgrid = []
+        self.__startgrid: list[list[int]] = []
+        self.__currentgrid: list[list[int]] = []
         for line in rawstr.splitlines():
             self.__startgrid.append([1 if c == '#' else 0 for c in line])
             self.__currentgrid.append(list(self.__startgrid[-1]))
@@ -39,7 +39,7 @@ class Grid:
         return n_sum
 
     def __process_grid(self, corners_locked: bool) -> None:
-        changelist = []
+        changelist: list[tuple[int, int]] = []
         for r, row in enumerate(self.__currentgrid):
             for c, val in enumerate(row):
                 n_val = self.__get_neighbor_sum(Coord(r, c))

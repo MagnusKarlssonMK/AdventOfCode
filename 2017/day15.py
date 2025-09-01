@@ -4,6 +4,7 @@ I couldn't help but wonder if there was some kind of cycle detection to figure o
 """
 import time
 from pathlib import Path
+from collections.abc import Generator
 
 
 class Duel:
@@ -14,7 +15,7 @@ class Duel:
     def __init__(self, rawstr: str) -> None:
         self.__startvalues = [int(w[-1]) for w in [line.split() for line in rawstr.splitlines()]]
 
-    def __generator(self, idx: int, use_multiples: bool = False) -> iter:
+    def __generator(self, idx: int, use_multiples: bool = False) -> Generator[int]:
         v = self.__startvalues[idx]
         m = Duel.__MULTIPLES[idx] if use_multiples else 1
         while True:

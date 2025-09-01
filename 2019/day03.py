@@ -6,6 +6,7 @@ For Part 2, we can get the distances by finding the index of each intersection's
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -35,7 +36,7 @@ class FuelSystem:
         self.__points = [[p for p in self.__get_coordinates(i)] for i, _ in enumerate(self.__wires)]
         self.__intersections: set[Point] = set(self.__points[0]) & set(self.__points[1])
 
-    def __get_coordinates(self, idx: int) -> iter:
+    def __get_coordinates(self, idx: int) -> Generator[Point]:
         current = Point(0, 0)
         for w in self.__wires[idx]:
             for _ in range(w.length):

@@ -81,6 +81,8 @@ class Computer:
                         a2 = regs[program[sp].arg2] if program[sp].arg2 in regs else int(program[sp].arg2)
                         a3 = regs[program[sp].arg3] if program[sp].arg3 in regs else int(program[sp].arg3)
                         regs[program[sp].arg1] = a2 + a3
+                case _:
+                    pass
             sp += 1
         return regs['a']
 

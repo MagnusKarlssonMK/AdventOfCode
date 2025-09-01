@@ -31,8 +31,8 @@ class SpellEffects:
 
 class GameState:
     """Class for handling DFS-like recursive search through the possible wizard actions."""
-    MIN_MANA_SPENT = None
-    SPELLS: dict[Spells: tuple[int, tuple[SpellEffects]]] = \
+    min_mana_spent = None
+    SPELLS: dict[Spells, tuple[int, tuple[SpellEffects, ...]]] = \
         {Spells.MAGIC_MISSILE: (53, (SpellEffects(4, 0),)),
          Spells.DRAIN: (73, (SpellEffects(2, 0), SpellEffects(2, 0))),
          Spells.SHIELD: (113, (SpellEffects(7, 6),)),
@@ -47,18 +47,20 @@ class GameState:
         self.__hardmode = hardmode
         self.__turncount = 0
         self.__manaspent = 0
-        self.__active_effects: dict[Spells: SpellEffects] = {}
+        self.__active_effects: dict[Spells, SpellEffects] = {}
 
     def __effects_tick(self) -> None:
         """Updates stats for any active additive effects, decreases their time by 1 and removes them from the state
         if time goes to 0."""
-        expired = []
+        expired: list[Spells] = []
         for effect in self.__active_effects:
             match effect:
                 case Spells.POISON:
                     self.__boss_hp -= self.__active_effects[effect].value
                 case Spells.RECHARGE:
                     self.__wizard_mana += self.__active_effects[effect].value
+                case _:
+                    pass
             self.__active_effects[effect] = self.__active_effects[effect].countdown()
             if self.__active_effects[effect].time <= 0:
                 expired.append(effect)
@@ -88,14 +90,14 @@ class GameState:
             self.__wizard_hp -= 1
             if self.__wizard_hp <= 0:
                 return
-        if GameState.MIN_MANA_SPENT and self.__manaspent >= GameState.MIN_MANA_SPENT:
+        if GameState.min_mana_spent and self.__manaspent >= GameState.min_mana_spent:
             return
         self.__effects_tick()
         if self.__boss_hp <= 0:
-            if not GameState.MIN_MANA_SPENT:
-                GameState.MIN_MANA_SPENT = self.__manaspent
+            if not GameState.min_mana_spent:
+                GameState.min_mana_spent = self.__manaspent
             else:
-                GameState.MIN_MANA_SPENT = min(GameState.MIN_MANA_SPENT, self.__manaspent)
+                GameState.min_mana_spent = min(GameState.min_mana_spent, self.__manaspent)
             return
         if self.__turncount % 2 == 0:
             # Wizards turn
@@ -106,10 +108,10 @@ class GameState:
                 ns = deepcopy(self)
                 ns.__cast_spell(spell)
                 if ns.__boss_hp <= 0:
-                    if not GameState.MIN_MANA_SPENT:
-                        GameState.MIN_MANA_SPENT = ns.__manaspent
+                    if not GameState.min_mana_spent:
+                        GameState.min_mana_spent = ns.__manaspent
                     else:
-                        GameState.MIN_MANA_SPENT = min(GameState.MIN_MANA_SPENT, ns.__manaspent)
+                        GameState.min_mana_spent = min(GameState.min_mana_spent, ns.__manaspent)
                     return
                 ns.play_round()
         else:
@@ -133,8 +135,10 @@ class WizardSim:
     def get_cheapest_win(self, hardmode: bool = False) -> int:
         state = GameState(self.__boss_hp, self.__boss_dmg, self.__wizard_hp, self.__wizard_mana, hardmode)
         state.play_round()
-        result = GameState.MIN_MANA_SPENT
-        GameState.MIN_MANA_SPENT = None
+        result = GameState.min_mana_spent
+        GameState.min_mana_spent = None
+        if not result:
+            return -1  # Will never happen, just to keep linter happy
         return result
 
 

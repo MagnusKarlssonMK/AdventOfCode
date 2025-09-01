@@ -6,6 +6,7 @@ area.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -26,13 +27,13 @@ class ChronalMap:
             self.__x_range = range(min(c.x, self.__x_range.start), max(c.x + 1, self.__x_range.stop))
             self.__y_range = range(min(c.y, self.__y_range.start), max(c.y + 1, self.__y_range.stop))
 
-    def __get_locations(self) -> iter:
+    def __get_locations(self) -> Generator[Coord]:
         for x in self.__x_range:
             for y in self.__y_range:
                 yield Coord(x, y)
 
     def get_largest_area_size(self) -> int:
-        areas: dict[Coord: set[Coord]] = {}
+        areas: dict[Coord, set[Coord]] = {}
         # Find areas for each coordinate, i.e. coordinates that have the closest manhattan distance to only that coord
         for loc in self.__get_locations():
             distances = sorted([(loc.get_distance(c), i) for i, c in enumerate(self.__coordinates)], key=lambda x: x[0])
@@ -41,7 +42,7 @@ class ChronalMap:
                     areas[self.__coordinates[distances[0][1]]] = set()
                 areas[self.__coordinates[distances[0][1]]].add(loc)
         # Remove the coords that have infinite areas, i.e. are located on the range border
-        infinite_areas = set()
+        infinite_areas: set[Coord] = set()
         for a in areas:
             for c in areas[a]:
                 if any([c.x == self.__x_range.start, c.x == self.__x_range.stop - 1,

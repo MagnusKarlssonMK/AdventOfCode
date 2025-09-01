@@ -68,6 +68,8 @@ class Network:
                 else:
                     print("halted", i)
                     break
+        if not p1:
+            p1 = -1 # Should never happen, just to keep linter happy
         return p1, p2
 
 

@@ -51,7 +51,7 @@ class CityBoard:
         state = State(Coord(0, 0), Coord(0, 1), 0)
         target = Coord(self.__height - 1, self.__width - 1)
         visited = {}
-        queue = []
+        queue: list[tuple[int, int, State]] = []
         heappush(queue, (0, 0, state))
         while queue:
             _, heat, state = heappop(queue)

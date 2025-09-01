@@ -8,6 +8,7 @@ low point.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -15,7 +16,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
             yield self + Point(*d)
 
@@ -30,9 +31,9 @@ class Grid:
         self.__width = len(self.__grid[0])
         self.__lowpoints = set(p for p in self.__find_low_points())
 
-    def __find_low_points(self) -> iter:
+    def __find_low_points(self) -> Generator[Point]:
         for y, row in enumerate(self.__grid):
-            for x, c in enumerate(row):
+            for x, _ in enumerate(row):
                 for n in Point(x, y).get_neighbors():
                     if (0 <= n.y < self.__height and 0 <= n.x < self.__width and
                             self.__grid[y][x] >= self.__grid[n.y][n.x]):
@@ -41,7 +42,7 @@ class Grid:
                     yield Point(x, y)
 
     def __find_basin_points(self, lowpoint: Point) -> set[Point]:
-        seen = set()
+        seen: set[Point] = set()
         queue = [lowpoint]
         while queue:
             current = queue.pop(0)

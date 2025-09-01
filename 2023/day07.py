@@ -49,6 +49,8 @@ class Hand:
                     result = HandResults.ONE_PAIR
             case 1:
                 result = HandResults.HIGH_CARD
+            case _:
+                pass
         cardstring = ''.join([Hand.__CARDLIST[c] for c in self.__cards])
         return int(str(result.value) + cardstring, 16)
 
@@ -78,6 +80,8 @@ class Hand:
                         result = HandResults.ONE_PAIR
                 case 1:
                     result = HandResults.HIGH_CARD
+                case _:
+                    pass
         cardstring = ''
         for card in self.__cards:
             if card == 'J':
@@ -89,7 +93,7 @@ class Hand:
 
 class CamelCards:
     def __init__(self, rawstr: str) -> None:
-        self.__hands = []
+        self.__hands: list[Hand] = []
         for line in rawstr.splitlines():
             left, right = line.split()
             self.__hands.append(Hand(left, int(right)))

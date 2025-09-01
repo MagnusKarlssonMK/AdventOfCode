@@ -46,6 +46,8 @@ class Computer:
                     if a1 != 0:
                         sp += a2
                         continue
+                case _:
+                    pass
             sp += 1
         return regs['a']
 

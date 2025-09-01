@@ -5,13 +5,14 @@ the loop.
 """
 import time
 from pathlib import Path
+from collections.abc import Generator
 
 
 class PasswordGenerator:
     def __init__(self, rawstr: str) -> None:
         self.__lower, self.__upper = list(map(int, rawstr.split('-')))
 
-    def __generate_pwds(self, exactlytwo) -> iter:
+    def __generate_pwds(self, exactlytwo: bool) -> Generator[int]:
         v_list = [int(c) for c in str(self.__lower)]
         # Find the first valid initial value starting from 'lower' - the value never decreases
         tmp = 0

@@ -40,8 +40,8 @@ class Unit:
 
 class Cavern:
     def __init__(self, rawstr: str) -> None:
-        self.__cavern = set()
-        self.__units = []
+        self.__cavern: set[Point] = set()
+        self.__units: list[Unit] = []
         for y, line in enumerate(rawstr.splitlines()):
             for x, char in enumerate(line):
                 if char != "#":
@@ -63,15 +63,15 @@ class Cavern:
         if not targets:
             return False
         available_points = self.__cavern ^ unit_points
-        target_points = set()
+        target_points: set[Point] = set()
         for target in targets:
             for adj in target.position.get_adjacent():
                 if adj in available_points:
                     target_points.add(adj)
         if not target_points or unit.position in target_points:
             return True
-        shortest_paths = []  # Store as list in case there are multiple paths with the same shortest length
-        seen = set()
+        shortest_paths: list[list[Point]] = []  # Store as list in case there are multiple paths with the same shortest length
+        seen: set[tuple[Point, Point]] = set()
         queue = [(0, [unit.position])]
         while queue:
             steps, path = heappop(queue)
@@ -98,7 +98,7 @@ class Cavern:
         targets = [t for t in self.__units if t.team != unit.team and t.hp > 0]
         if not targets:
             return
-        target_points = set()
+        target_points: set[Point] = set()
         for target in targets:
             for adj in target.position.get_adjacent():
                 target_points.add(adj)
@@ -124,18 +124,18 @@ class Cavern:
         self.__units = [unit for unit in self.__units if unit.hp > 0]
         return not game_ended
 
-    def __printgrid(self):
-        """Only for temporary debugging, kept here for posterity."""
-        x_max = max([p.x for p in self.__cavern])
-        y_max = max([p.y for p in self.__cavern])
-        grid = [['#' for _ in range(x_max + 2)] for _ in range(y_max + 2)]
-        for n in self.__cavern:
-            grid[n.y][n.x] = ' '
-        for u in self.__units:
-            grid[u.position.y][u.position.x] = u.team
-        [print(''.join(line)) for line in grid]
-        [print(u) for u in sorted(self.__units)]
-        print()
+    #def __printgrid(self):
+    #    """Only for temporary debugging, kept here for posterity."""
+    #    x_max = max([p.x for p in self.__cavern])
+    #    y_max = max([p.y for p in self.__cavern])
+    #    grid = [['#' for _ in range(x_max + 2)] for _ in range(y_max + 2)]
+    #    for n in self.__cavern:
+    #        grid[n.y][n.x] = ' '
+    #    for u in self.__units:
+    #        grid[u.position.y][u.position.x] = u.team
+    #    [print(''.join(line)) for line in grid]
+    #    [print(u) for u in sorted(self.__units)]
+    #    print()
 
     def __game_over(self) -> bool:
         return len({unit.team for unit in self.__units}) < 2

@@ -97,6 +97,8 @@ class Scrambler:
                     self.__operations.append(Operation(Instr.REVERSE_POS, tokens[2], tokens[4]))
                 case 'move':
                     self.__operations.append((Operation(Instr.MOVE_POS, tokens[2], tokens[5])))
+                case _:
+                    pass
 
     def get_scrambled_string(self, start: str) -> str:
         scrambled = Password(start)

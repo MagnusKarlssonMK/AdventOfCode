@@ -10,14 +10,14 @@ from pathlib import Path
 
 class MapScan:
     def __init__(self, gridinput: str) -> None:
-        self.__elfs: dict[tuple[int, int]: int] = {(x, y): 0 for y, row in enumerate(gridinput.splitlines())
+        self.__elfs: dict[tuple[int, int], int] = {(x, y): 0 for y, row in enumerate(gridinput.splitlines())
                                                    for x, col in enumerate(row) if col == "#"}
         self.__directionmasks = [int('11100000', 2), int('00000111', 2), int('10010100', 2), int('00101001', 2)]
         xy = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-        self.__dxdy: dict[int: tuple[int, int]] = {mask: xy[i] for i, mask in enumerate(self.__directionmasks)}
+        self.__dxdy: dict[int, tuple[int, int]] = {mask: xy[i] for i, mask in enumerate(self.__directionmasks)}
         self.__surroundings = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
         self.__surroundmasks = [2**x for x in reversed(range(len(self.__surroundings)))]
-        self.__scoretable: dict[int: int] = {0: self.__get_currentscore()}
+        self.__scoretable: dict[int, int] = {0: self.__get_currentscore()}
 
     def __update_elf_neighbors(self) -> None:
         for elf_x, elf_y in self.__elfs:
@@ -44,7 +44,7 @@ class MapScan:
             i += 1
 
     def __play_round(self) -> bool:
-        proposed: dict[tuple[int, int]: list[tuple[int, int]]] = {}
+        proposed: dict[tuple[int, int], list[tuple[int, int]]] = {}
         self.__update_elf_neighbors()
         for elf in self.__elfs:
             if self.__elfs[elf] > 0:

@@ -26,8 +26,8 @@ class CPU:
                 '<': op.lt, '<=': op.le, '==': op.eq, '!=': op.ne}
 
     def __init__(self, rawstr: str) -> None:
-        self.__instr = []
-        self.__regs = set()
+        self.__instr: list[Instr] = []
+        self.__regs: set[str] = set()
         for line in rawstr.splitlines():
             r, o, v, _, cr, co, cv = line.split()
             self.__instr.append(Instr(r, CPU.__OP_MAP[o], int(v), cr, CPU.__OP_MAP[co], int(cv)))

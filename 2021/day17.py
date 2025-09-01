@@ -80,7 +80,7 @@ class ProbeLauncer:
         # Get the x-axis ranges
         xmax_v = self.__x_max
         xmin_v = math.ceil((-1+math.sqrt(1+8*self.__x_min))/2)
-        xv_val: dict[int: Steps] = {}
+        xv_val: dict[int, Steps] = {}
         for xv in range(xmin_v, xmax_v + 1):
             vel = xv
             x = 0
@@ -98,7 +98,7 @@ class ProbeLauncer:
                         xv_val[xv].max = math.inf
         # Get the y-axis ranges
         ymin_v = self.__y_min
-        yv_val: dict[int: Steps] = {}
+        yv_val: dict[int, Steps] = {}
         for yv in range(-1, ymin_v - 1, -1):
             vel = yv
             y = 0

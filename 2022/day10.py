@@ -17,7 +17,7 @@ class Line:
 
 class CPU:
     def __init__(self, rawstr: str) -> None:
-        self.__program = []
+        self.__program: list[Line] = []
         for line in rawstr.splitlines():
             s = line.split()
             if len(s) == 1:

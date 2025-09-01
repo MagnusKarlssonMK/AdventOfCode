@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
+from collections.abc import Generator
 
 
 class Node(Enum):
@@ -29,7 +30,7 @@ class Bot:
         self.high: Connection = high
         self.values: list[int] = []
 
-    def add_value(self, newvalue: int) -> iter:
+    def add_value(self, newvalue: int) -> Generator["Instruction"]:
         self.values.append(newvalue)
         if len(self.values) >= 2:
             self.values.sort()
@@ -49,9 +50,9 @@ class Instruction:
 
 class Factory:
     def __init__(self, rawstr: str) -> None:
-        self.__instructions = []
-        self.__bots: dict[int: Bot] = {}
-        self.__outputs: dict[int: list[int]] = {}
+        self.__instructions: list[Instruction] = []
+        self.__bots: dict[int, Bot] = {}
+        self.__outputs: dict[int, list[int]] = {}
         for line in rawstr.splitlines():
             tokens = line.split()
             if tokens[0] == 'value':
@@ -67,7 +68,7 @@ class Factory:
         while queue:
             newinstr = queue.pop(0)
             if newinstr.to_bot.node == Node.BOT:
-                compared = []
+                compared: list[int] = []
                 for n in self.__bots[newinstr.to_bot.number].add_value(newinstr.value):
                     queue.append(n)
                     compared.append(n.value)

@@ -11,13 +11,13 @@ from pathlib import Path
 
 class BingoBoard:
     def __init__(self, rawstr: str) -> None:
-        self.__nbrs = []
+        self.__nbrs: list[list[int]] = []
         [self.__nbrs.append(list(map(int, row.split()))) for row in rawstr.splitlines()]
         self.__rowtotals = [0 for _, _ in enumerate(self.__nbrs)]
         self.__coltotals = [0 for _, _ in enumerate(self.__nbrs[0])]
-        self.__matchnbrs = set()
+        self.__matchnbrs: set[int] = set()
 
-    def drawnumber(self, nbr) -> int:
+    def drawnumber(self, nbr: int) -> int:
         """Returns the card score if bingo, otherwise 0."""
         for row, _ in enumerate(self.__nbrs):
             for col, _ in enumerate(self.__nbrs[0]):

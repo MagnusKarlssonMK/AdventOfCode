@@ -11,8 +11,8 @@ from functools import lru_cache
 
 class OrbitMap:
     def __init__(self, indata: list[str]):
-        self.__orbits: dict[str: list[str]] = {}
-        self.__orbiting: dict[str: str] = {}
+        self.__orbits: dict[str, list[str]] = {}
+        self.__orbiting: dict[str, str] = {}
         self.__you = ''
         self.__santa = ''
         for line in indata:

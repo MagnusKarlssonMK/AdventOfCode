@@ -14,8 +14,8 @@ from pathlib import Path
 
 class AirDucts:
     def __init__(self, rawstr: str) -> None:
-        adj_list: dict[tuple[int, int]: set[tuple[int, int]]] = {}
-        nbrs: dict[tuple[int, int]: int] = {}
+        adj_list: dict[tuple[int, int], set[tuple[int, int]]] = {}
+        nbrs: dict[tuple[int, int], int] = {}
         grid = rawstr.splitlines()
         for r, row in enumerate(grid):
             for c, col in enumerate(row):
@@ -30,10 +30,10 @@ class AirDucts:
                             if (r + dr, c + dc) not in adj_list:
                                 adj_list[(r + dr, c + dc)] = set()
                             adj_list[(r + dr, c + dc)].add((r, c))
-        self.__nbrs: dict[int: set[tuple[int, int]]] = {}  # nbr -> {(nbr, steps), ...}
-        nbrs_seen = {}
+        self.__nbrs: dict[int, set[tuple[int, int]]] = {}  # nbr -> {(nbr, steps), ...}
+        nbrs_seen: dict[tuple[int, int], tuple[int, bool]] = {}
         for nbr in nbrs:
-            points_seen = set()
+            points_seen: set[tuple[int, int]] = set()
             queue: list[tuple[tuple[int, int], int, bool]] = [(nbr, 0, False)]
             while queue:
                 point, steps, stepover = queue.pop(0)
@@ -57,7 +57,7 @@ class AirDucts:
     def get_shortest_path(self, returntozero: bool = False) -> int:
         seen_states = {}
         shortest_path = None
-        queue = [(0, 0, (0,))]  # point, steps, seenpoints(sorted)
+        queue: list[tuple[int, int, tuple[int, ...]]] = [(0, 0, (0,))]  # point, steps, seenpoints(sorted)
         while queue:
             currentpoint, steps, currentseen = queue.pop(0)
             if (((currentpoint, currentseen) in seen_states and steps >= seen_states[(currentpoint, currentseen)]) or
@@ -74,6 +74,8 @@ class AirDucts:
                 cs.add(p)
                 cs = tuple(sorted(cs))
                 queue.append((p, steps + n, cs))
+        if not shortest_path:
+            shortest_path = -1  # Should never happen, just to keep linter happy
         return shortest_path
 
 

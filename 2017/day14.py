@@ -35,7 +35,7 @@ class KnotHasher:
             sparse = self.__generate_hash(sparse, input_vec)
         self.__current_pos = 0
         self.__skipsize = 0
-        dense = []
+        dense: list[int] = []
         for block_idx in range(0, 256, 16):
             val = sparse[block_idx]
             for i in range(1, 16):
@@ -50,7 +50,7 @@ class Disk:
         grid = [bin(int(knot.get_knot_hash(rawstr + f'-{i}'), 16)).zfill(130)[2:] for i in range(128)]
         width = len(grid[0])
         height = len(grid)
-        self.__adj: dict[tuple[int, int]: set[tuple[int, int]]] = {}
+        self.__adj: dict[tuple[int, int], set[tuple[int, int]]] = {}
         for r in range(len(grid)):
             for c in range(len(grid)):
                 if grid[r][c] == '1':
@@ -70,7 +70,7 @@ class Disk:
         groups = 0
         squares = list(self.__adj.keys())
         while squares:
-            seen = set()
+            seen: set[tuple[int, int]] = set()
             queue = [squares[0]]
             while queue:
                 current = queue.pop(0)

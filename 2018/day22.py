@@ -14,6 +14,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
+from collections.abc import Generator
 
 
 class Tool(Enum):
@@ -33,7 +34,7 @@ class Point:
     x: int
     y: int
 
-    def get_adjacent(self) -> iter:
+    def get_adjacent(self) -> Generator["Point"]:
         for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
             if 0 <= self.x + dx and 0 <= self.y + dy:
                 yield Point(self.x + dx, self.y + dy)
@@ -63,7 +64,7 @@ class Cave:
         self.__depth = int(lines[0].split(': ')[1])
         self.__target = Point(*list(map(int, lines[1].split(': ')[1].split(','))))
         self.__start = Point(0, 0)
-        self.__geoindex: dict[Point: int] = {}
+        self.__geoindex: dict[Point, int] = {}
 
     def __get_geoindex(self, p: Point) -> int:
         if p in self.__geoindex:
@@ -97,13 +98,13 @@ class Cave:
 
     def get_shortest_path(self) -> int:
         toolnotallowed = {Type.ROCKY: Tool.NEITHER, Type.WET: Tool.TORCH, Type.NARROW: Tool.GEAR}
-        pqueue = []
+        pqueue: list[tuple[int, int, Node, Node]] = []
         heappush(pqueue, (self.__get_bestcase(self.__start),
                           0,
                           Node(self.__start, Tool.TORCH),
                           Node(Point(-1, -1), Tool.TORCH)))
         target = Node(self.__target, Tool.TORCH)
-        visited: dict[Node: int] = {target: self.__get_worstcase(self.__start)}
+        visited: dict[Node, int] = {target: self.__get_worstcase(self.__start)}
         while pqueue:
             _, timespent, current, previous = heappop(pqueue)
             if current == target:

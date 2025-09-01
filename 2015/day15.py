@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 import re
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -18,8 +19,8 @@ class Ingredient:
     texture: int = 0
     calories: int = 0
 
-    def get_score(self, calorie_limit: int = None) -> int:
-        if calorie_limit and self.calories != calorie_limit:
+    def get_score(self, calorie_limit: int = -1) -> int:
+        if calorie_limit >= 0 and self.calories != calorie_limit:
             return 0
         else:
             return max(0, self.capacity) * max(0, self.durability) * max(0, self.flavor) * max(0, self.texture)
@@ -38,7 +39,7 @@ class Ingredient:
                           self.texture * other, self.calories * other)
 
 
-def amounts_generator(ingredients: int, total: int) -> iter:
+def amounts_generator(ingredients: int, total: int) -> Generator[list[int]]:
     if ingredients <= 1:
         yield [total]
     else:
@@ -52,7 +53,7 @@ class Kitchen:
     __CALORIE_MAX = 500
 
     def __init__(self, rawstr: str) -> None:
-        self.__ingredients: dict[str: Ingredient] = {}
+        self.__ingredients: dict[str, Ingredient] = {}
         for line in rawstr.splitlines():
             nbrs = list(map(int, re.findall(r"-?\d+", line)))
             self.__ingredients[line.split()[0]] = Ingredient(*nbrs)

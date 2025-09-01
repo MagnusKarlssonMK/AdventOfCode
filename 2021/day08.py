@@ -13,8 +13,8 @@ from pathlib import Path
 
 
 class Display:
-    NumSegMap: dict[int: str] = {0: set('abcefg'), 1: set('cf'), 2: set('acdeg'), 3: set('acdfg'), 4: set('bcdf'),
-                                 5: set('abdfg'), 6: set('abdefg'), 7: set('acf'), 8: set('abcdefg'), 9: set('abcdfg')}
+    NumSegMap: dict[int, set[str]] = {0: set('abcefg'), 1: set('cf'), 2: set('acdeg'), 3: set('acdfg'), 4: set('bcdf'),
+                                      5: set('abdfg'), 6: set('abdefg'), 7: set('acf'), 8: set('abcdefg'), 9: set('abcdfg')}
 
     def __init__(self, rawstr: str) -> None:
         self.__lines = [(row[0].split(), row[1].split()) for row in
@@ -32,8 +32,8 @@ class Display:
     def __set_wires(self, line_idx: int) -> int:
         pattern, output = self.__lines[line_idx]
         """Takes the corrupted input pattern and output and returns the actual correct output"""
-        numbers: dict[int: list[set[str]]] = {nbr: [] for nbr in range(10)}
-        mapping: dict[str: str] = {}
+        numbers: dict[int, list[set[str]]] = {nbr: [] for nbr in range(10)}
+        mapping: dict[str, set[str]] = {}
         for p in pattern:  # Store candidate signals for each number based on length
             for key in Display.NumSegMap:
                 if len(p) == len(Display.NumSegMap[key]):

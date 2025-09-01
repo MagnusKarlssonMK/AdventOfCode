@@ -13,8 +13,8 @@ from pathlib import Path
 class NuclearPlant:
     def __init__(self, rawstr: str) -> None:
         replacements, self.__molecule = rawstr.split('\n\n')
-        self.__replacements: dict[str: list[str]] = {}
-        self.__retrofits: dict[str: str] = {}
+        self.__replacements: dict[str, list[str]] = {}
+        self.__retrofits: dict[str, str] = {}
         for line in replacements.splitlines():
             left, right = line.split(' => ')
             if left not in self.__replacements:
@@ -24,7 +24,7 @@ class NuclearPlant:
             self.__retrofits[right] = left
 
     def get_molecule_count(self) -> int:
-        altered_molecules = set()
+        altered_molecules: set[str] = set()
         for replaced in self.__replacements:
             for replacement in self.__replacements[replaced]:
                 for i, _ in enumerate(self.__molecule):

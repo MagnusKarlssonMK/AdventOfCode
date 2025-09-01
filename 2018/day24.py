@@ -76,7 +76,7 @@ class ImmuneSystemSimulator:
     def __init__(self, rawstr: str) -> None:
         team = None
         uid = 1
-        self.__groups: dict[int: Group] = {}
+        self.__groups: dict[int, Group] = {}
         for line in rawstr.splitlines():
             if len(line) > 0:
                 if not line[0].isdigit():
@@ -84,14 +84,15 @@ class ImmuneSystemSimulator:
                 else:
                     units, hp, ap, init = list(map(int, re.findall(r"\d+", line)))
                     at = DmgType(re.findall(r"\d (\w+) damage at initiative", line)[0])
-                    traits = []
+                    traits: list[Trait] = []
                     traitstr = re.findall(r"\(([^)]+)", line)
                     if traitstr:
                         for part in traitstr[0].split('; '):
                             words = part.split()
                             for t in words[2:]:
                                 traits.append(Trait(TraitType(words[0]), DmgType(t.strip(', '))))
-                    self.__groups[uid] = Group(uid, team, units, hp, ap, at, init, traits)
+                    if team:
+                        self.__groups[uid] = Group(uid, team, units, hp, ap, at, init, traits)
                     uid += 1
 
     def __get_winner_and_units(self, boost: int) -> tuple[Team, int]:
@@ -102,7 +103,7 @@ class ImmuneSystemSimulator:
 
         while len(set([g.team for g in list(groups.values()) if g.units > 0])) > 1:
             # Target selection
-            targets: dict[int: int] = {}
+            targets: dict[int, int] = {}
             attackerlist = sorted([g for g in groups.values() if g.units > 0],
                                   key=lambda x: (x.effective_power, x.initiative), reverse=True)
             for attacker in attackerlist:
@@ -127,7 +128,7 @@ class ImmuneSystemSimulator:
             if totaldmg == 0:
                 # In case of deadlock of nothing mut immune dmg
                 return Team.INFECTION, -1
-        winner = None
+        winner = Team.INFECTION # Initialize to any, will be set in loop
         for g in groups:
             if groups[g].units > 0:
                 winner = groups[g].team

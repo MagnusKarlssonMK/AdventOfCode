@@ -2,6 +2,7 @@ import time
 from pathlib import Path
 import math
 import re
+from collections.abc import Generator
 
 
 class Monkey:
@@ -21,7 +22,7 @@ class Monkey:
         self.__current_items = list(self.__startitems)
         self.inpection_count = 0
 
-    def inspect(self, apply_relief: bool, lcm: int) -> iter:  # Destination monkey ID, item level
+    def inspect(self, apply_relief: bool, lcm: int) -> Generator[tuple[int, int]]:  # Destination monkey ID, item level
         while self.__current_items:
             current_item = self.__current_items.pop(0)
             self.inpection_count += 1
@@ -45,7 +46,7 @@ class Monkey:
 
 class KeepAway:
     def __init__(self, rawstr: str) -> None:
-        self.__monkeys: dict[int: Monkey] = {}
+        self.__monkeys: dict[int, Monkey] = {}
         for i, block in enumerate(rawstr.split('\n\n')):
             self.__monkeys[i] = Monkey(block)
 

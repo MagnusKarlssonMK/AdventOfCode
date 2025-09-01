@@ -6,6 +6,7 @@ From there on it's mostly just string parsing, with a sliding window over the st
 import time
 from pathlib import Path
 import re
+from collections.abc import Generator
 
 
 def contains_abba(word: str) -> bool:
@@ -15,13 +16,13 @@ def contains_abba(word: str) -> bool:
     return False
 
 
-def get_aba(word: str) -> iter:
+def get_aba(word: str) -> Generator[str]:
     for i in range(len(word) - 2):
         if word[i] == word[i + 2] and word[i] != word[i + 1]:
             yield word[i: i + 3]
 
 
-def get_bab(word: str) -> iter:
+def get_bab(word: str) -> Generator[str]:
     for i in range(len(word) - 2):
         if word[i] == word[i + 2] and word[i] != word[i + 1]:
             yield word[i + 1] + word[i] + word[i + 1]
@@ -29,8 +30,8 @@ def get_bab(word: str) -> iter:
 
 class IpAddress:
     def __init__(self, ip: str) -> None:
-        self.__supernets = []
-        self.__hypernets = []
+        self.__supernets: list[str] = []
+        self.__hypernets: list[str] = []
         for i, s in enumerate(re.split(r"\[([^]]+)]", ip)):
             if i % 2 == 0:
                 self.__supernets.append(s)
@@ -47,8 +48,8 @@ class IpAddress:
         return False
 
     def supports_ssl(self) -> bool:
-        aba = set()
-        bab = set()
+        aba: set[str] = set()
+        bab: set[str] = set()
         for word in self.__supernets:
             for a in get_aba(word):
                 aba.add(a)

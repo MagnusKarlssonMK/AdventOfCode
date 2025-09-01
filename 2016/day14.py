@@ -30,8 +30,8 @@ class KeyGenerator:
     def get_64th_index(self, stretch: int = 0) -> int:
         nbr = 64
         index = 0
-        keys = set()
-        triples: dict[str: set[int]] = {}
+        keys: set[int] = set()
+        triples: dict[str, set[int]] = {}
         while len(keys) < nbr:
             h = get_md5(self.__salt + str(index), stretch)
             # Find any 5-repetitions (check the 5's first to avoid having a hash validate itself,

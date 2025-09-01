@@ -21,7 +21,7 @@ class Display:
     __SCREEN_HEIGHT = 6
 
     def __init__(self, rawstr: str) -> None:
-        self.__instructions = []
+        self.__instructions: list[Instruction] = []
         for line in rawstr.splitlines():
             tokens = line.split()
             if tokens[0] == 'rotate':

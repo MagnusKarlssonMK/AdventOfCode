@@ -26,14 +26,14 @@ class Reaction:
 
 class NanoFactory:
     def __init__(self, rawstr: str) -> None:
-        self.__reactions = {}
+        self.__reactions: dict[str, Reaction] = {}
         for line in rawstr.splitlines():
             reactions = re.findall(r"(\d+) (\w+)", line)
             self.__reactions[reactions[-1][1]] = Reaction(int(reactions[-1][0]),
                                                           [Chemical(int(n), c) for n, c in reactions[0:-1]])
 
     def get_minimum_ore_req(self, fuel_amount: int = 1) -> int:
-        shopping_list: dict[str: int] = {'FUEL': fuel_amount}
+        shopping_list: dict[str, int] = {'FUEL': fuel_amount}
         while any((name := k) for k in shopping_list if k != 'ORE' and shopping_list[k] > 0):
             multiplier = ceil(shopping_list[name] / self.__reactions[name].result)
             for c in self.__reactions[name].requires:

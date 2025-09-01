@@ -15,6 +15,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -22,7 +23,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
             yield Point(self.x + dx, self.y + dy)
 
@@ -52,8 +53,8 @@ class Portal:
 
 class DonutMaze:
     def __init__(self, rawstr: str) -> None:
-        self.__path: dict[Point: set[Point]] = {}
-        self.__portals: dict[set[Point]: tuple[str, PortalType]] = {}
+        self.__path: dict[Point, set[Point]] = {}
+        self.__portals: dict[Point, Portal] = {}
         portpoints: dict[Point, str] = {}
         for y, line in enumerate(rawstr.splitlines()):
             for x, c in enumerate(line):
@@ -70,7 +71,7 @@ class DonutMaze:
         pp: list[Point] = list(portpoints.keys())
         while pp:
             p1 = pp.pop()
-            p2 = None
+            p2 = Point(-1, -1)
             entrance = None
             for n in p1.get_neighbors():
                 if n in pp:
@@ -83,16 +84,18 @@ class DonutMaze:
                     if n in self.__path:
                         entrance = n
                         break
+                else:
+                    return  # Should never happen
             name = ''.join(portpoints[i] for i in sorted([p1, p2]))
             portaltype = PortalType.OUTER if entrance.x in x_outer or entrance.y in y_outer else PortalType.INNER
             self.__portals[entrance] = Portal(name, portaltype)
-        self.__portalmap: dict[str: PortalType] = {pt: set() for pt in self.__portals.values()}
+        self.__portalmap: dict[Portal, set[tuple[Portal, int]]] = {pt: set() for pt in self.__portals.values()}
         self.__build_portalmap()
 
     def __build_portalmap(self) -> None:
         for point, portal in self.__portals.items():
-            seen = set()
-            targetsfound = {}
+            seen: set[Point] = set()
+            targetsfound: dict[Portal, int] = {}
             queue = [(point, Point(-1, -1), 0)]
             while queue:
                 current, previous, steps = queue.pop(0)
@@ -107,7 +110,7 @@ class DonutMaze:
                     if n != previous:
                         queue.append((n, current, steps + 1))
             for k, v in targetsfound.items():
-                for p, s in self.__portalmap[portal]:
+                for _, s in self.__portalmap[portal]:
                     if portal == k and s <= v:
                         break
                 else:
@@ -118,7 +121,7 @@ class DonutMaze:
 
     def get_steps_aa_to_zz(self) -> int:
         visited = {}
-        pqueue = []
+        pqueue: list[tuple[int, Portal, Portal]] = []
         start = Portal('AA', PortalType.OUTER)
         target = Portal('ZZ', PortalType.OUTER)
         heappush(pqueue, (0, start, start))
@@ -136,7 +139,7 @@ class DonutMaze:
 
     def get_recursion_steps_aa_to_zz(self) -> int:
         visited = {}
-        pqueue = []
+        pqueue: list[tuple[int, int, Portal, Portal]] = []
         start = Portal('AA', PortalType.OUTER)
         target = Portal('ZZ', PortalType.OUTER)
         heappush(pqueue, (0, 0, start, start))

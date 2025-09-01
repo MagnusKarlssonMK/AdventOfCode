@@ -22,7 +22,7 @@ class NavigationSystem:
     def __get_node_value(self, idx: int) -> tuple[int, int]:
         child_count, meta_count = self.__nbrs[idx], self.__nbrs[idx + 1]
         next_idx = idx + 2
-        child_metas = []
+        child_metas: list[int] = []
         for _ in range(child_count):
             next_idx, child_meta = self.__get_node_value(next_idx)
             child_metas.append(child_meta)

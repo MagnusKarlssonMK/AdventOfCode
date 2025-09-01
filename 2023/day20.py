@@ -32,6 +32,9 @@ class Module:
     def reset(self) -> None:
         pass
 
+    def add_input(self, newinput: str) -> None:
+        pass
+
 
 class Flipflop(Module):
     def __init__(self, outputs: list[str]) -> None:
@@ -56,7 +59,7 @@ class Flipflop(Module):
 class Conjunction(Module):
     def __init__(self, outputs: list[str]) -> None:
         super().__init__(outputs)
-        self.inputs: dict[str: Pulse] = {}
+        self.inputs: dict[str, Pulse] = {}
 
     def add_input(self, newinput: str) -> None:
         self.inputs[newinput] = Pulse.LOW
@@ -75,8 +78,8 @@ class Conjunction(Module):
 
 class CommunicationSystem:
     def __init__(self, rawstr: str) -> None:
-        self.__modules: dict[str: Module] = {}
-        conjunction_ids = []
+        self.__modules: dict[str, Module] = {}
+        conjunction_ids: list[str] = []
         rxcon = ""
         for line in rawstr.splitlines():
             name, out = line.split(' -> ')
@@ -101,8 +104,8 @@ class CommunicationSystem:
         self.__rxcon_inputs: list[str] = [m for m in self.__modules if rxcon in self.__modules[m].outputs]
 
     def get_push_1000(self) -> int:
-        pulsecount: dict[Pulse: int] = {Pulse.LOW: 0, Pulse.HIGH: 0}
-        for pushcount in range(1000):
+        pulsecount: dict[Pulse, int] = {Pulse.LOW: 0, Pulse.HIGH: 0}
+        for _ in range(1000):
             msgqueue = [Message("broadcaster", "button", Pulse.LOW)]
             while msgqueue:
                 newmsg = msgqueue.pop(0)

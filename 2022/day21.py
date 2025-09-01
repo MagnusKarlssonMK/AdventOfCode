@@ -17,10 +17,10 @@ class MonkeyMath:
     __REV_OPS = {'+': '-', '-': '+', '*': '/', '/': '*'}
 
     def __init__(self, rawstr: str) -> None:
-        self.__inputdata: dict[str: str] = {left: right for left, right in
+        self.__inputdata: dict[str, str] = {left: right for left, right in
                                             [line.split(': ')for line in rawstr.splitlines()]}
-        self.__known: dict[str: int] = {}
-        self.__unknown: dict[str: tuple[str, str, str]] = {}
+        self.__known: dict[str, int] = {}
+        self.__unknown: dict[str, tuple[str, str, str]] = {}
         for m in self.__inputdata:
             if self.__inputdata[m].isdigit():
                 self.__known[m] = int(self.__inputdata[m])
@@ -33,7 +33,7 @@ class MonkeyMath:
         unknown = dict(self.__unknown)
 
         def __extractvalue(m1: str, m2: str, operation: str) -> int:
-            nbrs = []
+            nbrs: list[int] = []
             for n in (m1, m2):
                 if n not in known:
                     known[n] = __extractvalue(*unknown[n])
@@ -54,7 +54,7 @@ class MonkeyMath:
         unknown['root'] = unknown['root'][0], unknown['root'][1], '-'
 
         def __extractnonhuman(m1: str, m2: str, operation: str) -> tuple[bool, int]:
-            nbrs = []
+            nbrs: list[int] = []
             for n in (m1, m2):
                 if n == 'humn':
                     return False, -1
@@ -79,7 +79,7 @@ class MonkeyMath:
 
         # Add the root to known and extract the remaining values from the reversed list
         known['root'] = 0
-        reverse_unknown: dict[str: tuple[str, str, str]] = {}
+        reverse_unknown: dict[str, tuple[str, str, str]] = {}
         for k in unknown:
             l, r, o = unknown[k]
             if l not in known:
@@ -94,9 +94,11 @@ class MonkeyMath:
                         reverse_unknown[r] = k, l, '/'
                     case '/':
                         reverse_unknown[r] = l, k, '/'
+                    case _:
+                        pass
 
         def __extractvalue(m1: str, m2: str, operation: str) -> int:
-            nbrs = []
+            nbrs: list[int] = []
             for n in (m1, m2):
                 if n not in known:
                     known[n] = __extractvalue(*reverse_unknown[n])

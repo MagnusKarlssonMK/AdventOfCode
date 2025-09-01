@@ -36,7 +36,7 @@ class Diagram:
         return self.__grid[p.row][p.col]
 
     def get_path(self) -> tuple[str, int]:
-        path = []
+        path: list[str] = []
         point = self.__start
         direction = Point(1, 0)
         count = 0

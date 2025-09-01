@@ -20,7 +20,7 @@ class Shuffle:
 
 class Spacedeck:
     def __init__(self, rawstr: str) -> None:
-        self.__shuffle_process = []
+        self.__shuffle_process: list[Shuffle] = []
         for line in rawstr.splitlines():
             words = line.split()
             if Techniques.CUT.value in line:

@@ -1,9 +1,10 @@
 import time
 from pathlib import Path
+from collections.abc import Generator
 import re
 
 
-def mergeintervals(intervallist: list[list[int]]) -> iter:
+def mergeintervals(intervallist: list[list[int]]) -> Generator[list[int]]:
     intervallist.sort()
     intqueue = [intervallist[0]]
     for i in intervallist[1:]:
@@ -49,7 +50,7 @@ class Zone:
         return totalcount
 
     def get_darkpointfreq(self, maxsize: int) -> int:
-        lines: dict[tuple[int, int]: int] = {}
+        lines: dict[tuple[int, int], int] = {}
         for sensor in self.sensors:
             # Create 4 lines representing the outsides of the sensor's area, y = ax + b, a = [1, -1]
             # Tuple values (a, b)

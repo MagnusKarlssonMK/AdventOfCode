@@ -9,7 +9,7 @@ from copy import deepcopy
 
 class Combat:
     def __init__(self, rawstr: str) -> None:
-        self.__players = {}
+        self.__players: dict[int, list[int]] = {}
         for i, nbrs in enumerate(rawstr.split('\n\n')):
             self.__players[i] = list(map(int, nbrs.splitlines()[1:]))
 
@@ -22,9 +22,9 @@ class Combat:
             players[winner].append(draw[(winner + 1) % 2])
         return sum([(i + 1) * card for i, card in enumerate(reversed(players[0 if len(players[0]) > 0 else 1]))])
 
-    def __play_recursive_game(self, players_data):
+    def __play_recursive_game(self, players_data: dict[int, list[int]]):
         players = deepcopy(players_data)
-        seen = set()
+        seen: set[str] = set()
         while all([len(nbrs) > 0 for nbrs in players.values()]):
             if (current := str(players[0]) + str(players[1])) in seen:
                 players[0] += players[1]

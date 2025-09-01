@@ -13,7 +13,7 @@ class TuringMachine:
         blocks = rawstr.split('\n\n')
         self.__state = re.findall(r"state (\w).", blocks[0])[0]
         self.__diag_steps = int(re.findall(r"\d+", blocks[0])[0])
-        self.__process: dict[str: dict[int: tuple[int, int, str]]] = {}  # state: (value: (new_v, direction, new_s))
+        self.__process: dict[str, dict[int, tuple[int, int, str]]] = {}  # state: (value: (new_v, direction, new_s))
         for block in blocks[1:]:
             states = re.findall(r"state (\w).", block)
             nbrs = list(map(int, re.findall(r"\d+", block)))
@@ -22,7 +22,7 @@ class TuringMachine:
                                          nbrs[2]: (nbrs[3], directions[1], states[2])}
 
     def get_checksum(self) -> int:
-        ones = set()
+        ones: set[int] = set()
         cursor_pos = 0
         for _ in range(self.__diag_steps):
             value = 1 if cursor_pos in ones else 0

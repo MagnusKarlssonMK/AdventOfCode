@@ -11,7 +11,7 @@ from itertools import combinations
 class ContainerList:
     def __init__(self, rawstr: str) -> None:
         self.__containers = [int(n) for n in rawstr.splitlines()]
-        self.__combinations = []
+        self.__combinations: list[int] = []
 
     def get_combination_count(self, amount: int = 150) -> int:
         count = 0

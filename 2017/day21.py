@@ -14,7 +14,7 @@ def flipblock(inblock: tuple[str, ...]) -> tuple[str, ...]:
     return tuple([''.join(reversed(b)) for b in inblock])
 
 
-def rotateblock(inblock: tuple[str: ...]) -> tuple[str, ...]:
+def rotateblock(inblock: tuple[str, ...]) -> tuple[str, ...]:
     return tuple([''.join([inblock[row][col] for row in range(len(inblock))])
                   for col in reversed(range(len(inblock)))])
 
@@ -23,7 +23,7 @@ class ImageConverter:
     __START_IMAGE = ('.#.', '..#', '###')
 
     def __init__(self, rawstr: str) -> None:
-        self.__transforms: dict[tuple[str, ...]: tuple[str, ...]] = {}
+        self.__transforms: dict[tuple[str, ...], tuple[str, ...]] = {}
         for line in rawstr.splitlines():
             left, right = line.split(' => ')
             inp1 = tuple(left.split('/'))  # Work with tuples to make it hashable and possible to use as dict key
@@ -41,7 +41,7 @@ class ImageConverter:
     def get_pixel_count(self, iterations: int) -> int:
         image = list(ImageConverter.__START_IMAGE)
         for _ in range(iterations):
-            new_image = []
+            new_image: list[str] = []
             stepsize = 2 if len(image) % 2 == 0 else 3
             for row in range(0, len(image), stepsize):
                 for _ in range(0, stepsize + 1):

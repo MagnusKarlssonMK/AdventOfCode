@@ -7,6 +7,7 @@ significantly more edges and makes Part 2 take a really long time to complete.
 import time
 from pathlib import Path
 from dataclasses import dataclass
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,7 @@ class Point:
     x: int
     y: int
 
-    def get_neighbors(self) -> iter:
+    def get_neighbors(self) -> Generator["Point"]:
         for d in ((0, -1), (1, 0), (0, 1), (-1, 0)):
             yield self + Point(*d)
 
@@ -35,7 +36,7 @@ class Island:
         self.__exit = Point(self.__grid[-1].index('.'), self.__height - 1)
         # Find the nodes that connects to more than two other neighbors.
         self.__connectors: set[Point] = set()
-        self.__adj: dict[Point: tuple[set[Point], int]] = {}
+        self.__adj: dict[Point, set[tuple[Point, int]]] = {}
         for y in range(self.__height):
             for x in range(self.__width):
                 if self.__grid[y][x] == "#":
@@ -74,8 +75,8 @@ class Island:
         # Optimization - only move 'right' / 'down' when on an outer node, meaning nodes with only 3 neighbors.
         # I.e. make those edges directional so that they don't allow backtracking towards the start, since that would
         # make the path cut itself off from the rest of the map.
-        trim_queue = [(self.__start, None)]
-        trim_seen = set()
+        trim_queue: list[tuple[Point, Point]] = [(self.__start, None)]
+        trim_seen: set[Point] = set()
         while trim_queue:
             node, prev = trim_queue.pop(0)
             remove_me = None
@@ -89,11 +90,11 @@ class Island:
                 self.__adj[node].remove(remove_me)
             trim_seen.add(node)
 
-    def __dfs(self, from_v: Point, to_v: Point, seen: set) -> list[int]:
+    def __dfs(self, from_v: Point, to_v: Point, seen: set[Point]) -> list[int]:
         if from_v == to_v:
             return [0]
         seen.add(from_v)
-        lengthlist = []
+        lengthlist: list[int] = []
         for next_v, distance in self.__adj[from_v]:
             if next_v not in seen:
                 for length in self.__dfs(next_v, to_v, seen):

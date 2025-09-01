@@ -57,7 +57,7 @@ class Ship:
         direction = Ship.__DIRECTIONMAP[Action.EAST] if not use_waypoint else Point(10, -1)
         for instr in self.__instructions:
             if instr.action in (Action.LEFT, Action.RIGHT):
-                for nbr in range(instr.value // 90):
+                for _ in range(instr.value // 90):
                     direction = direction.rotate(instr.action)
             elif instr.action in (Action.NORTH, Action.EAST, Action.SOUTH, Action.WEST):
                 if not use_waypoint:

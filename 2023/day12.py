@@ -28,10 +28,10 @@ def calculatecombinations(springstring: str, inputkeys: tuple[int]) -> int:
 
 class SpringRecord:
     def __init__(self, rawstr: str) -> None:
-        self.__rows = []
+        self.__rows: list[tuple[str, list[int]]] = []
         for line in rawstr.splitlines():
             springs, keystr = line.split()
-            keys = [int(c) for c in keystr.split(',')]
+            keys: list[int] = [int(c) for c in keystr.split(',')]
             self.__rows.append((springs, keys))
 
     def get_arrangement_sum(self, foldcount: int = 0) -> int:

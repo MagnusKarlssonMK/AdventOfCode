@@ -11,6 +11,7 @@ import re
 from dataclasses import dataclass
 from itertools import combinations
 from copy import deepcopy
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -31,9 +32,9 @@ class State:
     elevator_floor: int
     isotopes: tuple[Isotope, ...]
 
-    def get_next_states(self, topfloor: int) -> iter:
+    def get_next_states(self, topfloor: int) -> Generator["State"]:
         # Make a list of (index, 'm'/'g') of all items on current elevator floor
-        current_floor_items = []
+        current_floor_items: list[tuple[int, str]] = []
         for i, iso in enumerate(self.isotopes):
             if iso.microchip_floor == self.elevator_floor:
                 current_floor_items.append((i, 'm'))
@@ -78,7 +79,7 @@ class State:
 class Facility:
     def __init__(self, rawstr: str) -> None:
         self.__topfloor = 0
-        items = {}
+        items: dict[str, list[int]] = {}
         for floor, line in enumerate(rawstr.splitlines()):
             self.__topfloor = floor
             for i in re.findall(r" (\w+) generator", line):
@@ -94,7 +95,7 @@ class Facility:
             parts.append(Isotope(0, 0))
             parts.append(Isotope(0, 0))
         state = State(0, tuple(sorted(parts)))
-        seen = set()
+        seen: set[State] = set()
         queue = [(0, state)]
         while queue:
             steps, state = queue.pop(0)

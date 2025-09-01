@@ -35,8 +35,8 @@ class PaintingRobot:
         self.__position = Point(0, 0)
         self.__direction = Point(0, -1)
 
-    def __paint(self, startcolor: int = 0) -> dict[Point: int]:
-        painted: dict[Point: int] = {}  # point: color; 0=black, 1=white
+    def __paint(self, startcolor: int = 0) -> dict[Point, int]:
+        painted: dict[Point, int] = {}  # point: color; 0=black, 1=white
         color = startcolor
         while True:
             self.__cpu.add_input(color)
@@ -57,7 +57,7 @@ class PaintingRobot:
         return len(painted)
 
     def get_registration_id(self) -> str:
-        painted: dict[Point: int] = self.__paint(1)
+        painted: dict[Point, int] = self.__paint(1)
         x_max = max(list(painted.keys()), key=lambda x: x.x).x + 1
         y_max = max(list(painted.keys()), key=lambda x: x.y).y + 1
         grid = [[' ' for _ in range(x_max)] for _ in range(y_max)]

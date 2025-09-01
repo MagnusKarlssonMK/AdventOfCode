@@ -30,7 +30,7 @@ class Computer:
                 self.__instr.append(Instruction(Action.MEM, left[4:].strip(']'), right))
 
     def get_memorysum(self) -> int:
-        memory: dict[int: int] = {}
+        memory: dict[int, int] = {}
         bitmask = 0, 0
         for instr in self.__instr:
             if instr.action == Action.MASK:
@@ -50,7 +50,7 @@ class Computer:
         return sum(list(memory.values()))
 
     def get_memorysum_v2(self) -> int:
-        memory: dict[int: int] = {}
+        memory: dict[int, int] = {}
         xmask = 0
         addrmasks = []
         for instr in self.__instr:

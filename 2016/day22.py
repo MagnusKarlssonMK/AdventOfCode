@@ -31,7 +31,7 @@ class Node:
 
 class Cluster:
     def __init__(self, rawstr: str) -> None:
-        self.__nodes = {}
+        self.__nodes: dict[tuple[int, int], Node] = {}
         self.__max_x = 0
         self.__max_y = 0
         self.__zeronode = None
@@ -57,7 +57,7 @@ class Cluster:
         # Step 1 - find nbr of steps to move zero-node to G
         g_steps = 0
         node_g = self.__max_x, 0
-        seen = set()
+        seen: set[tuple[int, int]] = set()
         queue = [(self.__zeronode, 0)]
         while queue:
             nextnode, steps = queue.pop(0)

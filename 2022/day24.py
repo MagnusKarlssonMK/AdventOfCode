@@ -13,6 +13,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from enum import Enum
 from heapq import heappop, heappush
+from collections.abc import Generator
 
 
 @dataclass(frozen=True)
@@ -20,7 +21,7 @@ class Point:
     x: int
     y: int
 
-    def get_steps(self) -> iter:
+    def get_steps(self) -> Generator["Point"]:
         for d in Direction:
             yield self + d.value
         yield self
@@ -51,7 +52,7 @@ class Valley:
         self.__startpoint = Point(-1, -1)
         self.__exitpoint = Point(-1, -1)
         self.__walls: set[Point] = set()
-        self.__blizzards: dict[Direction: set[Point]] = {d: set() for d in Direction}
+        self.__blizzards: dict[Direction, set[Point]] = {d: set() for d in Direction}
         lines = rawstr.splitlines()
         self.__width = len(lines[0]) - 2  # Don't include the walls
         self.__height = len(lines) - 2
@@ -77,9 +78,9 @@ class Valley:
         return False
 
     def __shortest_path(self, start: Point, end: Point, startstep: int = 0) -> int:
-        queue = []
+        queue: list[tuple[int, Point, int]] = []
         heappush(queue, (0, start, startstep))
-        seen = set()
+        seen: set[tuple[Point, int]] = set()
         while queue:
             _, point, steps = heappop(queue)
             if point == end:

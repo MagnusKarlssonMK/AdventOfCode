@@ -12,9 +12,9 @@ from functools import lru_cache
 class Gamestate:
     """Note that player positions and score changes place after every move, so the player in turn for the next move
     is always in the first position."""
-    playerpos: tuple
+    playerpos: tuple[int, int]
     diceroll_count: int = 0
-    playerscore: tuple = (0, 0)
+    playerscore: tuple[int, int] = (0, 0)
 
     def get_practice_score(self) -> int:
         """Gets the answer for part 1. A bit fiddly to get right since the positions and dice rolls start from 1,

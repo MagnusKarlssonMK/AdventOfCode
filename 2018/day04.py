@@ -37,7 +37,7 @@ class Timestamp:
 
 class Record:
     def __init__(self, rawstr: str) -> None:
-        self.__records = []
+        self.__records: list[tuple[Timestamp, int, Event]] = []
         for line in rawstr.splitlines():
             left, right = line.split('] ')
             right = right.split()
@@ -50,11 +50,12 @@ class Record:
                 event = Event.FALLS_ASLEEP
             elif right[0] == "wakes":
                 event = Event.WAKES_UP
-            self.__records.append((Timestamp(*list(map(int, re.findall(r"\d+", left)))), guard, event))
+            if event:
+                self.__records.append((Timestamp(*list(map(int, re.findall(r"\d+", left)))), guard, event))
         self.__records.sort(key=lambda x: x[0])
 
     def get_guard_id(self) -> tuple[int, int]:
-        guards = {g: {} for _, g, _ in self.__records if g != -1}  # guardid: (asleepminutes: count))
+        guards: dict[int, dict[int, int]] = {g: {} for _, g, _ in self.__records if g != -1}  # guardid: (asleepminutes: count))
         asleepminute = -1
         guard = -1
         for timestamp, g, event in self.__records:

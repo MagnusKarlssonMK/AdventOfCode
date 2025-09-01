@@ -20,7 +20,7 @@ class Dance:
     def __init__(self, rawstr: str) -> None:
         self.__moves = [Move(i[0], *i[1:].split('/')) for i in rawstr.split(',')]
         self.__programs = [chr(c) for c in range(ord('a'), ord('p') + 1)]
-        self.__seen = []
+        self.__seen: list[str] = []
 
     def __perform_dance(self) -> str:
         for mv in self.__moves:
@@ -33,6 +33,8 @@ class Dance:
                 case 'p':
                     i1, i2 = self.__programs.index(mv.arg1), self.__programs.index(mv.arg2)
                     self.__programs[i1], self.__programs[i2] = self.__programs[i2], self.__programs[i1]
+                case _:
+                    pass
         return ''.join(self.__programs)
 
     def get_one_round_order(self) -> str:

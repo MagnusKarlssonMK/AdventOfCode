@@ -11,7 +11,7 @@ import operator as op
 
 class SueList:
     def __init__(self, rawstr: str) -> None:
-        self.__sues = []
+        self.__sues: list[list[tuple[str, int]]] = []
         for line in rawstr.splitlines():
             nbrs = list(map(int, re.findall(r"\d+", line)))
             items = re.findall(r"[a-z]+:", line)
