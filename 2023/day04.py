@@ -1,54 +1,48 @@
 """
-Basically decodes the input into a Scratchcard class, and then counts the scores according to the rules.
+2023 day 4 - Scratchcards
 """
+
 import time
 from pathlib import Path
-import re
 
 
-class Scratchcard:
-    def __init__(self, inputstring: str) -> None:
-        cardstr, reststr = inputstring.split(":")
-        self.cardid = int(re.findall(r"\d+", cardstr)[0])
-        winstr, drawstr = reststr.split(" | ")
-        winningnumbers = set(map(int, [nbr for nbr in winstr.split()]))
-        drawnumbers = set(map(int, [nbr for nbr in drawstr.split()]))
-        self.wincount = len(winningnumbers & drawnumbers)
-        self.score = 2 ** (self.wincount - 1) if self.wincount > 0 else 0
+class Card:
+    def __init__(self, s: str) -> None:
+        all_numbers = s.split(": ")[1]
+        parts = all_numbers.split(" | ")
+        winning_numbers = set([int(p) for p in parts[0].split()])
+        draw_numbers = set([int(c) for c in parts[1].split()])
+        self.wincount = len(winning_numbers & draw_numbers)
+        self.score = 0 if self.wincount <= 0 else pow(2, self.wincount - 1)
 
 
-class Cardpile:
-    def __init__(self, rawstr: str) -> None:
-        self.__cards = [Scratchcard(line) for line in rawstr.splitlines()]
+class InputData:
+    def __init__(self, s: str) -> None:
+        self.__scratchcards = [Card(line) for line in s.splitlines()]
 
-    def get_totalpoints(self) -> int:
-        return sum([card.score for card in self.__cards])
+    def solve_part1(self) -> int:
+        return sum([card.score for card in self.__scratchcards])
 
-    def get_cardcount(self) -> int:
-        total_nbr = 0
-        copylist = [0 for _ in range(10)]
-        for card in self.__cards:
-            newcardcount = 1 + copylist.pop(0)
-            total_nbr += newcardcount
-            copylist.append(0)
-            for i, _ in enumerate(copylist):
-                if i < card.wincount:
-                    copylist[i] += newcardcount
-        return total_nbr
+    def solve_part2(self) -> int:
+        copylist = [1 for _ in range(0, len(self.__scratchcards))]
+        for i, card in enumerate(self.__scratchcards):
+            for j in range(1, card.wincount + 1):
+                copylist[i + j] += copylist[i]
+        return sum(copylist)
 
 
 def main(aoc_input: str) -> None:
-    pile = Cardpile(aoc_input)
-    print(f"Part 1: {pile.get_totalpoints()}")
-    print(f"Part 2: {pile.get_cardcount()}")
+    i = InputData(aoc_input)
+    print(f"Part 1: {i.solve_part1()}")
+    print(f"Part 2: {i.solve_part2()}")
 
 
 if __name__ == "__main__":
-    ROOT_DIR = Path(Path(__file__).parents[1], 'AdventOfCode-Input')
-    INPUT_FILE = Path(ROOT_DIR, '2023/day04.txt')
+    ROOT_DIR = Path(Path(__file__).parents[1], "AdventOfCode-Input")
+    INPUT_FILE = Path(ROOT_DIR, "2023/day04.txt")
 
     start_time = time.perf_counter()
-    with open(INPUT_FILE, 'r') as file:
-        main(file.read().strip('\n'))
+    with open(INPUT_FILE, "r") as file:
+        main(file.read().strip("\n"))
     end_time = time.perf_counter()
     print(f"Total time (ms): {1000 * (end_time - start_time)}")
