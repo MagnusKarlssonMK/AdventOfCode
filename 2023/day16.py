@@ -76,7 +76,7 @@ class Grid:
         for y, line in enumerate(rawstr.splitlines()):
             grid.append(line)
             for x, c in enumerate(line):
-                if c not in BouncerType:
+                if c == '.': #not in ['-', '|', '/', '\\']: #BouncerType:
                     continue
                 self.__bouncers[Point(x, y)] = BouncerType(c)
                 if y in self.__bouncersperrow:
